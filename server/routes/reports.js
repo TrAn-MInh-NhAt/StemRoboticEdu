@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { getPool, sql } = require('../config/db');
+const { isTeacherOrAdmin } = require('../middleware/authMiddleware');
 
 // GET /api/reports/grades-csv - Xuất bảng điểm chi tiết dạng file .CSV (TKDL.01 & XBC.02)
-router.get('/grades-csv', async (req, res) => {
+router.get('/grades-csv', isTeacherOrAdmin, async (req, res) => {
   const { maDuAn, trangThai } = req.query;
 
   try {
@@ -133,7 +134,7 @@ router.get('/grades-csv', async (req, res) => {
 });
 
 // POST /api/reports/log-report - Ghi log thủ công khi xuất báo cáo PDF (XBC.02)
-router.post('/log-report', async (req, res) => {
+router.post('/log-report', isTeacherOrAdmin, async (req, res) => {
   try {
     const pool = getPool();
     const userId = req.session && req.session.user ? req.session.user.MaNguoiDung : 1;

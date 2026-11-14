@@ -56,7 +56,7 @@
         </div>
         <div>
           <div class="nav-brand-text">STEM Robotic</div>
-          <div class="nav-brand-tag">Hồ Sơ Cá Nhân · QTHT.02</div>
+          <div class="nav-brand-tag">Hồ Sơ Cá Nhân &amp; Tài Khoản</div>
         </div>
       </a>
 
@@ -139,8 +139,30 @@
             </div>
           </div>
 
-          <div style="width: 100%; margin-top: 16px; font-size: 0.8rem; color: var(--c-text-dim); text-align: left;">
-            <span>Mã định danh: <strong>#<%= profile.MaNguoiDung %></strong></span><br>
+          <!-- Thông tin Lớp học & Nhà trường -->
+          <div style="width: 100%; margin-top: 14px; background: rgba(90, 82, 255, 0.05); border: 1.5px dashed rgba(90, 82, 255, 0.25); border-radius: 14px; padding: 12px 14px; text-align: left; font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-weight: 700; color: var(--c-text-dim);">Lớp học:</span>
+              <strong style="color: var(--c-primary); font-size: 0.95rem;"><%= profile.Lop || '10/1' %></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-weight: 700; color: var(--c-text-dim);">Trường:</span>
+              <strong><%= profile.TruongHoc || 'THPT Chuyên STEM' %></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-weight: 700; color: var(--c-text-dim);">GVCN:</span>
+              <strong>TS. Đặng Hùng Vĩ</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 700; color: var(--c-text-dim);">Thẻ học sinh:</span>
+              <span class="tech-chip" style="margin: 0; padding: 2px 8px; font-size: 0.72rem; background: rgba(4, 120, 87, 0.12); color: #047857; font-weight: 800;">
+                <%= profile.TrangThaiXacThucThe || 'Đã xác thực' %>
+              </span>
+            </div>
+          </div>
+
+          <div style="width: 100%; margin-top: 14px; font-size: 0.8rem; color: var(--c-text-dim); text-align: left;">
+            <span>Mã học sinh: <strong><%= profile.MaDinhDanhHS || ('HS10-01-' + String(profile.MaNguoiDung).padStart(3, '0')) %></strong></span><br>
             <span>Ngày đăng ký: <strong><%= profile.NgayTao ? new Date(profile.NgayTao).toLocaleDateString('vi-VN') : '14/11/2026' %></strong></span>
           </div>
         </div>
@@ -155,7 +177,7 @@
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </div>
             <div>
-              <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0;">Thông Tin Cá Nhân (QTHT.02)</h3>
+              <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0;">Thông Tin Cá Nhân</h3>
               <p style="font-size: 0.82rem; color: var(--c-text-dim); margin: 0;">Cập nhật họ tên hiển thị và thông tin liên hệ của bạn</p>
             </div>
           </div>

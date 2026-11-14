@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STEM Robotic | Học Viện Sáng Tạo Premium</title>
     <link rel="stylesheet" href="/css/theme.css">
+    <style>
+      .hero-bento-cta {
+        display: grid;
+        grid-template-columns: 5fr 4fr 3fr;
+        gap: 36px;
+        align-items: center;
+      }
+      .four-pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 50px;
+      }
+      @media (max-width: 992px) {
+        .hero-bento-cta {
+          grid-template-columns: 1fr !important;
+          padding: 32px 24px !important;
+          gap: 24px !important;
+        }
+        .four-pillars-grid {
+          grid-template-columns: 1fr 1fr !important;
+        }
+      }
+      @media (max-width: 640px) {
+        .four-pillars-grid {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    </style>
 </head>
 <body>
     <!-- Nền Blobs lơ lửng -->
@@ -498,7 +527,7 @@
                     Bảng Xếp Hạng <span style="color: var(--c-primary);">Đỉnh Cao</span>
                 </h2>
                 <p class="bouncy-up" style="color: var(--c-text-dim); margin-top: 12px; font-size: 1.15rem; max-width: 680px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
-                    Cập nhật tự động từ kết quả chấm điểm thật của máy chấm Python và duyệt video giáo viên (bảng KetQuaDiem &amp; Luồng DF-01).
+                    Cập nhật tự động từ kết quả chấm điểm thật của máy chấm và thẩm định video vận hành phần cứng.
                 </p>
             </div>
             
@@ -509,68 +538,79 @@
                         <div class="b-icon-box" style="background: rgba(255,255,255,0.18); color: #FFFFFF;">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFF" stroke="#FFF" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <div class="b-label" style="color: #E0E7FF; font-weight: 700;">Quán Quân Bảng Vàng</div>
+                        <div class="b-label" style="color: #E0E7FF; font-weight: 700;">Quán Quân Bảng Vàng Lớp 10/1</div>
                         <div class="b-value" style="color: #FFFFFF; font-size: 1.8rem; margin: 6px 0;">
                             <%= leaderboard && leaderboard[0] ? leaderboard[0].HoTen : 'Trần Minh Nhật' %>
                         </div>
                         <div style="font-size: 0.85rem; color: #CBD5E1;">
-                            Học viên đạt chuỗi TestCase tuyệt đối và thẩm định video xuất sắc.
+                            Học viên đạt điểm tuyệt đối 5/5 dự án thực hành và thẩm định video phần cứng xuất sắc.
                         </div>
                     </div>
                     <div style="margin-top: 24px; display: inline-block; background: #FFFFFF; color: #1E1B4B; padding: 8px 20px; border-radius: 50px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                        Điểm cao nhất: <%= leaderboard && leaderboard[0] ? leaderboard[0].DiemCaoNhat : '10.0' %>/10đ
+                        Điểm cao nhất: <%= leaderboard && leaderboard[0] ? leaderboard[0].DiemCaoNhat : '10.0' %>/10đ · Hoàn thành 100%
                     </div>
                 </div>
                 
-                <!-- Hàng 1 - Cột 2: Máy Chấm Tốc Độ (Python FastAPI) -->
+                <!-- Hàng 1 - Cột 2: Máy Chấm Tốc Độ -->
                 <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between;">
                     <div>
                         <div class="b-icon-box" style="background: #FEE2E2; color: #DC2626;">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="#DC2626" stroke="#DC2626" stroke-width="1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                         </div>
-                        <div class="b-label">Máy Chấm Tốc Độ (Python)</div>
+                        <div class="b-label">Máy Chấm Tốc Độ Cao</div>
                         <div class="b-value" style="color: var(--c-text-main); font-size: 2.2rem;">
                             <%= stats && stats.ThoiGianTrungBinh_ms ? (stats.ThoiGianTrungBinh_ms / 1000).toFixed(2) : '0.04' %>s
                         </div>
                         <div style="margin-top: 14px; color: var(--c-text-dim); font-size: 0.9rem; text-wrap: pretty;">
-                            Tốc độ AI biên dịch và đối chiếu TestCase tự động trên cổng 5000 (DF-01 / XLBN.02).
+                            Tốc độ biên dịch và đối chiếu TestCase tự động trên môi trường Sandbox cô lập (C++, Arduino, Python).
                         </div>
                     </div>
                     <div style="margin-top: 20px; font-size: 0.82rem; font-weight: 700; color: #047857; display: flex; align-items: center; gap: 6px;">
                         <span class="telemetry-pulse"></span>
-                        <span>KERNEL SẴN SÀNG // UPTIME 99.9%</span>
+                        <span>MÁY CHẤM SẴN SÀNG // UPTIME 99.9%</span>
                     </div>
                 </div>
 
-                <!-- Hàng 1 - Cột 3: Dự Án Robot Tiêu Biểu (Wall of Fame Showcase) -->
-                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <!-- Hàng 1 - Cột 3: Video Showroom Robot Tiêu Biểu -->
+                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; padding: 20px;">
                     <div>
-                        <div class="b-icon-box" style="background: rgba(4, 120, 87, 0.12); color: #047857;">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span class="tech-chip" style="background: rgba(4, 120, 87, 0.12); color: #047857; font-weight: 700; margin: 0;">
+                                Video Thẩm Định Phần Cứng
+                            </span>
+                            <span class="badge badge-success" style="font-size: 0.72rem;">Đạt chuẩn 100%</span>
                         </div>
-                        <div class="b-label">Dự Án Tiêu Biểu Phòng Lab</div>
-                        <div class="b-value" style="color: var(--c-text-main); font-size: 1.6rem; margin: 4px 0;">
-                            Xe Cân Bằng 2 Bánh PID
+                        <div style="border-radius: 14px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; background: #0B0F19; margin-bottom: 12px;">
+                            <iframe 
+                                src="https://www.youtube-nocookie.com/embed/fJWR73zp1Pc" 
+                                title="Robot Cân Bằng 2 Bánh PID - Trần Minh Nhật"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
                         </div>
-                        <div style="margin-top: 10px; color: var(--c-text-dim); font-size: 0.9rem; text-wrap: pretty;">
-                            Mô hình phần cứng kết hợp MPU6050, động cơ DC giảm tốc và thuật toán giữ thăng bằng tự động.
+                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--c-text-main);">
+                            Xe Cân Bằng 2 Bánh PID · MPU6050
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--c-text-dim); margin-top: 2px;">
+                            Tác giả: Trần Minh Nhật (10/1) · GV thẩm định: TS. Đặng Hùng Vĩ
                         </div>
                     </div>
-                    <div style="margin-top: 20px;">
+                    <div style="margin-top: 14px;">
                         <a href="/community" class="btn btn-secondary btn-sm" style="width: 100%; text-align: center;">
-                            Xem Video Wall of Fame ↗
+                            Khám Phá Thêm Video Wall of Fame ↗
                         </a>
                     </div>
                 </div>
                 
-                <!-- Hàng 2 - Cột 1 & 2: Top Học Viên Xuất Sắc (Span 2) -->
+                <!-- Hàng 2 - Cột 1 & 2: Top Học Viên Lớp 10/1 (Span 2) -->
                 <div class="bento-card b-card-wide bouncy-up">
                     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
                         <div>
-                            <div class="b-label">Bảng Vàng Điểm Số (TTCĐ.02)</div>
+                            <div class="b-label">Bảng Vàng Điểm Số Lớp 10/1</div>
                             <div class="b-value" style="font-size: 2rem;">Top Học Viên Xuất Sắc</div>
                         </div>
-                        <a href="/community" class="btn btn-secondary btn-sm">Xem Wall of Fame →</a>
+                        <a href="/community" class="btn btn-secondary btn-sm">Xem Toàn Bộ Bảng Vinh Danh →</a>
                     </div>
                     
                     <ul class="rank-list">
@@ -586,10 +626,13 @@
                                         </div> 
                                         <div>
                                             <div style="font-weight: 700; color: var(--c-text-main); font-size: 1rem;"><%= item.HoTen %></div>
-                                            <div style="font-size: 0.8rem; color: var(--c-text-dim);"><%= item.Email %> · <%= item.SoBaiNop %> bài nộp</div>
+                                            <div style="font-size: 0.8rem; color: var(--c-text-dim);"><%= item.Email %> · Lớp 10/1 · <%= item.SoBaiNop %> bài nộp</div>
                                         </div>
                                     </div>
-                                    <div class="r-score" style="font-size: 1.25rem;"><%= item.DiemCaoNhat %>đ</div>
+                                    <div style="text-align: right;">
+                                        <div class="r-score" style="font-size: 1.25rem;"><%= item.DiemCaoNhat %>đ</div>
+                                        <div style="font-size: 0.75rem; color: #047857; font-weight: 700;">Hoàn thành 100%</div>
+                                    </div>
                                 </li>
                             <% }) %>
                         <% } else { %>
@@ -606,12 +649,12 @@
                         <div class="b-icon-box" style="background: rgba(90, 82, 255, 0.12); color: var(--c-primary);">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         </div>
-                        <div class="b-label">Phân hệ KTĐG.02 &amp; Luồng DF-06</div>
+                        <div class="b-label">Đánh Giá Năng Lực Trực Tuyến</div>
                         <div class="b-value" style="font-size: 1.5rem; color: var(--c-text-main); margin: 6px 0;">
                             Phòng Thi Chống Gian Lận
                         </div>
                         <p style="color: var(--c-text-dim); font-size: 0.9rem; line-height: 1.5; margin-bottom: 16px; text-wrap: pretty;">
-                            Hệ thống giám sát tab &amp; toàn màn hình tự động (DF-06). Đạt trên 8.0 điểm để nhận chứng chỉ kỹ thuật số STEM Robotic.
+                            Hệ thống giám sát tab và toàn màn hình tự động. Đạt trên 8.0 điểm để nhận chứng chỉ kỹ thuật số STEM Robotic.
                         </p>
                     </div>
                     <div>
@@ -624,30 +667,221 @@
         </div>
     </section>
 
-    <!-- 5. CTA TƯƠNG TÁC CUỐI TRANG -->
-    <section style="text-align: center; padding: 100px 20px 80px; background: var(--c-surface); border-top: 1px solid rgba(11, 15, 25, 0.06); margin-top: 60px;">
+    <!-- 5. HẠ TẦNG & 4 TRỤ CỘT CÔNG NGHỆ (FULL WIDTH BENTO GRID) -->
+    <section style="padding: 70px 0 30px; background: transparent;">
         <div class="nav-container">
-            <h2 style="font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1;">
-                Bắt đầu <span class="title-highlight">Chế tạo</span>!
-            </h2>
-            <p style="color: var(--c-text-dim); margin: 24px auto 40px; font-size: 1.2rem; max-width: 620px; text-wrap: pretty;">
-                Tham gia hệ thống, nạp dòng code C++/Python đầu tiên và nhìn robot của bạn chuyển động trên sa bàn thực tế.
-            </p>
-            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                <a href="<%= user ? '/student' : '/login' %>" class="btn-playful btn-playful-secondary magnet-btn">
-                    Đăng Ký Tài Khoản Ngay
-                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a href="/login" class="btn-playful btn-playful-outline magnet-btn">
-                    Đăng Nhập Hệ Thống
-                </a>
+            <div style="text-align: center; margin-bottom: 40px;">
+                <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: var(--c-primary); font-weight: 700; padding: 6px 16px;">
+                    Kiến Trúc Kỹ Thuật Toàn Diện
+                </span>
+                <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin-top: 12px; font-weight: 800;">
+                    4 Trụ Cột Đào Tạo &amp; <span class="title-highlight">Thực Nghiệm</span>
+                </h2>
+                <p style="color: var(--c-text-dim); margin-top: 10px; font-size: 1.05rem; max-width: 640px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
+                    Mô hình đào tạo khép kín từ lý thuyết mạch vi điều khiển, máy chấm tự động đến hội đồng thẩm định phần cứng.
+                </p>
+            </div>
+
+            <div class="four-pillars-grid">
+                <!-- Trụ cột 1 -->
+                <div class="bento-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(90, 82, 255, 0.12); color: var(--c-primary);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Cơ Khí &amp; Mạch Vi Xử Lý</h3>
+                        <p style="font-size: 0.92rem; color: var(--c-text-dim); line-height: 1.55;">
+                            Trang bị kỹ năng đọc sơ đồ chân Pinout, nguyên lý cầu H L298N, cảm biến siêu âm HC-SR04 và thiết kế cơ cấu robot 2 bánh.
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px; font-size: 0.8rem; font-weight: 700; color: var(--c-primary);">
+                        LỘ TRÌNH ĐÀO TẠO // CƠ BẢN
+                    </div>
+                </div>
+
+                <!-- Trụ cột 2 -->
+                <div class="bento-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(220, 38, 38, 0.12); color: var(--c-secondary);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Máy Chấm Sandbox Cô Lập</h3>
+                        <p style="font-size: 0.92rem; color: var(--c-text-dim); line-height: 1.55;">
+                            FastAPI Judge Engine trên cổng 5000 tự động biên dịch và kiểm thử TestCase cho C++, Arduino (.ino) và Python dưới 0.05s.
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px; font-size: 0.8rem; font-weight: 700; color: var(--c-secondary);">
+                        MÁY CHẤM TỰ ĐỘNG // TỐC ĐỘ CAO
+                    </div>
+                </div>
+
+                <!-- Trụ cột 3 -->
+                <div class="bento-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(4, 120, 87, 0.12); color: #047857;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Duyệt Video Thực Nghiệm</h3>
+                        <p style="font-size: 0.92rem; color: var(--c-text-dim); line-height: 1.55;">
+                            Đạt 100% code tự động mở luồng nộp video thực nghiệm. Giáo viên thẩm định chuyển động phần cứng trước khi chốt điểm chính thức.
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px; font-size: 0.8rem; font-weight: 700; color: #047857;">
+                        THẨM ĐỊNH MINH BẠCH // PHẦN CỨNG
+                    </div>
+                </div>
+
+                <!-- Trụ cột 4 -->
+                <div class="bento-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(255, 184, 0, 0.16); color: #B45309;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Vinh Danh &amp; Cộng Đồng</h3>
+                        <p style="font-size: 0.92rem; color: var(--c-text-dim); line-height: 1.55;">
+                            Bảng vàng Wall of Fame tự động tôn vinh các dự án xuất sắc. Diễn đàn chia sẻ bí quyết cân bằng PID và khử nhiễu cảm biến.
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px; font-size: 0.8rem; font-weight: 700; color: #B45309;">
+                        WALL OF FAME // VINH DANH
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento Card Kêu Gọi Hành Động (Expansive 3-Col Hero Bento CTA) -->
+            <div class="bento-card hero-bento-cta" style="background: linear-gradient(135deg, #0B0F19 0%, #171E31 100%); color: #FFFFFF; border: 2px solid #0B0F19; box-shadow: 6px 6px 0 var(--c-primary); border-radius: 32px; padding: 44px 48px;">
+                <div>
+                    <span class="tech-chip" style="background: rgba(90, 82, 255, 0.25); color: #A5B4FC; font-weight: 700; margin-bottom: 14px; display: inline-block;">
+                        HỌC VIỆN ROBOTICS THỰC CHIẾN 2026
+                    </span>
+                    <h2 style="font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: #FFFFFF; line-height: 1.2; margin-bottom: 12px;">
+                        Sẵn Sàng Chế Tạo Cỗ Máy Robot Của Riêng Bạn?
+                    </h2>
+                    <p style="color: #CBD5E1; font-size: 0.98rem; line-height: 1.6; text-wrap: pretty; margin-bottom: 0;">
+                        Gia nhập không gian học tập, thử nghiệm mã nguồn vi điều khiển với máy chấm tự động và chia sẻ thành quả lên Bảng Vinh Danh.
+                    </p>
+                </div>
+
+                <!-- Panel telemetry thông số kỹ thuật thời gian thực -->
+                <div style="background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 20px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <div style="font-size: 0.75rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">Máy Chấm :5000</div>
+                        <div style="font-size: 1.3rem; font-weight: 800; color: #38BDF8; margin: 2px 0;">&lt; 0.05s</div>
+                        <div style="font-size: 0.72rem; color: #6EE7B7;">Online sẵn sàng</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">Lớp Học 10/1</div>
+                        <div style="font-size: 1.3rem; font-weight: 800; color: var(--c-accent); margin: 2px 0;">100%</div>
+                        <div style="font-size: 0.72rem; color: #CBD5E1;">5/5 HS đạt chuẩn</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">Hỗ Trợ Code</div>
+                        <div style="font-size: 1.1rem; font-weight: 800; color: #FFFFFF; margin: 2px 0;">C++ / .ino / .py</div>
+                        <div style="font-size: 0.72rem; color: #94A3B8;">3 định dạng</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">Kiến Trúc IPO</div>
+                        <div style="font-size: 1.1rem; font-weight: 800; color: #FCA5A5; margin: 2px 0;">6 Phân Hệ</div>
+                        <div style="font-size: 0.72rem; color: #94A3B8;">27 mô đun khép kín</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <a href="<%= user ? '/student' : '/login' %>" class="btn-playful btn-playful-primary magnet-btn" style="text-align: center; justify-content: center; padding: 14px 20px; font-size: 0.95rem;">
+                        Vào Không Gian Học Tập →
+                    </a>
+                    <a href="/community" class="btn-playful btn-playful-outline magnet-btn" style="text-align: center; justify-content: center; padding: 12px 20px; color: #FFFFFF; border-color: rgba(255,255,255,0.3); font-size: 0.9rem;">
+                        Khám Phá Wall of Fame ↗
+                    </a>
+                    <div style="text-align: center; font-size: 0.75rem; color: #94A3B8; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <span class="telemetry-pulse"></span>
+                        HỆ THỐNG TRỰC TUYẾN 24/7
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+        </div>
+    </section>
 
-    <footer style="padding: 24px 0; background: var(--c-dark-console); color: #94A3B8; font-size: 0.85rem; text-align: center;">
+    <!-- 6. FOOTER 4 CỘT CHUẨN MỰC CHUYÊN NGHIỆP -->
+    <footer style="background: var(--c-dark-console); color: #94A3B8; border-top: 2px solid rgba(255,255,255,0.08); padding: 60px 0 30px; margin-top: 60px;">
         <div class="nav-container">
-            STEM Robotic Edu — Nền tảng Giáo dục Kỹ thuật &amp; Máy chấm Tự động chuẩn Neo-Brutalist © 2026
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 48px;">
+                <!-- Cột 1: Thông tin hệ thống -->
+                <div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="nav-brand-symbol" style="background: var(--c-primary); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="#FFF" fill="none" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <div style="font-family: var(--f-heading); font-size: 1.2rem; font-weight: 800; color: #FFFFFF;">
+                            STEM Robotic
+                        </div>
+                    </div>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #94A3B8; margin-bottom: 16px;">
+                        Nền tảng Giáo dục Kỹ thuật STEM Robotics trực tuyến, tích hợp máy chấm tự động Judge Engine và quy trình kiểm duyệt video thực tế.
+                    </p>
+                    <div style="font-size: 0.82rem; color: #64748B;">
+                        Phiên bản hệ thống: <strong>v2.4.0 (StemRoboticDB_V2)</strong>
+                    </div>
+                </div>
+
+                <!-- Cột 2: Lộ trình đào tạo -->
+                <div>
+                    <div style="font-family: var(--f-heading); font-size: 1rem; font-weight: 700; color: #FFFFFF; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Lộ Trình Đào Tạo
+                    </div>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+                        <li><a href="<%= user ? '/student' : '/login' %>" style="color: #94A3B8;">1. Vi điều khiển Arduino &amp; I/O</a></li>
+                        <li><a href="<%= user ? '/student' : '/login' %>" style="color: #94A3B8;">2. Xe Tránh Vật Cản &amp; Cầu H L298N</a></li>
+                        <li><a href="<%= user ? '/student' : '/login' %>" style="color: #94A3B8;">3. Xe Cân Bằng 2 Bánh &amp; Thị Giác AI</a></li>
+                        <li><a href="/exam" style="color: #94A3B8;">4. Phòng Thi Trực Tuyến Đánh Giá Năng Lực</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Công nghệ & Tính năng -->
+                <div>
+                    <div style="font-family: var(--f-heading); font-size: 1rem; font-weight: 700; color: #FFFFFF; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Công Nghệ &amp; Quy Chuẩn
+                    </div>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem;">
+                        <li><a href="/community#wallOfFameSection" style="color: #94A3B8;">Bảng Vinh Danh Dự Án Xuất Sắc</a></li>
+                        <li><a href="/community#forumSection" style="color: #94A3B8;">Diễn Đàn Trao Đổi Kỹ Thuật</a></li>
+                        <li><a href="javascript:void(0)" style="color: #94A3B8;">FastAPI Judge Engine Cô Lập</a></li>
+                        <li><a href="javascript:void(0)" style="color: #94A3B8;">7 Luồng Vận Hành Tự Động</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Đội ngũ & Đồ án -->
+                <div>
+                    <div style="font-family: var(--f-heading); font-size: 1rem; font-weight: 700; color: #FFFFFF; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Đội Ngũ Đồ Án
+                    </div>
+                    <div style="font-size: 0.88rem; line-height: 1.6; color: #94A3B8;">
+                        <div style="color: #E2E8F0; font-weight: 700;">Nhóm Phát Triển A+</div>
+                        <div>• Trần Minh Nhật (23SPT) - Trưởng nhóm</div>
+                        <div>• Phạm Kỳ Hải (23SPT) - Đảm bảo chất lượng</div>
+                        <div>• Phạm Thị Hà Vy (24SPT) - Phân tích</div>
+                        <div>• Trần Thế Quân (24CNTT1) - Thiết kế</div>
+                        <div>• Nguyễn Thị Thanh Thảo (24CNTT1) - Chức năng</div>
+                        <div style="margin-top: 8px; color: #CBD5E1;">GVHD: <strong>TS. Đặng Hùng Vĩ</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dòng đáy Copyright & Trạng thái Server -->
+            <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 0.82rem;">
+                <div>
+                    STEM Robotic Edu © 2026. Chuẩn thiết kế Neo-Brutalist &amp; Bento Grid EdTech.
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #10B981; font-weight: 700;">
+                        <span class="telemetry-pulse"></span>
+                        HẠ TẦNG VẬN HÀNH 100%
+                    </span>
+                    <span>Port 80 (Web) &amp; Port 5000 (Judge)</span>
+                </div>
+            </div>
         </div>
     </footer>
 

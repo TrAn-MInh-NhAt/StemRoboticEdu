@@ -5,6 +5,7 @@ const fs = require('fs');
 const multer = require('multer');
 const axios = require('axios');
 const { getPool, sql } = require('../config/db');
+const { isLoggedIn, requireRole, isTeacherOrAdmin } = require('../middleware/authMiddleware');
 
 // Cấu hình thư mục lưu file nộp bài
 const uploadDir = path.join(__dirname, '../uploads/submissions');
@@ -55,7 +56,7 @@ function getTeacherId(req) {
 // =========================================================================
 // 1. GET /api/projects - Lấy danh sách dự án & kiểm tra khóa/mở khóa (DF-02)
 // =========================================================================
-router.get('/projects', async (req, res) => {
+router.get('/projects', isLoggedIn, async (req, res) => {
   try {
     const pool = getPool();
     const studentId = getStudentId(req) || 3; // Mặc định học sinh Trần Minh Nhật
@@ -85,7 +86,7 @@ router.get('/projects', async (req, res) => {
         FROM DuAnBaiTap da
         LEFT JOIN DuAnBaiTap tq ON da.MaDuAnTienQuyet = tq.MaDuAn
         LEFT JOIN KhoaHocLoTrinh lt ON da.MaLoTrinh = lt.MaLoTrinh
-        ORDER BY da.MaDuAn ASC
+        ORDER BY da.TenDuAn ASC
       `);
 
     // Tính toán trạng thái Khóa / Mở khóa cho từng dự án dựa trên MaDuAnTienQuyet (DF-02)
@@ -133,24 +134,164 @@ router.get('/projects', async (req, res) => {
 });
 
 // =========================================================================
+// 1.1. GET /api/projects/:id - Lấy chi tiết 1 dự án, TestCases và bài nộp học sinh
+// =========================================================================
+router.get('/projects/:id', isLoggedIn, async (req, res) => {
+  try {
+    const projectId = parseInt(req.params.id);
+    if (!projectId || isNaN(projectId)) {
+      return res.status(400).json({ success: false, message: 'Mã dự án không hợp lệ' });
+    }
+
+    const pool = getPool();
+    const studentId = getStudentId(req) || 3;
+
+    // 1. Thông tin dự án và lộ trình
+    const projRes = await pool.request()
+      .input('id', sql.Int, projectId)
+      .query(`
+        SELECT 
+          da.MaDuAn, da.TenDuAn, da.YeuCauDuAn, da.NgayGiao, da.HanNop, da.CapDo, 
+          da.TrangThai, da.MaDuAnTienQuyet, da.MaLoTrinh,
+          tq.TenDuAn AS TenDuAnTienQuyet,
+          lt.TenLoTrinh, lt.ThuTuHoc, lt.ChuDe
+        FROM DuAnBaiTap da
+        LEFT JOIN DuAnBaiTap tq ON da.MaDuAnTienQuyet = tq.MaDuAn
+        LEFT JOIN KhoaHocLoTrinh lt ON da.MaLoTrinh = lt.MaLoTrinh
+        WHERE da.MaDuAn = @id
+      `);
+
+    if (projRes.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy dự án' });
+    }
+
+    const project = projRes.recordset[0];
+
+    // 2. Kiểm tra mở khóa DF-02
+    let isUnlocked = true;
+    let unlockReason = 'Dự án cơ bản';
+    if (project.MaDuAnTienQuyet) {
+      const checkPrereq = await pool.request()
+        .input('prereqId', sql.Int, project.MaDuAnTienQuyet)
+        .input('studentId', sql.Int, studentId)
+        .query(`
+          SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.TongDiem
+          FROM BaiNop bn
+          JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+          WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
+            AND bn.TrangThai = N'Đã chốt điểm'
+            AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
+          ORDER BY bn.MaBaiNop DESC
+        `);
+
+      if (checkPrereq.recordset.length === 0) {
+        isUnlocked = false;
+        unlockReason = `Yêu cầu đạt '${project.TenDuAnTienQuyet}' (DF-02)`;
+      } else {
+        isUnlocked = true;
+        unlockReason = `Đã mở khóa qua '${project.TenDuAnTienQuyet}' (DF-02)`;
+      }
+    }
+
+    // 3. Danh sách TestCases
+    const tcRes = await pool.request()
+      .input('id', sql.Int, projectId)
+      .query(`
+        SELECT MaTestCase, DuLieuDauVao, KetQuaDauRa, TrongSoDiem, GoiYSuaLoi
+        FROM TestCase
+        WHERE MaDuAn = @id
+        ORDER BY MaTestCase ASC
+      `);
+
+    // 4. Bài nộp gần nhất của học sinh cho dự án này
+    const subRes = await pool.request()
+      .input('id', sql.Int, projectId)
+      .input('studentId', sql.Int, studentId)
+      .query(`
+        SELECT TOP 1 
+          bn.MaBaiNop, bn.MaNguon, bn.VideoVanHanh, bn.TrangThai, bn.ThoiGianNop,
+          kq.TongDiem, kq.DiemCode, kq.KetQuaCode, kq.KetQuaVideo, kq.NhanXet, kq.NgayChotDiem
+        FROM BaiNop bn
+        LEFT JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+        WHERE bn.MaDuAn = @id AND bn.MaNguoiDung = @studentId
+        ORDER BY bn.MaBaiNop DESC
+      `);
+
+    // 5. Học liệu gợi ý liên quan TRỰC TIẾP tới dự án này (chỉ hiển thị tài liệu phục vụ đề bài)
+    let materials = [];
+    if (projectId) {
+      const matRes = await pool.request()
+        .input('maDuAn', sql.Int, projectId)
+        .input('maLoTrinh', sql.Int, project.MaLoTrinh)
+        .query(`
+          SELECT MaHocLieu, MaDuAn, TenHocLieu, LoaiHocLieu, NoiDung, DuongDanTep, VideoUrl, CodeMau
+          FROM HocLieu
+          WHERE (MaDuAn = @maDuAn OR (MaDuAn IS NULL AND MaLoTrinh = @maLoTrinh))
+            AND (TrangThai LIKE N'%xuất bản%' OR TrangThai = N'Xuất bản')
+          ORDER BY (CASE WHEN MaDuAn = @maDuAn THEN 0 ELSE 1 END), MaHocLieu ASC
+        `);
+      const specificMats = matRes.recordset.filter(m => m.MaDuAn === projectId);
+      materials = specificMats.length > 0 ? specificMats : matRes.recordset.slice(0, 3);
+    }
+
+    return res.json({
+      success: true,
+      project: {
+        ...project,
+        isUnlocked,
+        unlockReason,
+        testCases: tcRes.recordset,
+        latestSubmission: subRes.recordset[0] || null,
+        materials
+      }
+    });
+
+  } catch (err) {
+    console.error('Lỗi lấy chi tiết dự án:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi server khi lấy chi tiết dự án' });
+  }
+});
+
+// =========================================================================
 // 2. POST /api/submissions - Học sinh nộp bài đa phương tiện (XLBN.01, DF-01, DF-04)
 // =========================================================================
-router.post('/submissions', upload.single('codeFile'), async (req, res) => {
+router.post('/submissions', requireRole('Học sinh'), upload.single('codeFile'), async (req, res) => {
   const pool = getPool();
   try {
     const maDuAn = parseInt(req.body.maDuAn);
-    const videoUrl = (req.body.videoUrl || req.body.VideoVanHanh || '').trim();
+    const videoUrl = (req.body.videoUrl || req.body.VideoVanHanh || req.body.videoVanHanh || '').trim();
     const maNguoiDung = parseInt(getStudentId(req));
 
-    // RÀNG BUỘC NGHIỆP VỤ XLBN.01: Bắt buộc cả File Code VÀ Link Video
-    if (!req.file || !videoUrl) {
-      if (req.file) {
-        // Xóa file tải lên nếu thiếu video
-        try { fs.unlinkSync(req.file.path); } catch (e) {}
+    // Tiếp nhận mã nguồn: Hỗ trợ cả tải lên File VÀ nhập/dán code trực tiếp trên trình soạn thảo web
+    let fileContent = '';
+    let originalName = 'solution.py';
+    let relativeFilePath = '';
+    let savedFilePath = '';
+
+    if (req.file) {
+      savedFilePath = req.file.path;
+      originalName = req.file.originalname;
+      relativeFilePath = 'uploads/submissions/' + req.file.filename;
+      fileContent = fs.readFileSync(savedFilePath, 'utf8');
+    } else if (req.body.code || req.body.codeDirect) {
+      fileContent = (req.body.code || req.body.codeDirect || '').trim();
+      originalName = req.body.filename || req.body.fileName || `solution_${maDuAn || 1}.py`;
+      const ext = path.extname(originalName) || '.py';
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const generatedName = 'sub-' + uniqueSuffix + ext;
+      savedFilePath = path.join(uploadDir, generatedName);
+      relativeFilePath = 'uploads/submissions/' + generatedName;
+      fs.writeFileSync(savedFilePath, fileContent, 'utf8');
+    }
+
+    // RÀNG BUỘC NGHIỆP VỤ XLBN.01: Bắt buộc cả Mã nguồn VÀ Link Video
+    if (!fileContent || !videoUrl) {
+      if (savedFilePath && fs.existsSync(savedFilePath) && !req.file) {
+        try { fs.unlinkSync(savedFilePath); } catch (e) {}
       }
       return res.status(400).json({
         success: false,
-        message: 'Lỗi nộp bài (XLBN.01): Bắt buộc phải tải lên File mã nguồn (.ino, .cpp, .py) VÀ nhập Link Video vận hành robot thực tế!'
+        message: 'Lỗi nộp bài: Bắt buộc phải có Mã nguồn (.ino, .cpp, .py) VÀ nhập Liên kết Video vận hành robot thực tế!'
       });
     }
 
@@ -222,15 +363,14 @@ router.post('/submissions', upload.single('codeFile'), async (req, res) => {
       DiaChiAPI: 'http://127.0.0.1:5000/api/judge'
     };
 
-    // 3. Đọc mã nguồn và gọi Máy chấm tự động (Python FastAPI)
-    const fileContent = fs.readFileSync(req.file.path, 'utf8');
-    const judgeUrl = mayCham.DiaChiAPI.replace('localhost', '127.0.0.1') + '-json'; // endpoint judge-json
+    // 3. Gọi Máy chấm tự động (Python FastAPI)
+    const judgeUrl = mayCham.DiaChiAPI.replace('localhost', '127.0.0.1') + '-json';
 
     let judgeResult;
     try {
       const resp = await axios.post(judgeUrl, {
         code: fileContent,
-        filename: req.file.originalname,
+        filename: originalName,
         test_cases: testCases,
         time_limit_ms: 5000
       }, { timeout: 12000 });
@@ -250,12 +390,9 @@ router.post('/submissions', upload.single('codeFile'), async (req, res) => {
     const totalTimeMs = judgeResult.total_time_ms || 0;
 
     // THỰC THI CHUẨN NGHIỆP VỤ DF-01:
-    // Nếu Code đạt 100% TestCase -> Tự động chuyển trạng thái BaiNop sang N'Chờ duyệt Video' để hiển thị sang trang GV.
-    // Nếu dưới 100% TestCase -> Giữ nguyên trạng thái N'Đang chấm' (hoặc N'Cần sửa code') để học sinh sửa và nộp lại.
     let trangThaiBaiNop = passedAll ? 'Chờ duyệt Video' : 'Đang chấm';
 
     // 4. Lưu bài nộp vào bảng BaiNop (ENT-06)
-    const relativeFilePath = 'uploads/submissions/' + req.file.filename;
     const insertBaiNop = await pool.request()
       .input('maNguoiDung', sql.Int, maNguoiDung)
       .input('maDuAn', sql.Int, maDuAn)
@@ -305,7 +442,7 @@ router.post('/submissions', upload.single('codeFile'), async (req, res) => {
 // =========================================================================
 // 2.1 GET /api/submissions/my-history - Học sinh xem lịch sử bài nộp của mình (XLBN.01, KQBN.02)
 // =========================================================================
-router.get('/submissions/my-history', async (req, res) => {
+router.get('/submissions/my-history', isLoggedIn, async (req, res) => {
   try {
     const pool = getPool();
     const studentId = parseInt(getStudentId(req));
@@ -338,7 +475,7 @@ router.get('/submissions/my-history', async (req, res) => {
 // =========================================================================
 // 3. GET /api/teacher/submissions - Giáo viên xem danh sách bài nộp (KQBN.01)
 // =========================================================================
-router.get('/teacher/submissions', async (req, res) => {
+router.get('/teacher/submissions', isTeacherOrAdmin, async (req, res) => {
   try {
     const pool = getPool();
     const result = await pool.request().query(`
@@ -364,7 +501,7 @@ router.get('/teacher/submissions', async (req, res) => {
 // =========================================================================
 // 4. POST /api/teacher/grade - Giáo viên Duyệt Video & Chốt điểm (KQBN.02, DF-02)
 // =========================================================================
-router.post('/teacher/grade', async (req, res) => {
+router.post('/teacher/grade', isTeacherOrAdmin, async (req, res) => {
   const pool = getPool();
   try {
     const { maBaiNop, ketQuaVideo, tongDiem, nhanXet } = req.body;
@@ -463,7 +600,7 @@ router.post('/teacher/grade', async (req, res) => {
 // =========================================================================
 // 5. GET /api/lotrinh - Lấy danh sách Lộ trình học kèm Dự án (MOD-02, MOD-03)
 // =========================================================================
-router.get('/lotrinh', async (req, res) => {
+router.get('/lotrinh', isLoggedIn, async (req, res) => {
   try {
     const pool = getPool();
     const studentId = getStudentId(req) || 3;
@@ -499,7 +636,7 @@ router.get('/lotrinh', async (req, res) => {
           ) AS DiemHienTai
         FROM DuAnBaiTap da
         LEFT JOIN DuAnBaiTap tq ON da.MaDuAnTienQuyet = tq.MaDuAn
-        ORDER BY da.MaDuAn ASC
+        ORDER BY da.TenDuAn ASC
       `);
 
     // Gán cờ isUnlocked theo DF-02
@@ -538,7 +675,7 @@ router.get('/lotrinh', async (req, res) => {
     const hlRes = await pool.request().query(`
       SELECT MaHocLieu, MaLoTrinh, TenHocLieu, LoaiHocLieu, NoiDung, DuongDanTep, CoCanCapNhat, TrangThai
       FROM HocLieu
-      WHERE TrangThai = N'Xuất bản'
+      WHERE TrangThai LIKE N'%xuất bản%' OR TrangThai = N'Xuất bản'
       ORDER BY MaHocLieu ASC
     `);
 
@@ -561,7 +698,7 @@ router.get('/lotrinh', async (req, res) => {
 // =========================================================================
 // 6. POST /api/teacher/projects - Giáo viên giao dự án mới + TestCase (QLDA.01)
 // =========================================================================
-router.post('/teacher/projects', async (req, res) => {
+router.post('/teacher/projects', isTeacherOrAdmin, async (req, res) => {
   const pool = getPool();
   try {
     const { tenDuAn, maLoTrinh, maDuAnTienQuyet, yeuCauDuAn, hanNop, capDo, testCases } = req.body;
@@ -630,7 +767,7 @@ router.post('/teacher/projects', async (req, res) => {
 // =========================================================================
 // 7. GET /api/submissions/:id - Xem chi tiết bài nộp & LogLoi (DF-04)
 // =========================================================================
-router.get('/submissions/:id', async (req, res) => {
+router.get('/submissions/:id', isLoggedIn, async (req, res) => {
   try {
     const pool = getPool();
     const id = parseInt(req.params.id);
@@ -661,6 +798,96 @@ router.get('/submissions/:id', async (req, res) => {
   } catch (err) {
     console.error('Lỗi lấy chi tiết bài nộp:', err);
     return res.status(500).json({ success: false, message: 'Lỗi server khi lấy chi tiết bài nộp' });
+  }
+});
+
+// =========================================================================
+// 8. QUẢN LÝ LỚP HỌC CHO GIÁO VIÊN CHỦ NHIỆM (TS. ĐẶNG HÙNG VĨ - LỚP 10/1)
+// =========================================================================
+router.get('/teacher/class-roster', isTeacherOrAdmin, async (req, res) => {
+  try {
+    const pool = getPool();
+    const teacherId = getTeacherId(req) || 2;
+
+    const classRes = await pool.request()
+      .input('teacherId', sql.Int, teacherId)
+      .query(`
+        SELECT TOP 1 MaLop, TenLop, KhoiLop, NienKhoa, MoTa
+        FROM LopHoc
+        WHERE MaGiaoVienCN = @teacherId OR TenLop = N'10/1'
+        ORDER BY MaLop ASC
+      `);
+
+    const lopInfo = classRes.recordset[0] || { TenLop: '10/1', KhoiLop: 10, NienKhoa: '2025-2026', MoTa: 'Lớp Chuyên Kỹ Thuật Robotics 10/1' };
+
+    const studentsRes = await pool.request()
+      .input('tenLop', sql.NVarChar, lopInfo.TenLop)
+      .query(`
+        SELECT 
+          nd.MaNguoiDung, nd.HoTen, nd.Email, nd.Lop, nd.TruongHoc, nd.MaDinhDanhHS,
+          nd.TrangThaiXacThucThe, nd.TrangThai, nd.AnhTheHocSinh, nd.NgayTao,
+          (
+            SELECT COUNT(DISTINCT bn.MaDuAn)
+            FROM BaiNop bn
+            JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+            WHERE bn.MaNguoiDung = nd.MaNguoiDung AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
+          ) AS SoDuAnHoanThanh,
+          (
+            SELECT ROUND(AVG(kq.TongDiem), 1)
+            FROM BaiNop bn
+            JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+            WHERE bn.MaNguoiDung = nd.MaNguoiDung AND kq.TongDiem IS NOT NULL
+          ) AS DiemTrungBinh
+        FROM NguoiDung nd
+        WHERE nd.VaiTro = N'Học sinh' AND (nd.Lop = @tenLop OR nd.Lop IS NULL)
+        ORDER BY nd.TrangThai DESC, nd.HoTen ASC
+      `);
+
+    const students = studentsRes.recordset.map(s => {
+      const completed = s.SoDuAnHoanThanh || 0;
+      const pct = Math.min(100, Math.round((completed / 5) * 100));
+      return {
+        ...s,
+        TienTrinhPhanTram: pct,
+        SoDuAnDatText: `${completed}/5 Dự án`
+      };
+    });
+
+    return res.json({
+      success: true,
+      lop: lopInfo,
+      students
+    });
+  } catch (err) {
+    console.error('Lỗi lấy danh sách lớp giáo viên:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi server khi lấy danh sách lớp học: ' + err.message });
+  }
+});
+
+router.post('/teacher/approve-student/:id', isTeacherOrAdmin, async (req, res) => {
+  const userId = parseInt(req.params.id);
+  if (isNaN(userId)) {
+    return res.status(400).json({ success: false, message: 'Mã học sinh không hợp lệ' });
+  }
+
+  try {
+    const pool = getPool();
+    await pool.request()
+      .input('id', sql.Int, userId)
+      .query(`
+        UPDATE NguoiDung
+        SET TrangThai = N'Đang hoạt động',
+            TrangThaiXacThucThe = N'Đã xác thực (GVCN duyệt)'
+        WHERE MaNguoiDung = @id
+      `);
+
+    return res.json({
+      success: true,
+      message: `Giáo viên chủ nhiệm đã phê duyệt thẻ học sinh #${userId} vào Lớp 10/1 thành công!`
+    });
+  } catch (err) {
+    console.error('Lỗi GVCN duyệt học sinh:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi server khi duyệt học sinh' });
   }
 });
 

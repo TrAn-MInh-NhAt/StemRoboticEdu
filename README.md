@@ -15,237 +15,285 @@
 
 ## 📖 1. Giới Thiệu Tổng Quan Dự Án
 
-Hệ thống **STEM Robotic Edu** là nền tảng trực tuyến chuyên sâu hỗ trợ dạy, học và thực hành lập trình điều khiển Robot (C++/Arduino & Python) dành cho học sinh cấp Trung học. Nền tảng giải quyết triệt để bài toán đánh giá sản phẩm thực hành bằng cách kết hợp **Máy chấm tự động (Judge Engine)** kiểm thử mã nguồn và **Quy trình nghiệm thu Video vận hành mô hình thực tế**.
+Hệ thống **STEM Robotic Edu** là nền tảng trực tuyến chuyên sâu hỗ trợ dạy, học và thực hành lập trình điều khiển Robot (C++/Arduino & Python) dành cho học sinh cấp Trung học. Nền tảng giải quyết triệt để bài toán đánh giá sản phẩm thực hành bằng cách kết hợp **Máy chấm tự động Sandbox cô lập (Judge Engine)** kiểm thử mã nguồn và **Quy trình nghiệm thu Video vận hành mô hình thực tế**.
 
-### 1.1. Sáu Phân Hệ Quản Trị (Subsystems)
-1. **MOD-01 — Quản lý Hệ thống & Người dùng (`/admin`, `/login`):** Quản lý tài khoản đa vai trò (Admin, Giáo viên, Học sinh), phân quyền truy cập và thực thi cơ chế khóa mềm (Soft Delete).
-2. **MOD-02 — Quản lý Học liệu & Khóa học (`/student`, `/teacher`):** Quản lý bài giảng, video hướng dẫn, sơ đồ mạch nguyên lý 3D, code mẫu và cây lộ trình đào tạo từ cơ bản đến nâng cao.
-3. **MOD-03 — Quản lý Dự án & Tiến độ (`/teacher`, `/exam`):** Giáo viên giao dự án kèm bộ kiểm thử (Test Case), kiểm soát điều kiện tiên quyết và tổ chức phòng thi trực tuyến.
-4. **MOD-04 — Xử lý Bài nộp & Đánh giá (`/student`, Judge Engine):** Tiếp nhận bài nộp đa phương tiện (mã nguồn + link video), tự động biên dịch và chạy Test Case trong môi trường cô lập, trả kết quả và log lỗi tức thì.
-5. **MOD-05 — Báo cáo & Thống kê (`/teacher`, `/admin`):** Thống kê chất lượng học tập, phân tích tỷ lệ bài nộp lỗi, cảnh báo cập nhật bài giảng tự động và xuất báo cáo CSV/Excel.
-6. **MOD-06 — Tương tác Cộng đồng & Vinh danh (`/community`):** Bảng vinh danh Wall of Fame cho các dự án xuất sắc, diễn đàn trao đổi chuyên môn, hỏi đáp kỹ thuật robot.
-
-### 1.2. Mười Hai Chức Năng Cốt Lõi (Core Capabilities)
-- **FR-01 (QLTK.01, QLTK.02):** Đăng ký, đăng nhập và bảo mật phiên theo vai trò.
-- **FR-02 (QLTK.03):** Khôi phục mật khẩu qua mã xác thực OTP 6 số (`POST /api/auth/forgot-password` & `POST /api/auth/reset-password`).
-- **FR-03 (QTHT.02):** Tra cứu & cập nhật hồ sơ cá nhân `/profile`, đổi mật khẩu bảo mật và đồng bộ Session tức thì.
-- **FR-04:** Tra cứu lộ trình đào tạo, sơ đồ linh kiện và nguyên lý mạch.
-- **FR-05:** Tải mã nguồn mẫu (`.ino`, `.cpp`, `.py`) và học liệu kỹ thuật.
-- **FR-06 (QLDA.01):** Tạo đề bài thực hành STEM và cấu hình bộ dữ liệu Test Case trên `/teacher`.
-- **FR-07:** Nộp bài thực hành đa phương tiện (Source code & Video vận hành).
-- **FR-08 (DF-01):** Máy chấm code tự động tốc độ cao (< 0.05s) qua sandbox cách ly.
-- **FR-09 (KQBN.01, KQBN.02):** Giáo viên kiểm duyệt video thực tế, nhập nhận xét sư phạm và chốt điểm.
-- **FR-10 (XBC.02):** Xuất báo cáo điểm tổng kết (`.csv`), xem trước bản in chuẩn trường học (PDF / Print Preview) và tự động ghi log vào `BaoCaoThongKe`.
-- **FR-11 (TTCĐ.01, TTCĐ.02):** Diễn đàn trao đổi lỗi code, Bảng vàng vinh danh (Wall of Fame) và bình chọn dự án robot.
-- **FR-12 (KTĐG.02, DF-06):** Thi trực tuyến chống gian lận chuyển tab có đếm ngược thời gian thực.
-
-### 1.3. Bảy Luồng Dữ Liệu Tự Động Hóa Đột Phá (Automated Data Flows)
-| Mã luồng | Tên luồng nghiệp vụ | Cơ chế xử lý tự động |
-| :---: | :--- | :--- |
-| **DF-01** | **Chấm Code Đạt → Duyệt Video** | Học sinh nộp code, máy chấm tự động chạy Test Case. Nếu pass 100%, hệ thống mới kích hoạt trạng thái cho Giáo viên duyệt video phần cứng (tiết kiệm 60% thời gian chấm cho giáo viên). |
-| **DF-02** | **Chốt Điểm → Tự Động Mở Khóa Dự Án** | Khi giáo viên chốt điểm bài tập tiên quyết đạt yêu cầu, hệ thống tự động tháo khóa dự án nâng cao tiếp theo trên Dashboard của học sinh mà không cần can thiệp thủ công. |
-| **DF-03** | **Bảng Vàng Top Trending & Wall of Fame** | Tự động phân tích điểm tổng kết cao nhất, video robot vận hành thực tế và lượt bình chọn cộng đồng để tôn vinh học sinh lên Bảng Vàng Trang Chủ và `/community`. |
-| **DF-04** | **Phân Tích Điểm Yếu & Bắt Log Lỗi** | Máy chấm tự động trích xuất các lỗi biên dịch, lỗi logic và cú pháp đẩy ngầm về cơ sở dữ liệu `KetQuaDiem` để thống kê độ khó của bài tập. |
-| **DF-05** | **Tự Động Cảnh Báo Cập Nhật Học Liệu** | Khi một dự án có tỷ lệ học sinh mắc lỗi vượt ngưỡng **> 30%**, hệ thống tự động gắn cờ `CoCanCapNhat = 1` trong bảng `HocLieu` và hiển thị cảnh báo đỏ trên trang của Giáo viên. |
-| **DF-06** | **Thi Trực Tuyến Chống Gian Lận Chuyển Tab** | Lắng nghe sự kiện `visibilitychange` & `window.blur`. Mỗi lần rời màn hình thi, tăng cảnh cáo vi phạm. Nếu chuyển tab **> 3 lần**, hệ thống tự động khóa giao diện và cưỡng chế thu bài ngay lập tức. |
-| **DF-07** | **Khóa Mềm Tài Khoản (Soft Delete)** | Khi Quản trị viên khóa tài khoản, trạng thái chuyển thành `Đã khóa`. Tài khoản bị từ chối đăng nhập (HTTP 403) nhưng **giữ nguyên 100% dữ liệu lịch sử điểm số** trong bảng `BaiNop` phục vụ báo cáo. |
+Toàn bộ hệ thống được xây dựng trên nguyên tắc **Single Source of Truth** đối chiếu trực tiếp từ file `PRODUCT.md`, tuân thủ cấu trúc CSDL chuẩn hóa `database_schema.sql` (Database: `StemRoboticDB_V2`) và phong cách thiết kế **Neo-Brutalist & Bento Grid** (`/css/theme.css`).
 
 ---
 
-## 🏗️ 2. Kiến Trúc Công Nghệ Hệ Thống
-
-Dự án được xây dựng theo mô hình **Fullstack Microservices phân tán**:
+## 🏗️ 2. Kiến Trúc Hệ Thống (Fullstack Microservices)
 
 ```
-+--------------------------------------------------------------------------+
-|                     TRÌNH DUYỆT NGƯỜI DÙNG (CLIENT)                      |
-|   - Giao diện: Creative Studio & Neo-Brutalist EdTech (/css/theme.css)   |
-|   - Typography: Bricolage Grotesque & Be Vietnam Pro | 100% SVG Vector   |
-|   - Các cổng: / (Home), /login, /student, /teacher, /exam, /community   |
-+-------------------------------------+------------------------------------+
-                                      | HTTP Request (Port 80)
-                                      v
-+--------------------------------------------------------------------------+
-|                 WEB APPLICATION SERVER (NODE.JS & EXPRESS)               |
-|   - Cổng mạng: Port 80                                                   |
-|   - Template Engine: EJS (Server-Side Rendering)                         |
-|   - Session & Auth: Express-Session, Role-based Middleware               |
-|   - Thư viện kết nối CSDL: mssql (TDS Protocol)                          |
-+-------------------+----------------------------------+-------------------+
-                    |                                  |
-                    | Gọi chấm mã nguồn (Port 5000)   | Truy vấn dữ liệu
-                    v                                  v
-+------------------------------------+  +----------------------------------+
-|  JUDGE ENGINE (PYTHON FASTAPI)     |  |   MICROSOFT SQL SERVER           |
-|  - Cổng mạng: Port 5000            |  |   - Database: StemRoboticDB_V2   |
-|  - Framework: FastAPI & Uvicorn    |  |   - 12 Bảng chuẩn hóa BCNF       |
-|  - Bộ thực thi: Subprocess Sandbox |  |   - Hỗ trợ tiếng Việt NVARCHAR   |
-|  - Đối chiếu Test Case (< 0.05s)   |  |   - Port mặc định: 1433          |
-+------------------------------------+  +----------------------------------+
++-----------------------------------------------------------------------------------+
+|                        TRÌNH DUYỆT NGƯỜI DÙNG (CLIENT)                            |
+|   - Design System: Neo-Brutalist & Bento Grid (/css/theme.css)                    |
+|   - Typography: Bricolage Grotesque & Be Vietnam Pro | 100% SVG Vector (Anti-Slop)|
+|   - Cổng người dùng: / (Home), /login, /student, /teacher, /exam, /community,     |
+|                      /admin, /profile                                             |
++----------------------------------------+------------------------------------------+
+                                         | HTTP/REST (Port 80)
+                                         v
++-----------------------------------------------------------------------------------+
+|                    WEB APPLICATION SERVER (NODE.JS & EXPRESS)                     |
+|   - Cổng mạng: Port 80                                                            |
+|   - Template Engine: EJS (Server-Side Rendering)                                  |
+|   - Cơ chế bảo vệ: Session-based Auth & Role-based Access Control (RBAC)          |
+|   - Proxy kết nối: mssql (TDS Protocol) & Judge Proxy Service                    |
++----------------------+------------------------------------+-----------------------+
+                       |                                    |
+                       | Giao tiếp HTTP REST (Port 5000)   | Truy vấn dữ liệu T-SQL
+                       v                                    v
++---------------------------------------+  +----------------------------------------+
+|    JUDGE ENGINE (PYTHON FASTAPI)      |  |          MICROSOFT SQL SERVER          |
+|  - Cổng mạng: Port 5000               |  |  - CSDL: StemRoboticDB_V2              |
+|  - Framework: FastAPI & Uvicorn       |  |  - 12 Bảng chuẩn hóa BCNF              |
+|  - Sandbox: Subprocess cô lập (3.0s)  |  |  - Kiểu dữ liệu tiếng Việt NVARCHAR    |
+|  - Mock Hardware: arduino_mock.h      |  |  - Bảo toàn lịch sử khi xóa mềm (DF-07)|
+|  - Phân tích lỗi: error_analyzer.py   |  |  - Cổng mạng mặc định: 1433            |
++---------------------------------------+  +----------------------------------------+
 ```
-
-### Thông số kỹ thuật chi tiết:
-- **Node.js**: v20.x hoặc v22.x LTS (Express 4.x, EJS 3.x, mssql 10.x).
-- **Python**: v3.10+ hoặc v3.11+ (FastAPI 0.110+, Uvicorn 0.28+, Pytest).
-- **Cơ sở dữ liệu**: Microsoft SQL Server 2019 / 2022 (Bản Developer hoặc Express).
-- **Design System**: Phong cách Neo-Brutalist, nền giấy ngọc trai `#F4F6F8` kèm lưới chấm 32px, bóng cứng `4px 4px 0`, màu thương hiệu `#5A52FF`, `#FF5E5E`, `#FFB800`, tuyệt đối không dùng Emoji.
 
 ---
 
-## 🚀 3. Hướng Dẫn Cài Đặt & Khởi Chạy Từng Bước
+## 📋 3. Bảng Đối Chiếu 27/27 Mô Đun IPO & 7 Luồng Tự Động (DF-01 đến DF-07)
 
-Dành cho các thành viên trong nhóm và giảng viên khi clone dự án về máy tính mới.
+Hệ thống đã triển khai đầy đủ và vượt qua kiểm thử tự động 100% cho toàn bộ **27 mô đun IPO** và **7 luồng dữ liệu tự động**:
 
-### Bước 1: Chuẩn bị môi trường máy trạm
-- Đảm bảo máy đã cài đặt:
-  1. [Node.js (LTS)](https://nodejs.org/) (Kiểm tra bằng lệnh: `node -v`).
-  2. [Python 3.10+](https://www.python.org/) (Kiểm tra bằng lệnh: `python --version`).
-  3. [Microsoft SQL Server & SSMS](https://www.microsoft.com/en-us/sql-server/sql-server-downloads).
+### Phân Hệ 1: Quản Lý Hệ Thống & Người Dùng
+| Mã Mô Đun | Tên Mô Đun IPO / Luồng | File Mã Nguồn Xử Lý | Giao Diện Hiển Thị |
+|:---:|:---|:---|:---|
+| **QLTK.01** | Đăng ký & Khởi tạo tài khoản | `server/routes/auth.js` | `server/views/login.ejs` |
+| **QLTK.02** | Đăng nhập & Xác thực phiên | `server/routes/auth.js` | `server/views/login.ejs` |
+| **QLTK.03** | Khôi phục mật khẩu OTP 6 số | `server/routes/auth.js` | `server/views/login.ejs` |
+| **QTHT.01** | Phân quyền & Quản lý vai trò | `server/routes/admin.js` | `server/views/dashboard/admin.ejs` |
+| **QTHT.02** | Cập nhật hồ sơ & Đổi mật khẩu | `server/routes/auth.js` | `server/views/pages/profile.ejs` |
+| **QTHT.03** | Khóa mềm / Vô hiệu hóa tài khoản | `server/routes/admin.js` | `server/views/dashboard/admin.ejs` |
+| **DF-07** | Luồng bảo toàn lịch sử khi khóa | `server/routes/admin.js`, `server/routes/auth.js` | `server/views/dashboard/admin.ejs` |
 
-### Bước 2: Thiết lập Cơ sở Dữ liệu SQL Server
-1. Mở **SQL Server Management Studio (SSMS)** và kết nối tới máy chủ SQL nội bộ (Ví dụ: `localhost\SQLEXPRESS` hoặc `ADMIN-PC\SQLEXPRESS`).
-2. Mở file [database_schema.sql](database_schema.sql) và nhấn **Execute (F5)** để tạo CSDL `StemRoboticDB_V2` gồm 12 bảng và bộ dữ liệu hạt giống mẫu.
-3. (Tùy chọn) Chạy thêm các script seed bài thi và diễn đàn bổ sung:
-   ```powershell
-   cd server
-   node seed_exam_and_materials.js
-   node seed_mod04.js
-   cd ..
+### Phân Hệ 2: Quản Lý Học Liệu & Khóa Học
+| Mã Mô Đun | Tên Mô Đun IPO / Luồng | File Mã Nguồn Xử Lý | Giao Diện Hiển Thị |
+|:---:|:---|:---|:---|
+| **QTHL.01** | Thêm mới bài giảng & học liệu | `server/routes/materials.js` | `server/views/dashboard/teacher.ejs` |
+| **QTHL.02** | Cập nhật & Ẩn/Hiện học liệu | `server/routes/materials.js` | `server/views/dashboard/teacher.ejs` |
+| **DF-05** | Tắt cờ cảnh báo lỗi khi cập nhật | `server/routes/materials.js` | `server/views/dashboard/teacher.ejs` |
+| **TCPP.01** | Cây lộ trình & Học liệu đính kèm | `server/routes/pages.js` | `server/views/dashboard/student.ejs` |
+| **TCPP.02** | Trạm tra cứu linh kiện & Bắt lỗi | `server/routes/materials.js` | `server/views/dashboard/student.ejs` |
+
+### Phân Hệ 3: Quản Lý Dự Án & Tiến Độ
+| Mã Mô Đun | Tên Mô Đun IPO / Luồng | File Mã Nguồn Xử Lý | Giao Diện Hiển Thị |
+|:---:|:---|:---|:---|
+| **QLDA.01** | Giao dự án STEM & TestCases | `server/routes/teacher.js`, `server/routes/submissions.js` | `server/views/dashboard/teacher.ejs` |
+| **QLDA.02** | Mở khóa thử thách nâng cao | `server/routes/submissions.js` | `server/views/dashboard/student.ejs` |
+| **DF-02** | Luồng tự động tháo khóa dự án | `server/routes/submissions.js` | `server/views/dashboard/student.ejs` |
+| **KTĐG.01** | Theo dõi tiến độ nộp bài cả lớp | `server/routes/teacher.js` | `server/views/dashboard/teacher.ejs` |
+| **KTĐG.02** | Khởi tạo phiên phòng thi trực tuyến | `server/routes/exam.js` | `server/views/exam.ejs` |
+| **DF-06** | Giám sát tab & Tự động khóa bài thi | `server/routes/exam.js` | `server/views/exam.ejs` |
+
+### Phân Hệ 4: Xử Lý Bài Nộp & Đánh Giá Máy Chấm
+| Mã Mô Đun | Tên Mô Đun IPO / Luồng | File Mã Nguồn Xử Lý | Giao Diện Hiển Thị |
+|:---:|:---|:---|:---|
+| **XLBN.01** | Tiếp nhận bài nộp (Code + Video) | `server/routes/submissions.js` | `server/views/dashboard/student.ejs` |
+| **XLBN.02** | Máy chấm biên dịch Sandbox cô lập | `judge_engine/services/sandbox.py`, `judge_engine/routers/judge.py` | `judge_engine/` (Port 5000) |
+| **XLBN.03** | Phản hồi điểm & Thời gian chạy | `judge_engine/services/runner.py`, `server/routes/submissions.js` | `server/views/dashboard/student.ejs` |
+| **DF-04** | Bắt log lỗi lập trình sư phạm | `judge_engine/services/error_analyzer.py` | `server/views/dashboard/student.ejs` |
+| **DF-01** | Đạt 100% TestCase chuyển duyệt video | `server/routes/submissions.js` | `server/views/dashboard/student.ejs`, `teacher.ejs` |
+| **KQBN.01** | Giáo viên kiểm duyệt video vận hành | `server/routes/submissions.js` | `server/views/dashboard/teacher.ejs` |
+| **KQBN.02** | Chốt điểm chính thức & Lưu minh chứng | `server/routes/submissions.js` | `server/views/dashboard/teacher.ejs` |
+
+### Phân Hệ 5: Báo Cáo, Thống Kê
+| Mã Mô Đun | Tên Mô Đun IPO / Luồng | File Mã Nguồn Xử Lý | Giao Diện Hiển Thị |
+|:---:|:---|:---|:---|
+| **TKDL.01** | Thống kê nộp bài & Điểm trung bình | `server/routes/admin.js`, `server/routes/teacher.js` | `server/views/dashboard/admin.ejs`, `teacher.ejs` |
+| **TKDL.02** | Phân tích tỷ lệ lỗi phổ biến | `server/routes/teacher.js` | `server/views/dashboard/teacher.ejs` |
+| **XBC.01** | Bảng xếp hạng & Trích xuất dữ liệu | `server/routes/pages.js`, `server/routes/community.js` | `server/views/index.ejs`, `community.ejs` |
+| **DF-03** | Cập nhật Top Trending thời gian thực | `server/routes/community.js`, `server/routes/pages.js` | `server/views/index.ejs`, `community.ejs` |
+| **XBC.02** | Xuất bảng điểm CSV & Lưu lịch sử | `server/routes/reports.js` | `server/views/dashboard/teacher.ejs`, `admin.ejs` |
+
+### Phân Hệ 6: Tương Tác Cộng Đồng & Hỗ Trợ Kỹ Thuật
+| Mã Mô Đun | Tên Mô Đun IPO / Luồng | File Mã Nguồn Xử Lý | Giao Diện Hiển Thị |
+|:---:|:---|:---|:---|
+| **TTCĐ.01** | Diễn đàn trao đổi kỹ thuật | `server/routes/community.js` | `server/views/community.ejs` |
+| **TTCĐ.02** | Bình chọn dự án & Wall of Fame | `server/routes/community.js` | `server/views/community.ejs` |
+| **HTTB.01** | Phiếu phản hồi & Báo cáo sự cố | `server/routes/support.js` | `server/views/dashboard/student.ejs`, `teacher.ejs`, `admin.ejs` |
+| **HTTB.02** | Thông báo hệ thống khẩn cấp | `server/routes/support.js` | `server/views/dashboard/student.ejs`, `teacher.ejs`, `admin.ejs` |
+
+---
+
+## 📚 4. Giáo Trình & Lộ Trình Đào Tạo STEM Đã Seed Vào CSDL
+
+Dữ liệu được nạp tự động qua script idempotent `server/seed_full_curriculum.js`:
+
+1. **Lộ trình #01: Lập trình Arduino Cơ bản & Tín hiệu I/O (`KhoaHocLoTrinh #1`)**
+   - **Học liệu & Linh kiện:** Bo mạch Arduino Uno R3, Đèn LED & Điện trở hạn dòng, Kỹ thuật điều chế xung PWM.
+   - **Dự án thực hành:** Dự án 1 — Lập trình đèn LED nhấp nháy theo mã tín hiệu Morse SOS (`DuAnBaiTap #1`).
+   - **TestCases chấm tự động:** 3 TestCases (Input `1` -> `LED_ON`, Input `0` -> `LED_OFF`, Input `SOS` -> `3_SHORT_3_LONG_3_SHORT`).
+2. **Lộ trình #02: Điều Khiển Robot Tránh Vật Cản & Cầu H L298N (`KhoaHocLoTrinh #2`)**
+   - **Học liệu & Linh kiện:** Cảm biến siêu âm HC-SR04 đo khoảng cách, Mạch cầu H L298N điều khiển 2 kênh động cơ DC.
+   - **Dự án thực hành:** Dự án 2 — Robot dò đường và tự động né chướng ngại vật trong mê cung (`DuAnBaiTap #2`).
+   - **TestCases chấm tự động:** 3 TestCases (Khoảng cách an toàn `> 20cm`, Phanh gấp `<= 10cm`, Rẽ nhánh `LEFT/RIGHT`).
+   - **Cơ chế tiên quyết (`DF-02`):** Yêu cầu hoàn thành Dự án 1 trước khi mở khóa.
+3. **Lộ trình #03: Xe Tự Hành Cân Bằng 2 Bánh & Thị Giác AI (`KhoaHocLoTrinh #3`)**
+   - **Học liệu & Linh kiện:** Cảm biến góc nghiêng con quay MPU6050 I2C, Thuật toán cân bằng PID (Proportional-Integral-Derivative).
+   - **Dự án thực hành:** Dự án 3 — Xe tự hành 2 bánh cân bằng quán tính ngược (`DuAnBaiTap #3`).
+   - **TestCases chấm tự động:** 3 TestCases (Góc bù nghiêng `ANGLE_TILT`, Hiệu chỉnh công suất `PWM_DUTY`, Phanh hãm `STOP`).
+   - **Cơ chế thẩm định (`DF-01`):** Chấm đạt 100% TestCase -> Giáo viên duyệt video xe chạy thực tế trên sa bàn.
+
+---
+
+## 👥 5. Danh Sách Tài Khoản Mẫu Phục Vụ Đánh Giá & Demo
+
+| Vai trò | Họ tên | Email đăng nhập | Mật khẩu | Chức năng chính |
+|:---|:---|:---|:---:|:---|
+| **Quản Trị Viên (Admin)** | Quản Trị Viên Hệ Thống | `admin@stemrobotic.edu.vn` | `123456` | `/admin` — Quản trị tài khoản, Khóa mềm (`DF-07`), Xử lý sự cố (`HTTB.01`), Phát thông báo bảo trì (`HTTB.02`) |
+| **Giáo Viên (Teacher)** | TS. Đặng Hùng Vĩ | `gv.hungvi@stemrobotic.edu.vn` | `123456` | `/teacher` — Duyệt video (`DF-01`), Chốt điểm, Giao dự án & TestCase (`QLDA.01`), Quản lý học liệu (`QTHL.01/02`) |
+| **Học Sinh (Quán quân)** | Trần Minh Nhật | `hs.minhnhat@stemrobotic.edu.vn` | `123456` | `/student` — Lộ trình học, Nạp code mẫu, Máy chấm tự động, Tra cứu linh kiện & sửa lỗi (`TCPP.02`) |
+| **Học Sinh (Thí sinh)** | Lê Hoàng Nam | `hs.hoangnam@stemrobotic.edu.vn` | `123456` | `/exam` — Tham gia phòng thi trực tuyến khép kín, Kiểm thử giám sát chuyển tab (`DF-06`) |
+
+---
+
+## 🧪 6. Chạy Kiểm Thử Khép Kín Hệ Thống (E2E Test Suite)
+
+Dự án trang bị bộ kịch bản kiểm thử toàn diện 37/37 bài test tự động bao quát toàn bộ 27 mô đun và 7 luồng tự động.
+
+Chạy lệnh kiểm thử bằng 1 câu lệnh duy nhất:
+```bash
+npm test
+```
+*Hoặc thực thi trực tiếp:*
+```bash
+node server/tests/full_system_test.js
+```
+
+### Kết quả đầu ra mẫu:
+```
+========================================================================
+       STEM ROBOTIC EDU — BỘ KIỂM THỬ KHÉP KÍN TOÀN HỆ THỐNG           
+                 27/27 MÔ ĐUN IPO & 7 LUỒNG TỰ ĐỘNG                     
+========================================================================
+
+========================================================================
+ 0. KIỂM TRA HẠ TẦNG KỸ THUẬT & KẾT NỐI SERVER
+========================================================================
+  ✓ [PASS] [INFRA.01] Kết nối CSDL SQL Server (StemRoboticDB_V2)
+  ✓ [PASS] [INFRA.02] Dịch vụ Máy Chấm Tự Động FastAPI (Cổng 5000)
+  ✓ [PASS] [INFRA.03] Máy chủ Web Node.js/Express (Cổng 80 - Trang chủ)
+
+========================================================================
+ PHÂN HỆ 1 ĐẾN PHÂN HỆ 6: 27 MÔ ĐUN IPO & 7 LUỒNG TỰ ĐỘNG (DF-01..07)
+========================================================================
+  ✓ [PASS] 37/37 Bài kiểm thử đạt yêu cầu tuyệt đối!
+  ★★★★★ 100% CÁC MÔ ĐUN VÀ LUỒNG TỰ ĐỘNG ĐÃ VƯỢT QUA KIỂM THỬ THÀNH CÔNG! ★★★★★
+```
+
+---
+
+## 🚀 7. Hướng Dẫn Cài Đặt & Vận Hành Từ A - Z
+
+### Bước 1: Yêu cầu môi trường
+- **Node.js**: v20.x hoặc v22.x LTS.
+- **Python**: v3.10+ hoặc v3.11+.
+- **Microsoft SQL Server**: 2019 hoặc 2022 (Developer / Express).
+
+### Bước 2: Thiết lập Cơ sở dữ liệu SQL Server
+1. Mở **SQL Server Management Studio (SSMS)**.
+2. Mở file [database_schema.sql](database_schema.sql) và nhấn **Execute (F5)** để tạo CSDL `StemRoboticDB_V2`.
+3. Chạy script seed dữ liệu chuẩn hóa:
+   ```bash
+   node server/seed_full_curriculum.js
    ```
 
-### Bước 3: Cấu hình biến môi trường (`.env`)
-Tạo file `.env` tại thư mục gốc của dự án (hoặc sao chép từ file mẫu [.env.example](.env.example)):
+### Bước 3: Cấu hình tệp `.env`
+Tạo file `.env` tại thư mục gốc của dự án:
 ```ini
-# Cổng máy chủ Web
 PORT=80
-
-# Cấu hình SQL Server
-DB_SERVER=localhost\\SQLEXPRESS
+DB_SERVER=ADMIN-PC\\SQLEXPRESS
 DB_NAME=StemRoboticDB_V2
 DB_USER=sa
-DB_PASSWORD=Mật_khẩu_SQL_của_bạn
+DB_PASSWORD=YourPassword123
 DB_PORT=1433
 DB_ENCRYPT=false
 DB_TRUST_CERT=true
-
-# Kết nối Máy chấm Judge
 JUDGE_URL=http://localhost:5000
-
-# Phiên đăng nhập
-SESSION_SECRET=stemrobotic_secret_key_2026
+SESSION_SECRET=stem_robotic_secure_session_2026
 ```
 
-### Bước 4: Cài đặt và khởi chạy Máy chấm Judge Engine (Port 5000)
-Mở cửa sổ Terminal thứ nhất:
+### Bước 4: Khởi chạy Máy chấm tự động (Judge Engine — Cổng 5000)
 ```powershell
-# Di chuyển vào thư mục judge_engine
 cd judge_engine
-
-# Tạo môi trường ảo Python (khuyên dùng)
-python -m venv venv
-.\venv\Scripts\activate
-
-# Cài đặt thư viện phụ thuộc
-pip install -r requirements.txt
-
-# Khởi chạy dịch vụ Judge
-uvicorn main:app --host 0.0.0.0 --port 5000 --reload
+pip install fastapi uvicorn pydantic python-multipart
+python -m uvicorn main:app --host 0.0.0.0 --port 5000 --reload
 ```
-*Kiểm tra:* Truy cập `http://localhost:5000/docs` để xem tài liệu Swagger API của máy chấm.
 
-### Bước 5: Cài đặt và khởi chạy Web Server (Port 80)
-Mở cửa sổ Terminal thứ hai:
+### Bước 5: Khởi chạy Máy chủ Web (Node.js Express — Cổng 80)
 ```powershell
-# Di chuyển vào thư mục server
 cd server
-
-# Cài đặt các gói Node.js
 npm install
-
-# Khởi chạy ứng dụng
 npm start
-# hoặc: node server.js
 ```
-*Kiểm tra:* Khi thấy thông báo `✅ Kết nối SQL Server thành công!` và `🚀 Server đang chạy tại http://localhost:80`, mở trình duyệt truy cập `http://localhost/`.
+Truy cập trình duyệt: `http://localhost/`.
 
 ---
 
-## 👥 4. Danh Sách Tài Khoản Mẫu Phục Vụ Thử Nghiệm
-
-Dưới đây là các tài khoản mặc định đã được khởi tạo sẵn trong CSDL để Giảng viên và Hội đồng chấm có thể đăng nhập thử nghiệm toàn diện các vai trò:
-
-| STT | Vai trò | Họ tên | Email đăng nhập | Mật khẩu | Trang quản lý chính |
-| :-: | :--- | :--- | :--- | :---: | :--- |
-| **1** | **Quản Trị Viên (Admin)** | Quản Trị Viên Hệ Thống | `admin@stemrobotic.edu.vn` | `123456` | `/admin` (Quản trị tài khoản & Khóa mềm DF-07) |
-| **2** | **Giáo Viên (Teacher)** | TS. Đặng Hùng Vĩ | `gv.hungvi@stemrobotic.edu.vn` | `123456` | `/teacher` (Giao bài, Chốt điểm DF-04 & Cảnh báo DF-05) |
-| **3** | **Học Sinh (Top 1)** | Trần Minh Nhật | `hs.minhnhat@stemrobotic.edu.vn` | `123456` | `/student` (Học tập, nộp bài DF-01 & mở khóa DF-02) |
-| **4** | **Học Sinh (Thí sinh)** | Lê Hoàng Nam | `hs.hoangnam@stemrobotic.edu.vn` | `123456` | `/exam` (Phòng thi trực tuyến chống gian lận DF-06) |
-| **5** | **Học Sinh (Cộng đồng)** | Nguyễn Mai Phương | `hs.maiphuong@stemrobotic.edu.vn` | `123456` | `/community` (Bình chọn Wall of Fame & Thảo luận) |
-
----
-
-## 🧪 5. Kịch Bản Kiểm Thử Nhanh Các Luồng Tự Động
-
-- **Kiểm thử DF-01 & DF-02 (Nộp bài và Mở khóa tự động):**  
-  Đăng nhập `hs.minhnhat@stemrobotic.edu.vn` -> Truy cập `/student` -> Chọn Dự án 1 -> Dán code mẫu C++ nhấp nháy đèn LED SOS -> Nhấn "Chấm điểm tự động". Máy chấm trả về điểm 10/10 trong < 0.05s -> Chuyển sang tài khoản Giáo viên duyệt Video -> Dự án tiếp theo tự động mở khóa.
-- **Kiểm thử DF-05 (Cảnh báo cập nhật học liệu):**  
-  Đăng nhập `gv.hungvi@stemrobotic.edu.vn` -> Truy cập `/teacher`. Hệ thống tự động phân tích tỷ lệ bài nộp bị lỗi (>30%) và hiển thị banner cảnh báo đỏ cần cập nhật học liệu PWM/Morse.
-- **Kiểm thử DF-06 (Phòng thi chống gian lận):**  
-  Đăng nhập `hs.hoangnam@stemrobotic.edu.vn` -> Truy cập `/exam`. Thử chuyển sang tab trình duyệt khác hoặc nhấn Alt+Tab 4 lần -> Hệ thống ghi nhận vi phạm, hiển thị cảnh báo đỏ và cưỡng chế nộp bài, khóa màn hình làm bài.
-- **Kiểm thử DF-07 (Khóa mềm tài khoản):**  
-  Đăng nhập `admin@stemrobotic.edu.vn` -> Truy cập `/admin` -> Nhấn "Khóa tài khoản" học sinh -> Đăng xuất và đăng nhập lại bằng tài khoản vừa khóa -> Hệ thống từ chối đăng nhập với mã lỗi HTTP 403 nhưng giữ nguyên lịch sử điểm thi.
-
----
-
-## 📁 6. Cấu Trúc Thư Mục Dự Án
+## 📁 8. Cấu Trúc Mã Nguồn Dự Án
 
 ```
 LapTrinhWeb/
-├── .gitignore                   # Cấu hình loại trừ Git chuẩn (node_modules, venv, .env, log)
-├── .env.example                 # Mẫu khai báo thông số kết nối CSDL và Judge
-├── database_schema.sql          # Kịch bản DDL khởi tạo 12 bảng CSDL StemRoboticDB_V2
+├── .env                         # Biến môi trường kết nối CSDL và Judge
+├── database_schema.sql          # Kịch bản DDL 12 bảng CSDL StemRoboticDB_V2
 ├── GEMINI.md                    # Quy chuẩn thiết kế Neo-Brutalist & Single Source of Truth
-├── PRODUCT.md                   # Báo cáo đặc tả hệ thống thông tin (6 phân hệ, 27 mô đun, 7 DF)
-├── README.md                    # Tài liệu hướng dẫn cài đặt và vận hành hệ thống
+├── PRODUCT.md                   # Đặc tả hệ thống (6 phân hệ, 27 mô đun, 7 DF)
+├── README.md                    # Tài liệu tổng quan dự án và hướng dẫn vận hành
+├── package.json                 # Cấu hình scripts (npm test, npm start, npm run seed)
 │
-├── public/                      # Tài nguyên tĩnh dùng chung
+├── public/                      # Tài nguyên tĩnh phía máy khách
 │   ├── css/
-│   │   └── theme.css            # Toàn bộ CSS Variables, Bento Grid, Banner và Animations
+│   │   └── theme.css            # Hệ thống thiết kế Neo-Brutalist, Bento Grid, Keyframes
 │   └── js/
-│       └── login.js             # Logic xác thực và xử lý từ chối khóa mềm DF-07
+│       └── login.js             # Logic xác thực đăng nhập và thông báo
 │
-├── server/                      # Máy chủ ứng dụng (Node.js & Express - Port 80)
+├── server/                      # Ứng dụng Web Server chính (Node.js & Express)
 │   ├── config/
-│   │   └── db.js                # Kết nối Microsoft SQL Server qua thư viện mssql
+│   │   └── db.js                # Quản lý Connection Pool kết nối SQL Server
 │   ├── middleware/
-│   │   └── authMiddleware.js    # Phân quyền truy cập các Route theo Session Role
+│   │   └── authMiddleware.js    # Phân quyền RBAC (isStudent, isTeacher, isAdmin)
 │   ├── routes/
-│   │   ├── admin.js             # API Quản trị & Luồng DF-07
-│   │   ├── auth.js              # API Đăng ký, Đăng nhập, Đăng xuất
-│   │   ├── community.js         # API Diễn đàn, Thảo luận & Wall of Fame (DF-03)
-│   │   ├── exam.js              # API Phòng thi trực tuyến & Luồng DF-06, DF-05
-│   │   ├── pages.js             # Render các trang EJS giao diện
-│   │   ├── reports.js           # API Xuất bảng điểm CSV (XBC.02)
-│   │   └── submissions.js       # API Nộp bài, Máy chấm & Mở khóa dự án (DF-01, DF-02)
-│   ├── views/                   # Template EJS Server-Side Rendering
+│   │   ├── admin.js             # Phân hệ 1: Quản trị tài khoản, Khóa mềm DF-07
+│   │   ├── auth.js              # Phân hệ 1: Đăng ký, Đăng nhập, OTP, Hồ sơ cá nhân
+│   │   ├── community.js         # Phân hệ 6: Diễn đàn, Wall of Fame, Bình chọn DF-03
+│   │   ├── exam.js              # Phân hệ 3: Phòng thi trực tuyến, Chuyển tab DF-06
+│   │   ├── judgeProxy.js        # Phân hệ 4: Proxy máy chấm, Giám sát trạng thái
+│   │   ├── materials.js         # Phân hệ 2: Quản lý học liệu, Tắt cờ DF-05, Tra cứu
+│   │   ├── pages.js             # Render SSR các trang EJS
+│   │   ├── reports.js           # Phân hệ 5: Xuất bảng điểm CSV, Báo cáo in ấn
+│   │   ├── submissions.js       # Phân hệ 4: Nộp bài, Máy chấm, Duyệt video DF-01/DF-02
+│   │   ├── support.js           # Phân hệ 6: Phiếu báo cáo sự cố, Thông báo bảo trì
+│   │   └── teacher.js           # Phân hệ 3 & 5: Giao bài, Quản lý lớp, Thống kê
+│   ├── views/                   # Giao diện Server-Side Rendering (EJS)
 │   │   ├── dashboard/
-│   │   │   ├── admin.js         # Giao diện /admin
-│   │   │   ├── student.ejs      # Giao diện /student
-│   │   │   └── teacher.ejs      # Giao diện /teacher
-│   │   ├── community.ejs        # Giao diện /community
-│   │   ├── exam.ejs             # Giao diện /exam
-│   │   ├── index.ejs            # Giao diện Trang chủ (/)
-│   │   └── login.ejs            # Giao diện /login
-│   ├── package.json
-│   └── server.js                # Điểm khởi chạy Web Server chính
+│   │   │   ├── admin.ejs        # Bảng điều khiển Quản trị viên
+│   │   │   ├── student.ejs      # Không gian học tập & Nộp bài học sinh
+│   │   │   └── teacher.ejs      # Cổng thông tin Giảng viên
+│   │   ├── community.ejs        # Diễn đàn & Bảng vinh danh Wall of Fame
+│   │   ├── exam.ejs             # Phòng thi trực tuyến chống gian lận
+│   │   ├── index.ejs            # Trang chủ hệ thống & Showcase Bento
+│   │   ├── login.ejs            # Trang đăng nhập, đăng ký & quên mật khẩu
+│   │   ├── pages/profile.ejs    # Trang hồ sơ cá nhân & Đổi mật khẩu
+│   │   └── print_report.ejs     # Mẫu in bảng điểm chuẩn trường học
+│   ├── seed_full_curriculum.js  # Kịch bản nạp giáo trình và lộ trình mẫu
+│   ├── tests/
+│   │   └── full_system_test.js  # Kịch bản kiểm thử tự động 27 mô đun (npm test)
+│   └── server.js                # Điểm khởi chạy Web Server
 │
-└── judge_engine/                # Máy chấm tự động (Python FastAPI - Port 5000)
+└── judge_engine/                # Dịch vụ máy chấm tự động (Python FastAPI)
     ├── routers/
-    │   └── judge.py             # Router tiếp nhận mã nguồn và dữ liệu Test Case
+    │   └── judge.py             # Điều phối API máy chấm và trạng thái
     ├── services/
-    │   └── sandbox.py           # Quản lý tiến trình biên dịch C++ & chạy Python an toàn
-    ├── requirements.txt         # Thư viện Python (fastapi, uvicorn, pydantic)
-    └── main.py                  # Điểm khởi chạy Judge Engine
+    │   ├── arduino_mock.h       # Mock phần cứng Arduino C++
+    │   ├── error_analyzer.py    # Phân tích cú pháp & Bắt log lỗi sư phạm DF-04
+    │   ├── runner.py            # Chấm điểm đối chiếu TestCase và đo thời gian
+    │   └── sandbox.py           # Bộ thực thi Sandbox cô lập (Timeout 3.0s)
+    ├── main.py                  # Điểm khởi chạy FastAPI
+    └── README.md                # Tài liệu kỹ thuật chi tiết của máy chấm
 ```
 
 ---

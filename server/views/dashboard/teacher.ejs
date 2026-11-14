@@ -45,7 +45,13 @@
         <li class="sidebar-nav-item">
           <a href="javascript:void(0)" onclick="switchTeacherView('pending')" data-view="pending" class="sidebar-nav-link active">
             <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-            <span>Duyệt Video (DF-01)</span>
+            <span>Duyệt Video Thẩm Định</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="switchTeacherView('classRoster')" data-view="classRoster" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Quản lý Lớp 10/1</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
@@ -66,7 +72,7 @@
             <span>Tất cả bài nộp</span>
           </a>
         </li>
-        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con (TTCĐ.01 & TTCĐ.02) -->
+        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con -->
         <li class="sidebar-nav-item sidebar-dropdown" id="teacherCommunityDropdown">
           <button type="button" class="sidebar-dropdown-toggle" onclick="toggleSidebarDropdown(this)">
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -79,7 +85,7 @@
             <li>
               <a href="/community#wallOfFameSection" target="_blank" class="sidebar-sub-link">
                 <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <span>Bảng Vinh Danh (Fame)</span>
+                <span>Bảng Vinh Danh</span>
               </a>
             </li>
             <li>
@@ -108,12 +114,7 @@
             <span>Giám sát kỳ thi</span>
           </a>
         </li>
-        <li class="sidebar-nav-item">
-          <a href="javascript:void(0)" onclick="openTeacherIssueModal()" class="sidebar-nav-link" style="color: var(--c-secondary); font-weight: 700;">
-            <svg viewBox="0 0 24 24" style="stroke: var(--c-secondary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span>Báo cáo sự cố (HTTB.01)</span>
-          </a>
-        </li>
+
         <li class="sidebar-nav-item" style="margin-top: 14px;">
           <a href="/" class="sidebar-nav-link" style="color: var(--c-accent);">
             <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
@@ -139,7 +140,7 @@
       <div style="font-size: 0.85rem; color: var(--c-text-dim); margin-bottom: 24px; font-weight: 600;">
         <a href="javascript:void(0)" onclick="switchTeacherView('pending')" style="color: inherit; text-decoration: none;" title="Về Bàn làm việc Giảng viên"><span>Bàn làm việc Giảng viên</span></a>
         <span style="margin: 0 8px;">/</span>
-        <span style="color: var(--c-primary);" id="teacherPageBreadcrumb">Duyệt Video Thẩm Định Phần Cứng (DF-01)</span>
+        <span style="color: var(--c-primary);" id="teacherPageBreadcrumb">Duyệt Video Thẩm Định Phần Cứng</span>
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
@@ -152,10 +153,7 @@
           </p>
         </div>
         <div style="display:flex; gap: 12px; flex-wrap: wrap;">
-          <button type="button" class="btn btn-secondary" onclick="openTeacherIssueModal()" style="display: inline-flex; align-items: center; gap: 6px; color: var(--c-secondary); border-color: rgba(255, 94, 94, 0.4); font-weight: 700;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span>Báo cáo sự cố (HTTB.01)</span>
-          </button>
+
           <a href="/api/reports/grades-csv" class="btn btn-secondary">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Xuất bảng điểm (.CSV)
@@ -243,7 +241,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px;">
           <!-- Cột trái: Khung xem Video và minh chứng -->
           <div>
-            <label class="form-label">Khung Video Vận hành Robot Thực tế (KQBN.01):</label>
+            <label class="form-label">Khung Video Vận hành Robot Thực tế:</label>
             <div id="videoContainer" style="background: #0B0F19; border-radius: 16px; overflow: hidden; min-height: 240px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; border: 1.5px solid rgba(11, 15, 25, 0.1); padding: 16px;">
               <span id="videoPlaceholder" style="color: #94A3B8;">Đang tải video...</span>
             </div>
@@ -260,13 +258,13 @@
             </div>
           </div>
 
-          <!-- Cột phải: Form Chốt điểm & Đánh giá KQBN.02 -->
+          <!-- Cột phải: Form Chốt điểm & Đánh giá -->
           <div>
             <form id="gradingForm">
               <input type="hidden" id="gradeMaBaiNop" name="maBaiNop">
 
               <div class="form-group">
-                <label class="form-label">Kiểm duyệt Video vận hành phần cứng (KQBN.01) *</label>
+                <label class="form-label">Kiểm duyệt Video vận hành phần cứng *</label>
                 <div style="display:flex; gap: 24px; margin-top: 8px;">
                   <label style="display:inline-flex; align-items:center; gap: 8px; font-size: 0.95rem; cursor:pointer;">
                     <input type="radio" name="ketQuaVideo" value="Đạt" checked> 
@@ -278,7 +276,7 @@
                   </label>
                 </div>
                 <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
-                  Quy tắc DF-02: Khi chọn Đạt và chốt điểm, dự án tiếp theo sẽ được tự động mở khóa cho học sinh.
+                  Khi chọn Đạt và chốt điểm, dự án tiếp theo sẽ được tự động mở khóa cho học sinh.
                 </small>
               </div>
 
@@ -288,12 +286,12 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="nhanXet">Nhận xét chi tiết của Giáo viên (KQBN.02)</label>
+                <label class="form-label" for="nhanXet">Nhận xét chi tiết của Giáo viên</label>
                 <textarea id="nhanXet" name="nhanXet" class="form-control" rows="3" placeholder="Nhận xét chất lượng lắp ráp mạch, độ mượt động cơ, xử lý cảm biến..."></textarea>
               </div>
 
               <button type="submit" id="btnGrade" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; padding: 14px;">
-                Chốt điểm &amp; Lưu minh chứng (Kích hoạt DF-02)
+                Chốt điểm &amp; Lưu minh chứng
                 <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
             </form>
@@ -310,14 +308,14 @@
         <div class="card-header">
           <div>
             <span class="tech-chip" style="background: #FEF3C7; color: #92400E; font-weight: 700; margin-bottom: 8px; display: inline-block;">
-              Mô đun QLDA.01 &amp; Ràng Buộc Tiên Quyết
+              Quản Lý Dự Án &amp; Ràng Buộc Tiên Quyết
             </span>
             <h2 class="card-title" style="font-size: 1.35rem;">Giao Dự án Thực hành Mới &amp; Thiết lập TestCase</h2>
             <p class="card-subtitle">
-              Tạo đề bài dự án STEM, thiết lập điều kiện tiên quyết (DF-02) và đính kèm bộ dữ liệu kiểm thử tự động cho máy chấm.
+              Tạo đề bài dự án STEM, thiết lập điều kiện tiên quyết và đính kèm bộ dữ liệu kiểm thử tự động cho máy chấm.
             </p>
           </div>
-          <span class="badge badge-primary">MOD-03 IPO</span>
+          <span class="badge badge-primary">Thiết Lập Đề Bài</span>
         </div>
 
         <form id="createProjectForm">
@@ -412,7 +410,7 @@
 
           <div style="margin-top: 24px; text-align: right;">
             <button type="submit" id="btnCreateProject" class="btn-playful btn-playful-primary magnet-btn" style="padding: 12px 28px;">
-              Khởi tạo &amp; Giao Dự án Thực hành (QLDA.01)
+              Khởi tạo &amp; Giao Dự án Thực hành
               <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
@@ -421,22 +419,22 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- PHÂN HỆ 3: QUẢN LÝ HỌC LIỆU & BÀI GIẢNG (QTHL.01 & QTHL.02)              -->
+    <!-- PHÂN HỆ QUẢN LÝ HỌC LIỆU & BÀI GIẢNG                                      -->
     <!-- ========================================================================= -->
     <div id="view-materials" class="dashboard-view">
-      <!-- 3. QUẢN LÝ HỌC LIỆU & BÀI GIẢNG (QTHL.01 & QTHL.02 / PHÂN HỆ 2) -->
+      <!-- QUẢN LÝ HỌC LIỆU & BÀI GIẢNG -->
       <section id="materialsSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-accent); margin-bottom: 36px;">
         <div class="card-header" style="flex-wrap: wrap; gap: 14px;">
           <div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span class="tech-chip" style="background: rgba(255, 184, 0, 0.15); color: #B45309; font-weight: 700; margin-bottom: 0;">
-                Phân Hệ 2 · QTHL.01 &amp; QTHL.02
+                Tài Nguyên Giảng Dạy
               </span>
               <span class="badge badge-success">Kho Học Liệu &amp; Linh Kiện Robotic</span>
             </div>
             <h2 class="card-title" style="font-size: 1.35rem;">Quản Lý Học Liệu, Bài Giảng &amp; Linh Kiện</h2>
             <p class="card-subtitle">
-              Soạn thảo bài giảng, cung cấp code mẫu, thông số kỹ thuật linh kiện vi điều khiển. Cập nhật học liệu sẽ tự động giải tỏa cờ cảnh báo DF-05.
+              Soạn thảo bài giảng, cung cấp code mẫu, thông số kỹ thuật linh kiện vi điều khiển.
             </p>
           </div>
           <div style="display: flex; gap: 10px; align-items: center;">
@@ -445,11 +443,11 @@
           </div>
         </div>
 
-        <!-- Form Thêm mới học liệu (QTHL.01) -->
+        <!-- Form Thêm mới học liệu -->
         <div id="addMaterialBox" style="display: none; background: rgba(90, 82, 255, 0.03); border: 1.5px dashed rgba(90, 82, 255, 0.25); border-radius: var(--radius-card); padding: 24px; margin-bottom: 28px;">
           <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 16px; color: var(--c-primary); display: flex; align-items: center; gap: 8px;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            Tạo Học Liệu / Bài Giảng Mới (QTHL.01)
+            Tạo Học Liệu / Bài Giảng Mới
           </h3>
           <form id="createMaterialForm">
             <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
@@ -566,7 +564,7 @@
               <option value="excellent">Xuất sắc (>= 9đ)</option>
               <option value="pass">Đạt yêu cầu (>= 5đ)</option>
               <option value="fail">Chưa đạt (< 5đ)</option>
-              <option value="pending">Chờ duyệt Video (DF-01)</option>
+              <option value="pending">Chờ duyệt Video</option>
             </select>
           </div>
           <div id="filterResultNotice" style="font-size: 0.82rem; color: var(--c-text-dim); margin-left: auto;">
@@ -598,6 +596,101 @@
         </div>
       </section>
     </div>
+
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ QUẢN LÝ LỚP HỌC (LỚP 10/1) & DUYỆT THẺ HỌC VIÊN                  -->
+    <!-- ========================================================================= -->
+    <div id="view-classRoster" class="dashboard-view" style="display:none;">
+      <!-- Header Banner thông tin Lớp 10/1 -->
+      <div class="bento-card" style="background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%); color: #FFF; padding: 28px 32px; border-radius: 24px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <span class="tech-chip" style="background: rgba(255,255,255,0.18); color: #FFF; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+              Lớp Chủ Nhiệm Trọng Điểm
+            </span>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #FFF; margin-bottom: 6px;">
+              Lớp 10/1 · Chuyên STEM Robotic (2025 - 2026)
+            </h2>
+            <p style="font-size: 0.95rem; color: #E0E7FF; margin-bottom: 0;">
+              Giáo viên chủ nhiệm: <strong>TS. Đặng Hùng Vĩ</strong> · Đơn vị: Trường THPT Chuyên STEM
+            </p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadClassRoster()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Làm mới danh sách
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Bento Cards Chỉ số Lớp 10/1 -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 28px;">
+        <div class="bento-card" style="padding: 20px;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase;">Sĩ số lớp</div>
+          <div id="classStudentCount" style="font-size: 2rem; font-weight: 800; color: var(--c-text-main); margin: 6px 0;">5 học sinh</div>
+          <div style="font-size: 0.8rem; color: #047857; font-weight: 600;">100% nhóm A+</div>
+        </div>
+        <div class="bento-card" style="padding: 20px;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase;">Tiến độ hoàn thành</div>
+          <div id="classAvgProgress" style="font-size: 2rem; font-weight: 800; color: var(--c-primary); margin: 6px 0;">100%</div>
+          <div style="font-size: 0.8rem; color: var(--c-text-dim);">5/5 dự án thực hành</div>
+        </div>
+        <div class="bento-card" style="padding: 20px;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase;">Điểm rèn luyện TB</div>
+          <div id="classAvgScore" style="font-size: 2rem; font-weight: 800; color: #B45309; margin: 6px 0;">9.6 / 10đ</div>
+          <div style="font-size: 0.8rem; color: #047857; font-weight: 600;">Xếp loại: Xuất sắc</div>
+        </div>
+        <div class="bento-card" style="padding: 20px;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase;">Xác thực thẻ học sinh</div>
+          <div id="classCardVerifiedCount" style="font-size: 2rem; font-weight: 800; color: #047857; margin: 6px 0;">5 / 5 thẻ</div>
+          <div style="font-size: 0.8rem; color: #047857; font-weight: 600;">Đã xác thực hợp lệ</div>
+        </div>
+      </div>
+
+      <!-- Hàng đợi chờ duyệt thẻ học sinh vào lớp (nếu có) -->
+      <div id="classPendingApprovalSection" style="margin-bottom: 28px; display: none;">
+        <div class="bento-card" style="border: 2px solid var(--c-secondary); background: #FFF5F5;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #991B1B; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Yêu Cầu Tham Gia Lớp &amp; Chờ Xác Thực Thẻ Học Sinh
+            </h3>
+            <span id="classPendingCountBadge" class="badge badge-danger">0 yêu cầu</span>
+          </div>
+          <div id="classPendingStudentsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
+        </div>
+      </div>
+
+      <!-- Bảng danh sách học sinh Lớp 10/1 -->
+      <section class="card" style="border: 1.5px solid rgba(11, 15, 25, 0.08);">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 class="card-title" style="font-size: 1.25rem; font-weight: 800;">Danh Sách Học Sinh Lớp 10/1</h3>
+            <p class="card-subtitle">Theo dõi tiến trình bài tập, điểm số trung bình và trạng thái định danh phòng Lab.</p>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Mã</th>
+                <th>Học Sinh</th>
+                <th>Danh Hiệu STEM</th>
+                <th>Tiến Trình Hoàn Thành</th>
+                <th>Điểm Trung Bình</th>
+                <th>Trạng Thái Thẻ</th>
+                <th style="text-align: right; width: 140px;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="classStudentsTableBody">
+              <tr>
+                <td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Đang tải danh sách học sinh lớp 10/1...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   </main>
 </div>
 
@@ -607,13 +700,13 @@
       <div class="modal-header">
         <h3 style="font-size: 1.2rem; font-weight: 800; display:flex; align-items:center; gap: 8px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Chỉnh Sửa Học Liệu &amp; Giải Tỏa Cờ DF-05 (QTHL.02)
+          Chỉnh Sửa Học Liệu &amp; Bài Giảng
         </h3>
         <button type="button" class="btn btn-secondary btn-sm" onclick="closeEditMaterialModal()">&times;</button>
       </div>
       <div style="padding: 24px;">
         <div class="alert alert-info" style="margin-bottom: 20px; font-size: 0.88rem; background: rgba(90, 82, 255, 0.08); border: 1.5px solid rgba(90, 82, 255, 0.2); padding: 12px 16px; border-radius: var(--radius-input); color: #3730A3;">
-          <strong>Cơ chế tự động hóa DF-05:</strong> Khi bạn lưu cập nhật nội dung học liệu, hệ thống sẽ <strong>tự động xóa cờ cảnh báo (CoCanCapNhat = 0)</strong>, ghi nhận rằng giáo viên đã bổ sung hướng dẫn giải tỏa khó khăn cho học sinh.
+          <strong>Hỗ trợ học vụ:</strong> Khi bạn lưu cập nhật nội dung học liệu, hệ thống sẽ tự động gỡ cờ nhắc nhở và cập nhật tức thì đến giao diện học sinh.
         </div>
 
         <form id="editMaterialForm">
@@ -667,7 +760,7 @@
           <div style="display: flex; justify-content: flex-end; gap: 12px;">
             <button type="button" class="btn btn-secondary" onclick="closeEditMaterialModal()">Hủy</button>
             <button type="submit" id="btnSaveEditMaterial" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
-              Lưu Cập Nhật &amp; Tắt Cờ DF-05
+              Lưu Cập Nhật Học Liệu
             </button>
           </div>
         </form>
@@ -675,13 +768,13 @@
     </div>
   </div>
 
-  <!-- Modal Cảnh báo An toàn khi Ẩn Học liệu có Dự án mở (QTHL.02) -->
+  <!-- Modal Cảnh báo An toàn khi Ẩn Học liệu có Dự án mở -->
   <div class="modal-overlay" id="confirmHideModal" style="display: none;">
     <div class="modal-box" style="max-width: 520px; border: 2px solid var(--c-secondary); box-shadow: 6px 6px 0 var(--c-text-main);">
       <div class="modal-header" style="background: #FFF5F5;">
         <h3 style="font-size: 1.15rem; font-weight: 800; color: #991B1B; display: flex; align-items: center; gap: 8px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Cảnh Báo An Toàn Học Vụ (QTHL.02)
+          Cảnh Báo An Toàn Học Vụ
         </h3>
         <button type="button" class="btn btn-secondary btn-sm" onclick="closeConfirmHideModal()">&times;</button>
       </div>
@@ -699,13 +792,13 @@
     </div>
   </div>
 
-  <!-- Modal Báo Cáo Sự Cố Kỹ Thuật Dành Cho Giảng Viên (HTTB.01) -->
+  <!-- Modal Báo Cáo Sự Cố Kỹ Thuật Dành Cho Giảng Viên -->
   <div class="modal-overlay" id="teacherReportIssueModal" style="display: none;">
     <div class="modal-box" style="max-width: 580px;">
       <div class="modal-header">
         <h3 style="font-size: 1.15rem; font-weight: 800; display:flex; align-items:center; gap: 8px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-secondary)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Báo Cáo Sự Cố / Yêu Cầu Hỗ Trợ Kỹ Thuật (HTTB.01)
+          Báo Cáo Sự Cố &amp; Hỗ Trợ Kỹ Thuật
         </h3>
         <button type="button" class="btn btn-secondary btn-sm" onclick="closeTeacherIssueModal()">&times;</button>
       </div>
@@ -737,7 +830,7 @@
         <div style="display: flex; justify-content: flex-end; gap: 12px;">
           <button type="button" class="btn btn-secondary" onclick="closeTeacherIssueModal()">Hủy</button>
           <button type="submit" id="btnSubmitTeacherIssue" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
-            Gửi Báo Cáo Sự Cố (HTTB.01)
+            Gửi Báo Cáo Sự Cố
           </button>
         </div>
       </form>
@@ -749,10 +842,11 @@
     // HỆ THỐNG ĐIỀU HƯỚNG TÁCH TRANG ĐỘC LẬP (Mỗi view là một chức năng riêng biệt)
     // =========================================================================
     const teacherViews = {
-      'pending': { elId: 'view-pending', title: 'Duyệt Video Thẩm Định Phần Cứng (DF-01)' },
-      'createProject': { elId: 'view-createProject', title: 'Giao Dự Án Thực Hành Mới & Thiết Lập TestCase (QLDA.01)' },
-      'materials': { elId: 'view-materials', title: 'Quản Lý Học Liệu, Bài Giảng & Linh Kiện Robotic (QTHL.01/02)' },
-      'allSubs': { elId: 'view-allSubs', title: 'Tất Cả Bài Nộp Của Học Sinh & Báo Cáo Đào Tạo (XBC.02)' }
+      'pending': { elId: 'view-pending', title: 'Duyệt Video Thẩm Định Phần Cứng' },
+      'classRoster': { elId: 'view-classRoster', title: 'Quản Lý Học Sinh Lớp 10/1 & Duyệt Thẻ' },
+      'createProject': { elId: 'view-createProject', title: 'Giao Dự Án Thực Hành & Thiết Lập TestCase' },
+      'materials': { elId: 'view-materials', title: 'Quản Lý Học Liệu, Bài Giảng & Linh Kiện Robotic' },
+      'allSubs': { elId: 'view-allSubs', title: 'Tất Cả Bài Nộp Của Học Sinh & Báo Cáo Đào Tạo' }
     };
 
     function switchTeacherView(viewName) {
@@ -792,6 +886,9 @@
       }
 
       // 6. Làm mới dữ liệu nếu cần
+      if (viewName === 'classRoster' && typeof loadClassRoster === 'function') {
+        loadClassRoster();
+      }
       if (viewName === 'materials' && typeof loadMaterials === 'function') {
         loadMaterials();
       }
@@ -1634,9 +1731,174 @@
       }
     }
 
+    // =========================================================================
+    // QUẢN LÝ LỚP HỌC 10/1 & DUYỆT THẺ HỌC SINH (GIÁO VIÊN CHỦ NHIỆM)
+    // =========================================================================
+    async function loadClassRoster() {
+      try {
+        const res = await fetch('/api/teacher/class-roster');
+        const data = await res.json();
+        if (!data.success) {
+          console.error('Không thể tải danh sách lớp:', data.message);
+          return;
+        }
+
+        const students = data.students || [];
+        const activeStudents = students.filter(s => s.TrangThai === 'Đang hoạt động');
+        const pendingStudents = students.filter(s => s.TrangThai === 'Chờ duyệt' || (s.TrangThaiXacThucThe && s.TrangThaiXacThucThe.includes('Chờ duyệt')));
+
+        // 1. Cập nhật thẻ chỉ số
+        const countEl = document.getElementById('classStudentCount');
+        if (countEl) countEl.textContent = `${activeStudents.length} học sinh`;
+
+        const avgProgressEl = document.getElementById('classAvgProgress');
+        if (avgProgressEl) {
+          const avgProg = activeStudents.length > 0
+            ? Math.round(activeStudents.reduce((acc, s) => acc + (s.TienTrinhPhanTram || 0), 0) / activeStudents.length)
+            : 0;
+          avgProgressEl.textContent = `${avgProg}%`;
+        }
+
+        const avgScoreEl = document.getElementById('classAvgScore');
+        if (avgScoreEl) {
+          const avgScore = activeStudents.length > 0
+            ? (activeStudents.reduce((acc, s) => acc + (s.DiemTrungBinh || 0), 0) / activeStudents.length).toFixed(1)
+            : '0.0';
+          avgScoreEl.textContent = `${avgScore} / 10đ`;
+        }
+
+        const cardVerifiedEl = document.getElementById('classCardVerifiedCount');
+        if (cardVerifiedEl) {
+          const verifiedCount = activeStudents.filter(s => s.TrangThaiXacThucThe && s.TrangThaiXacThucThe.includes('Đã xác thực')).length;
+          cardVerifiedEl.textContent = `${verifiedCount} / ${activeStudents.length} thẻ`;
+        }
+
+        // 2. Hàng đợi chờ duyệt thẻ (nếu có học sinh đăng ký vào lớp 10/1)
+        const pendingSec = document.getElementById('classPendingApprovalSection');
+        const pendingBadge = document.getElementById('classPendingCountBadge');
+        const pendingList = document.getElementById('classPendingStudentsList');
+
+        if (pendingStudents.length > 0) {
+          pendingSec.style.display = 'block';
+          pendingBadge.textContent = `${pendingStudents.length} yêu cầu`;
+          pendingList.innerHTML = '';
+
+          pendingStudents.forEach(ps => {
+            const card = document.createElement('div');
+            card.style.cssText = 'background:#FFF; border-radius:16px; padding:16px; border:1.5px solid #FCA5A5; display:flex; flex-direction:column; justify-content:space-between; gap:12px;';
+            card.innerHTML = `
+              <div style="display:flex; gap:12px; align-items:center;">
+                <div style="width:48px; height:48px; border-radius:50%; background:rgba(90,82,255,0.1); color:var(--c-primary); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem; flex-shrink:0;">
+                  ${ps.HoTen ? ps.HoTen.charAt(0) : 'H'}
+                </div>
+                <div>
+                  <h4 style="font-size:1rem; font-weight:800; color:var(--c-text-main); margin-bottom:2px;">${ps.HoTen}</h4>
+                  <div style="font-size:0.8rem; color:var(--c-text-dim);">${ps.Email}</div>
+                  <div style="font-size:0.75rem; color:#DC2626; font-weight:600; margin-top:2px;">
+                    ${ps.TrangThaiXacThucThe || 'Chờ duyệt thẻ'}
+                  </div>
+                </div>
+              </div>
+              ${ps.AnhTheHocSinh ? `
+                <div style="border-radius:8px; overflow:hidden; border:1px solid #E2E8F0; max-height:100px; display:flex; align-items:center; justify-content:center; background:#F8FAFC;">
+                  <img src="${ps.AnhTheHocSinh}" alt="Thẻ học sinh" style="max-height:100px; width:auto; object-fit:contain;">
+                </div>
+              ` : ''}
+              <button class="btn btn-primary btn-sm" onclick="approveStudentFromTeacher(${ps.MaNguoiDung})" style="width:100%; justify-content:center;">
+                Duyệt Vào Lớp 10/1
+              </button>
+            `;
+            pendingList.appendChild(card);
+          });
+        } else {
+          pendingSec.style.display = 'none';
+        }
+
+        // 3. Render danh sách học sinh chính thức
+        const tbody = document.getElementById('classStudentsTableBody');
+        tbody.innerHTML = '';
+
+        if (activeStudents.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding:24px;">Chưa có học sinh nào trong lớp.</td></tr>';
+          return;
+        }
+
+        activeStudents.forEach((s) => {
+          const tr = document.createElement('tr');
+          const isCardVerified = s.TrangThaiXacThucThe && s.TrangThaiXacThucThe.includes('Đã xác thực');
+
+          tr.innerHTML = `
+            <td><strong>#${s.MaNguoiDung}</strong></td>
+            <td>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:50%; background:rgba(90,82,255,0.12); color:var(--c-primary); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.95rem; flex-shrink:0;">
+                  ${s.HoTen.charAt(0)}
+                </div>
+                <div>
+                  <strong style="color:var(--c-text-main); font-size:0.95rem;">${s.HoTen}</strong>
+                  <br><small class="text-muted">${s.Email}</small>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-primary" style="font-weight:700; font-size:0.75rem;">
+                ${s.DanhHieu || 'Bậc Thầy Robotics'}
+              </span>
+            </td>
+            <td>
+              <div style="min-width:140px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700; margin-bottom:4px;">
+                  <span style="color:var(--c-primary);">${s.TienTrinhPhanTram || 100}%</span>
+                  <span style="color:var(--c-text-dim);">${s.SoDuAnDat || 5}/5 dự án</span>
+                </div>
+                <div style="background:#E2E8F0; height:6px; border-radius:3px; overflow:hidden;">
+                  <div style="background:var(--c-primary); width:${s.TienTrinhPhanTram || 100}%; height:100%;"></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <strong style="font-size:1.05rem; color:var(--c-text-main);">${s.DiemTrungBinh ? s.DiemTrungBinh.toFixed(1) : '10.0'}</strong>
+              <small class="text-muted">/ 10</small>
+            </td>
+            <td>
+              ${isCardVerified
+                ? '<span class="badge badge-success" style="display:inline-flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Đã xác thực thẻ</span>'
+                : '<span class="badge badge-warning">Chờ duyệt thẻ</span>'}
+            </td>
+            <td style="text-align:right;">
+              <a href="/profile" class="btn btn-secondary btn-sm" title="Xem hồ sơ">
+                Hồ sơ ↗
+              </a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Lỗi loadClassRoster:', err);
+      }
+    }
+
+    async function approveStudentFromTeacher(userId) {
+      if (!confirm(`Xác nhận phê duyệt thẻ học sinh và chấp thuận vào lớp 10/1 cho học sinh #${userId}?`)) return;
+      try {
+        const res = await fetch(`/api/teacher/approve-student/${userId}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          alert(data.message || 'Đã duyệt học sinh vào lớp 10/1 thành công!');
+          loadClassRoster();
+        } else {
+          alert('Lỗi: ' + data.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+      }
+    }
+
     // Khởi chạy khi load trang
     syncTeacherViewFromHash();
     loadSubmissions();
+    loadClassRoster();
     loadFormDropdowns();
     loadMaterials();
     checkDF05QualityAlert();

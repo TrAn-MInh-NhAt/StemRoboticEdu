@@ -78,7 +78,8 @@ router.post('/posts', async (req, res) => {
     return res.json({
       success: true,
       message: 'Đăng chủ đề thảo luận thành công!',
-      postId: result.recordset[0].MaNoiDung
+      postId: result.recordset[0].MaNoiDung,
+      post: result.recordset[0]
     });
   } catch (err) {
     console.error('Lỗi đăng bài cộng đồng:', err.message);
@@ -122,40 +123,86 @@ router.post('/posts/:id/vote', async (req, res) => {
   }
 });
 
+// Helper chuẩn hóa YouTube embed URL
+function toYoutubeEmbed(url) {
+  if (!url) return 'https://www.youtube-nocookie.com/embed/fJWR73zp1Pc';
+  if (url.includes('youtube-nocookie.com/embed/')) return url;
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/);
+  if (match && match[1]) {
+    return `https://www.youtube-nocookie.com/embed/${match[1]}`;
+  }
+  return 'https://www.youtube-nocookie.com/embed/fJWR73zp1Pc';
+}
+
 // 4. GET /api/community/wall-of-fame - Bảng vinh danh dự án xuất sắc (TTCĐ.02)
 router.get('/wall-of-fame', async (req, res) => {
   try {
     const pool = getPool();
     const result = await pool.request().query(`
-      SELECT TOP 6
-        bn.MaBaiNop, bn.VideoVanHanh, bn.ThoiGianNop,
-        nd.MaNguoiDung, nd.HoTen AS TenHocSinh, nd.Email,
-        da.TenDuAn, da.CapDo,
-        kq.TongDiem, kq.DiemCode, kq.KetQuaVideo, kq.NhanXet,
-        -- Lấy bài vinh danh từ NoiDungCongDong nếu có
-        (
-          SELECT TOP 1 ndc.SoLuotBinhChon 
-          FROM NoiDungCongDong ndc 
-          WHERE ndc.MaBaiNop = bn.MaBaiNop 
-          ORDER BY ndc.SoLuotBinhChon DESC
-        ) AS SoLuotBinhChon,
-        (
-          SELECT TOP 1 ndc.NoiDung 
-          FROM NoiDungCongDong ndc 
-          WHERE ndc.MaBaiNop = bn.MaBaiNop 
-          ORDER BY ndc.SoLuotBinhChon DESC
-        ) AS LoiGioiThieu
-      FROM BaiNop bn
-      JOIN NguoiDung nd ON bn.MaNguoiDung = nd.MaNguoiDung
-      JOIN DuAnBaiTap da ON bn.MaDuAn = da.MaDuAn
-      JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
-      WHERE kq.TongDiem IS NOT NULL AND kq.KetQuaVideo = N'Đạt'
-      ORDER BY kq.TongDiem DESC, kq.DiemCode DESC, bn.MaBaiNop DESC
+      WITH RankedFame AS (
+        SELECT 
+          bn.MaBaiNop, bn.VideoVanHanh, bn.ThoiGianNop,
+          nd.MaNguoiDung, nd.HoTen AS TenHocSinh, nd.Email, nd.Lop, nd.TruongHoc,
+          da.TenDuAn, da.CapDo,
+          kq.TongDiem, kq.DiemCode, kq.KetQuaVideo, kq.NhanXet,
+          (
+            SELECT TOP 1 ndc.SoLuotBinhChon 
+            FROM NoiDungCongDong ndc 
+            WHERE ndc.MaBaiNop = bn.MaBaiNop 
+            ORDER BY ndc.SoLuotBinhChon DESC
+          ) AS SoLuotBinhChon,
+          (
+            SELECT TOP 1 ndc.NoiDung 
+            FROM NoiDungCongDong ndc 
+            WHERE ndc.MaBaiNop = bn.MaBaiNop 
+            ORDER BY ndc.SoLuotBinhChon DESC
+          ) AS LoiGioiThieu,
+          ROW_NUMBER() OVER (PARTITION BY bn.MaNguoiDung ORDER BY kq.TongDiem DESC, bn.MaBaiNop DESC) AS rn
+        FROM BaiNop bn
+        JOIN NguoiDung nd ON bn.MaNguoiDung = nd.MaNguoiDung
+        JOIN DuAnBaiTap da ON bn.MaDuAn = da.MaDuAn
+        JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+        WHERE kq.TongDiem IS NOT NULL AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 8.0)
+      )
+      SELECT TOP 6 * FROM RankedFame WHERE rn = 1
+      ORDER BY TongDiem DESC, DiemCode DESC, MaBaiNop DESC
     `);
+
+    // Gắn cấp độ danh hiệu & tiến trình hoàn thành cho từng học sinh
+    const wallOfFame = result.recordset.map((item, idx) => {
+      let danhHieu = 'Thành Viên Tích Cực';
+      let tienTrinhPhanTram = 60;
+      let soDuAnDat = '3/5 Dự án';
+
+      const diem = parseFloat(item.TongDiem) || 0;
+      if (diem >= 10.0) {
+        danhHieu = 'Bậc Thầy Robotics';
+        tienTrinhPhanTram = 100;
+        soDuAnDat = '5/5 Dự án';
+      } else if (diem >= 9.0) {
+        danhHieu = 'Kỹ Sư Trẻ Tài Năng';
+        tienTrinhPhanTram = 80;
+        soDuAnDat = '4/5 Dự án';
+      } else if (diem >= 8.0) {
+        danhHieu = 'Lập Trình Viên Khởi Sắc';
+        tienTrinhPhanTram = 60;
+        soDuAnDat = '3/5 Dự án';
+      }
+
+      return {
+        ...item,
+        Lop: item.Lop || '10/1',
+        TruongHoc: item.TruongHoc || 'THPT Chuyên STEM',
+        DanhHieu: danhHieu,
+        TienTrinhPhanTram: tienTrinhPhanTram,
+        SoDuAnDat: soDuAnDat,
+        EmbedUrl: toYoutubeEmbed(item.VideoVanHanh)
+      };
+    });
 
     return res.json({
       success: true,
-      wallOfFame: result.recordset
+      wallOfFame
     });
   } catch (err) {
     console.error('Lỗi lấy Wall of Fame:', err.message);

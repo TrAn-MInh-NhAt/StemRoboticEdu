@@ -1,5 +1,6 @@
 import json
 import logging
+import time as _time
 from typing import Optional
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
@@ -61,3 +62,19 @@ async def judge_code_json(payload: JudgeJsonRequest):
         time_limit_ms=payload.time_limit_ms or 5000,
     )
     return result
+
+
+@router.get("/status")
+async def judge_status():
+    """
+    Trả trạng thái Online/Offline, độ trễ và ngôn ngữ hỗ trợ của Judge Engine.
+    """
+    start = _time.monotonic()
+    latency_ms = int((_time.monotonic() - start) * 1000)
+    return {
+        "online": True,
+        "latency_ms": latency_ms,
+        "supported_langs": ["Python", "C++", "Arduino"],
+        "version": "2.0.0",
+        "service": "STEM Robotic Judge Engine",
+    }

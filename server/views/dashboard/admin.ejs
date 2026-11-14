@@ -27,7 +27,7 @@
       </a>
 
       <!-- Thẻ người dùng: Bấm Avatar hoặc tên để vào Hồ sơ cá nhân -->
-      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân (QTHT.02)">
+      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân">
         <div class="user-avatar-circle" style="background: var(--c-secondary); color: var(--c-text-main); font-weight: 800;">
           <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'A' %>
         </div>
@@ -49,24 +49,36 @@
           </a>
         </li>
         <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="switchAdminView('classes')" data-view="classes" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Quản lý Lớp học &amp; GVCN</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="switchAdminView('pendingStudents')" data-view="pendingStudents" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24" style="stroke: #DC2626;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            <span>Duyệt Thẻ &amp; Học sinh</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
           <a href="javascript:void(0)" onclick="switchAdminView('accounts')" data-view="accounts" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span>Quản lý Tài khoản (DF-07)</span>
+            <span>Quản lý Tài khoản</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
           <a href="javascript:void(0)" onclick="switchAdminView('tickets')" data-view="tickets" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24" style="stroke: var(--c-secondary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span>Phiếu Sự Cố (HTTB.01)</span>
+            <span>Phiếu Sự Cố</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
           <a href="javascript:void(0)" onclick="switchAdminView('announcements')" data-view="announcements" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span>Thông Báo HT (HTTB.02)</span>
+            <span>Thông Báo Hệ Thống</span>
           </a>
         </li>
-        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con (TTCĐ.01 & TTCĐ.02) -->
+        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con -->
         <li class="sidebar-nav-item sidebar-dropdown" id="adminCommunityDropdown">
           <button type="button" class="sidebar-dropdown-toggle" onclick="toggleSidebarDropdown(this)">
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -79,7 +91,7 @@
             <li>
               <a href="/community#wallOfFameSection" target="_blank" class="sidebar-sub-link">
                 <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <span>Bảng Vinh Danh (Fame)</span>
+                <span>Bảng Vinh Danh</span>
               </a>
             </li>
             <li>
@@ -133,7 +145,7 @@
             Bảng Điều Khiển <span class="title-highlight">Quản Trị</span>
           </h1>
           <p style="font-size: 0.95rem; color: var(--c-text-dim); margin-top: 4px; text-wrap: pretty;">
-            Quản trị viên: <strong><%= user.HoTen %></strong> (<%= user.Email %>) · Toàn quyền Quản trị (DF-07 / QLTK)
+            Quản trị viên: <strong><%= user.HoTen %></strong> (<%= user.Email %>) · Toàn quyền Quản trị Hệ thống
           </p>
         </div>
         <div style="display:flex; gap: 12px; flex-wrap: wrap;">
@@ -212,7 +224,8 @@
                 <div class="b-label">Máy Chấm Judge Engine &amp; Phòng Thi</div>
                 <div class="b-value" id="statJudges" style="font-size: 2.4rem;">FastAPI :5000</div>
               </div>
-              <div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                <span class="badge badge-success" id="statJudgeStatus"><span class="telemetry-pulse"></span> Online (Port 5000)</span>
                 <span class="badge badge-danger" id="statExams">Bài thi: --</span>
               </div>
             </div>
@@ -253,7 +266,7 @@
                 <th>Họ và Tên</th>
                 <th>Email Đăng nhập</th>
                 <th>Vai trò</th>
-                <th>Trạng thái (DF-07)</th>
+                <th>Trạng thái</th>
                 <th>Thao tác Quản trị</th>
               </tr>
             </thead>
@@ -277,7 +290,7 @@
           <div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span class="tech-chip" style="background: rgba(255, 94, 94, 0.12); color: #DC2626; font-weight: 700; margin-bottom: 0;">
-                Phân Hệ 6 · Mô đun HTTB.01
+                Hỗ Trợ Kỹ Thuật
               </span>
               <span class="badge badge-danger" id="unresolvedTicketsBadge">0 sự cố chờ xử lý</span>
             </div>
@@ -301,7 +314,7 @@
                 <th>Mức Độ</th>
                 <th>Thời Gian Gửi</th>
                 <th>Trạng Thái</th>
-                <th style="text-align: right; width: 150px;">Thao Tác HTTB.01</th>
+                <th style="text-align: right; width: 150px;">Thao Tác</th>
               </tr>
             </thead>
             <tbody id="ticketsTableBody">
@@ -324,7 +337,7 @@
           <div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span class="tech-chip" style="background: rgba(255, 184, 0, 0.15); color: #B45309; font-weight: 700; margin-bottom: 0;">
-                Phân Hệ 6 · Mô đun HTTB.02
+                Kênh Phát Sóng Hệ Thống
               </span>
               <span class="badge badge-success">Phát sóng thời gian thực</span>
             </div>
@@ -339,7 +352,7 @@
         <div style="background: rgba(255, 184, 0, 0.04); border: 1.5px dashed rgba(255, 184, 0, 0.4); border-radius: var(--radius-card); padding: 24px; margin-bottom: 28px;">
           <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 16px; color: #B45309; display: flex; align-items: center; gap: 8px;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            Tạo &amp; Phát Thông Báo Mới (HTTB.02)
+            Tạo &amp; Phát Thông Báo Mới
           </h3>
           <form id="createAnnouncementForm">
             <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 16px; margin-bottom: 16px;">
@@ -396,6 +409,89 @@
         </div>
       </section>
     </div>
+
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ 5: QUẢN LÝ LỚP HỌC & PHÂN CÔNG GIÁO VIÊN CHỦ NHIỆM                -->
+    <!-- ========================================================================= -->
+    <div id="view-classes" class="dashboard-view" style="display:none;">
+      <section class="card" style="border: 1.5px solid rgba(11, 15, 25, 0.08); margin-bottom: 36px;">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h2 class="card-title" style="font-size: 1.35rem; font-weight:800;">Quản Lý Lớp Học &amp; Phân Công GVCN</h2>
+            <p class="card-subtitle">Thành lập các lớp chuyên STEM Robotic, phân công giáo viên chủ nhiệm và quản lý sĩ số học sinh.</p>
+          </div>
+          <button class="btn-playful btn-playful-primary magnet-btn" onclick="openAddClassModal()" style="padding: 10px 20px;">
+            + Thêm Lớp Học Mới
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Mã</th>
+                <th>Tên Lớp</th>
+                <th>Khối Lớp</th>
+                <th>Niên Khóa</th>
+                <th>Giáo Viên Chủ Nhiệm</th>
+                <th>Sĩ Số Học Sinh</th>
+                <th style="text-align: right; width: 140px;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="classesTableBody">
+              <tr>
+                <td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Đang tải danh sách lớp học...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ 6: HÀNG ĐỢI DUYỆT THẺ & PHÊ DUYỆT TÀI KHOẢN HỌC SINH               -->
+    <!-- ========================================================================= -->
+    <div id="view-pendingStudents" class="dashboard-view" style="display:none;">
+      <section class="card" style="border: 2px solid var(--c-secondary); box-shadow: 4px 4px 0 var(--c-text-main); margin-bottom: 36px;">
+        <div class="card-header" style="background: #FFF5F5;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span class="badge badge-danger">Xác Thực Danh Tính Học Sinh</span>
+            </div>
+            <h2 class="card-title" style="font-size: 1.35rem; font-weight:800; color:#991B1B;">
+              Hàng Đợi Duyệt Thẻ &amp; Kích Hoạt Tài Khoản Học Sinh
+            </h2>
+            <p class="card-subtitle" style="color:#7F1D1D;">
+              Kiểm tra ảnh thẻ học sinh và phê duyệt kích hoạt tài khoản đối với các trường hợp AI OCR cần xác minh thủ công.
+            </p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadPendingStudents()">
+            Làm mới hàng đợi
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Mã</th>
+                <th>Học Sinh</th>
+                <th>Lớp / Trường</th>
+                <th>Ảnh Thẻ Học Sinh</th>
+                <th>Trạng Thái Hiện Tại</th>
+                <th>Thời Điểm Đăng Ký</th>
+                <th style="text-align: right; width: 180px;">Thao Tác Duyệt</th>
+              </tr>
+            </thead>
+            <tbody id="pendingStudentsTableBody">
+              <tr>
+                <td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Đang kiểm tra hàng đợi chờ duyệt...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   </main>
 </div>
 
@@ -437,15 +533,82 @@
     </div>
   </div>
 
+  <!-- Modal Thêm Lớp Học Mới -->
+  <div class="modal-overlay" id="addClassModal" style="display: none;">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;">Thêm Lớp Học Mới &amp; Phân Công GVCN</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeAddClassModal()">Đóng</button>
+      </div>
+      <form id="addClassForm" style="padding: 24px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label" for="classTenLop">Tên Lớp (ví dụ: 10/1, 10/2) *</label>
+            <input type="text" id="classTenLop" class="form-control" placeholder="10/2" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="classKhoiLop">Khối Lớp *</label>
+            <select id="classKhoiLop" class="form-control" required>
+              <option value="10">Khối 10</option>
+              <option value="11">Khối 11</option>
+              <option value="12">Khối 12</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label" for="classNienKhoa">Niên Khóa *</label>
+            <input type="text" id="classNienKhoa" class="form-control" value="2025-2026" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="classGiaoVienCN">Giáo Viên Chủ Nhiệm *</label>
+            <select id="classGiaoVienCN" class="form-control" required>
+              <option value="">-- Đang tải giáo viên --</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="classMoTa">Mô Tả Lớp Học</label>
+          <input type="text" id="classMoTa" class="form-control" placeholder="Lớp chuyên STEM Robotics &amp; Vi điều khiển">
+        </div>
+        <div id="addClassAlert" style="display:none; padding: 12px; border-radius: var(--radius-input); margin-bottom: 16px; font-size: 0.88rem;"></div>
+        <div style="text-align: right; margin-top: 24px;">
+          <button type="submit" id="btnSaveClass" class="btn-playful btn-playful-primary magnet-btn" style="padding: 12px 28px;">
+            Lưu &amp; Tạo Lớp Học
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Xem Chi Tiết Thẻ Học Sinh -->
+  <div class="modal-overlay" id="viewCardModal" style="display:none;">
+    <div class="modal-box" style="max-width: 520px; text-align: center;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;" id="viewCardStudentName">Minh Chứng Thẻ Học Sinh</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeViewCardModal()">&times;</button>
+      </div>
+      <div style="padding: 24px;">
+        <div style="border-radius: 12px; overflow: hidden; border: 1.5px solid #E2E8F0; background: #0B0F19; margin-bottom: 16px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+          <img id="viewCardImage" src="" alt="Thẻ học sinh" style="max-width: 100%; max-height: 380px; object-fit: contain;">
+        </div>
+        <p id="viewCardDetails" style="font-size: 0.9rem; color: var(--c-text-dim); margin-bottom: 20px;"></p>
+        <div id="viewCardActions" style="display: flex; justify-content: center; gap: 12px;"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // =========================================================================
     // HỆ THỐNG ĐIỀU HƯỚNG TÁCH TRANG ĐỘC LẬP (Mỗi view là một chức năng riêng biệt)
     // =========================================================================
     const adminViews = {
-      'overview': { elId: 'view-overview', title: 'Tổng quan Hệ thống & Chỉ số Vận hành' },
-      'accounts': { elId: 'view-accounts', title: 'Quản Lý Người Dùng & Phân Quyền Khóa Mềm (DF-07)' },
-      'tickets': { elId: 'view-tickets', title: 'Tiếp Nhận & Xử Lý Phiếu Sự Cố Kỹ Thuật (HTTB.01)' },
-      'announcements': { elId: 'view-announcements', title: 'Thông Báo Hệ Thống Bảo Trì & Cập Nhật (HTTB.02)' }
+      'overview': { elId: 'view-overview', title: 'Tổng Quan Hệ Thống & Chỉ Số Vận Hành' },
+      'classes': { elId: 'view-classes', title: 'Quản Lý Lớp Học & Phân Công Giáo Viên Chủ Nhiệm' },
+      'pendingStudents': { elId: 'view-pendingStudents', title: 'Duyệt Thẻ & Phê Duyệt Tài Khoản Học Sinh' },
+      'accounts': { elId: 'view-accounts', title: 'Quản Lý Người Dùng & Phân Quyền Khóa Mềm' },
+      'tickets': { elId: 'view-tickets', title: 'Tiếp Nhận & Xử Lý Phiếu Sự Cố Kỹ Thuật' },
+      'announcements': { elId: 'view-announcements', title: 'Thông Báo Hệ Thống Bảo Trì & Cập Nhật' }
     };
 
     function switchAdminView(viewName) {
@@ -485,6 +648,13 @@
       }
 
       // 6. Làm mới dữ liệu tương ứng
+      if (viewName === 'classes' && typeof loadClasses === 'function') {
+        loadClasses();
+        loadTeachersDropdown();
+      }
+      if (viewName === 'pendingStudents' && typeof loadPendingStudents === 'function') {
+        loadPendingStudents();
+      }
       if (viewName === 'tickets' && typeof loadTickets === 'function') {
         loadTickets();
       }
@@ -520,6 +690,21 @@
           document.getElementById('statExams').textContent = `Bài thi: ${s.totalExams}`;
         }
 
+        try {
+          const jRes = await fetch('/api/judge/status');
+          const jData = await jRes.json();
+          const jBadge = document.getElementById('statJudgeStatus');
+          if (jBadge) {
+            if (jData.online) {
+              jBadge.className = 'badge badge-success';
+              jBadge.innerHTML = `<span class="telemetry-pulse"></span> Online (${jData.latency_ms || 2}ms)`;
+            } else {
+              jBadge.className = 'badge badge-danger';
+              jBadge.innerHTML = '● Offline';
+            }
+          }
+        } catch (je) {}
+
         const usersRes = await fetch('/api/admin/users');
         const usersData = await usersRes.json();
         if (!usersData.success) return;
@@ -532,7 +717,7 @@
           const isLocked = (u.TrangThai !== 'Đang hoạt động');
 
           let badgeHtml = isLocked
-            ? `<span class="badge badge-danger">Bị khóa (DF-07)</span>`
+            ? `<span class="badge badge-danger">Bị khóa</span>`
             : `<span class="badge badge-success">Đang hoạt động</span>`;
 
           let roleBadge = 'badge-primary';
@@ -551,7 +736,7 @@
           } else {
             actionBtn = `
               <button class="btn btn-secondary btn-sm" style="color:var(--c-error); border-color:var(--c-error);" onclick="toggleLockUser(${u.MaNguoiDung}, 'lock')">
-                Khóa tài khoản (DF-07)
+                Khóa tài khoản
               </button>
             `;
           }
@@ -574,7 +759,7 @@
 
     async function toggleLockUser(userId, action) {
       const confirmMsg = action === 'lock'
-        ? `Bạn có chắc muốn KHÓA MỀM tài khoản #${userId}? Người dùng sẽ bị chặn đăng nhập theo luồng DF-07, dữ liệu nộp bài vẫn được giữ nguyên vẹn.`
+        ? `Bạn có chắc muốn KHÓA tài khoản #${userId}? Người dùng sẽ bị tạm chặn đăng nhập, dữ liệu nộp bài vẫn được giữ nguyên vẹn.`
         : `Bạn có muốn MỞ KHÓA tài khoản #${userId} để người dùng tiếp tục hoạt động?`;
 
       if (!confirm(confirmMsg)) return;
@@ -842,7 +1027,7 @@
         alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Phát Thông Báo Toàn Hệ Thống (HTTB.02)';
+        btn.textContent = 'Phát Thông Báo Toàn Hệ Thống';
       }
     });
 
@@ -864,9 +1049,291 @@
       }
     }
 
+    // =========================================================================
+    // PHÂN HỆ QUẢN LÝ LỚP HỌC & GIÁO VIÊN CHỦ NHIỆM (ADMIN)
+    // =========================================================================
+    async function loadClasses() {
+      try {
+        const res = await fetch('/api/admin/classes');
+        const data = await res.json();
+        if (!data.success) return;
+
+        const tbody = document.getElementById('classesTableBody');
+        tbody.innerHTML = '';
+
+        if (!data.classes || data.classes.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding:24px;">Chưa có lớp học nào được tạo.</td></tr>';
+          return;
+        }
+
+        data.classes.forEach(c => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${c.MaLop}</strong></td>
+            <td><strong style="color:var(--c-primary); font-size:1.05rem;">Lớp ${c.TenLop}</strong></td>
+            <td>Khối ${c.KhoiLop}</td>
+            <td>${c.NienKhoa || '2025-2026'}</td>
+            <td>
+              <strong>${c.TenGiaoVienCN || 'Chưa phân công'}</strong>
+              <br><small class="text-muted">${c.EmailGiaoVienCN || ''}</small>
+            </td>
+            <td>
+              <span class="badge badge-primary" style="font-weight:700;">
+                ${c.SoHocSinh || 0} học sinh
+              </span>
+            </td>
+            <td style="text-align:right;">
+              <button class="btn btn-secondary btn-sm" onclick="editClassTeacher(${c.MaLop}, '${c.TenLop}', ${c.KhoiLop}, '${c.NienKhoa || '2025-2026'}', ${c.MaGiaoVienCN || 2})">
+                Sửa GVCN
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Lỗi loadClasses:', err);
+      }
+    }
+
+    async function loadTeachersDropdown() {
+      try {
+        const res = await fetch('/api/admin/teachers');
+        const data = await res.json();
+        if (!data.success) return;
+
+        const select = document.getElementById('classGiaoVienCN');
+        if (!select) return;
+        select.innerHTML = '';
+
+        data.teachers.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.MaNguoiDung;
+          opt.textContent = `${t.HoTen} (${t.Email})`;
+          if (t.MaNguoiDung === 2) opt.selected = true; // TS. Đặng Hùng Vĩ mặc định
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        console.error('Lỗi loadTeachersDropdown:', err);
+      }
+    }
+
+    function openAddClassModal() {
+      loadTeachersDropdown();
+      const modal = document.getElementById('addClassModal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('active'), 10);
+    }
+
+    function closeAddClassModal() {
+      const modal = document.getElementById('addClassModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+      document.getElementById('addClassAlert').style.display = 'none';
+      document.getElementById('addClassForm').reset();
+    }
+
+    document.getElementById('addClassForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaveClass');
+      const alertBox = document.getElementById('addClassAlert');
+      btn.disabled = true;
+      btn.textContent = 'Đang lưu lớp học...';
+
+      const payload = {
+        tenLop: document.getElementById('classTenLop').value.trim(),
+        khoiLop: document.getElementById('classKhoiLop').value,
+        nienKhoa: document.getElementById('classNienKhoa').value.trim(),
+        maGiaoVienCN: document.getElementById('classGiaoVienCN').value,
+        moTa: document.getElementById('classMoTa').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/admin/classes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        if (result.success) {
+          alertBox.style.background = 'var(--c-success-bg)';
+          alertBox.style.color = '#047857';
+          alertBox.style.border = '1.5px solid rgba(16, 185, 129, 0.3)';
+          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message}`;
+          setTimeout(() => {
+            closeAddClassModal();
+            loadClasses();
+          }, 1200);
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi:</strong> ${result.message}`;
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = 'Lỗi kết nối: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Lưu & Tạo Lớp Học';
+      }
+    });
+
+    async function editClassTeacher(maLop, tenLop, khoiLop, nienKhoa, curGvcnId) {
+      const newGvcnId = prompt(`Nhập Mã Giáo Viên mới phân công làm GVCN lớp ${tenLop} (Mã hiện tại: ${curGvcnId}):`, curGvcnId);
+      if (!newGvcnId || isNaN(parseInt(newGvcnId))) return;
+
+      try {
+        const res = await fetch(`/api/admin/classes/${maLop}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tenLop,
+            khoiLop,
+            nienKhoa,
+            maGiaoVienCN: parseInt(newGvcnId)
+          })
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert(result.message || 'Cập nhật phân công lớp học thành công!');
+          loadClasses();
+        } else {
+          alert('Lỗi: ' + result.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+      }
+    }
+
+    // =========================================================================
+    // HÀNG ĐỢI DUYỆT THẺ & PHÊ DUYỆT TÀI KHOẢN HỌC SINH (ADMIN)
+    // =========================================================================
+    async function loadPendingStudents() {
+      try {
+        const res = await fetch('/api/admin/pending-students');
+        const data = await res.json();
+        if (!data.success) return;
+
+        const tbody = document.getElementById('pendingStudentsTableBody');
+        tbody.innerHTML = '';
+
+        if (!data.students || data.students.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding:24px;">Hiện không có học sinh nào đang chờ duyệt thẻ. Toàn bộ tài khoản đã được kích hoạt hợp lệ.</td></tr>';
+          return;
+        }
+
+        data.students.forEach(s => {
+          const tr = document.createElement('tr');
+          const hasCardPhoto = !!s.AnhTheHocSinh;
+
+          tr.innerHTML = `
+            <td><strong>#${s.MaNguoiDung}</strong></td>
+            <td>
+              <strong>${s.HoTen}</strong>
+              <br><small class="text-muted">${s.Email}</small>
+            </td>
+            <td>
+              <strong>${s.Lop || '10/1'}</strong>
+              <br><small class="text-muted">${s.TruongHoc || 'THPT Chuyên STEM'}</small>
+            </td>
+            <td>
+              ${hasCardPhoto
+                ? `<button class="btn btn-secondary btn-sm" onclick="openViewCardModal('${s.HoTen}', '${s.AnhTheHocSinh}', 'Lớp: ${s.Lop} · Trường: ${s.TruongHoc}', ${s.MaNguoiDung})" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Xem Ảnh Thẻ
+                  </button>`
+                : '<span class="badge badge-locked">Không có ảnh</span>'}
+            </td>
+            <td>
+              <span class="badge badge-warning" style="font-weight:700;">
+                ${s.TrangThaiXacThucThe || s.TrangThai}
+              </span>
+            </td>
+            <td>${new Date(s.NgayTao).toLocaleString('vi-VN')}</td>
+            <td style="text-align:right;">
+              <div style="display:flex; gap:6px; justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm" onclick="adminApproveStudent(${s.MaNguoiDung})" style="padding:4px 10px; font-size:0.78rem;">
+                  Phê Duyệt
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="adminRejectStudent(${s.MaNguoiDung})" style="padding:4px 10px; font-size:0.78rem; color:#DC2626; border-color:rgba(220,38,38,0.3);">
+                  Từ Chối
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Lỗi loadPendingStudents:', err);
+      }
+    }
+
+    async function adminApproveStudent(userId) {
+      if (!confirm(`Xác nhận phê duyệt tài khoản và xác thực thẻ học sinh cho học sinh #${userId}?`)) return;
+      try {
+        const res = await fetch(`/api/admin/approve-student/${userId}`, { method: 'POST' });
+        const result = await res.json();
+        if (result.success) {
+          alert(result.message || 'Đã phê duyệt tài khoản thành công!');
+          loadPendingStudents();
+          loadAdminData();
+        } else {
+          alert('Lỗi: ' + result.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+      }
+    }
+
+    async function adminRejectStudent(userId) {
+      const reason = prompt('Nhập lý do từ chối ảnh thẻ / tài khoản:', 'Ảnh thẻ không rõ nét, vui lòng chụp lại');
+      if (!reason) return;
+      try {
+        const res = await fetch(`/api/admin/reject-student/${userId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason })
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert(result.message || 'Đã từ chối tài khoản!');
+          loadPendingStudents();
+        } else {
+          alert('Lỗi: ' + result.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+      }
+    }
+
+    function openViewCardModal(studentName, imgSrc, details, userId) {
+      document.getElementById('viewCardStudentName').textContent = `Thẻ Học Sinh: ${studentName}`;
+      document.getElementById('viewCardImage').src = imgSrc;
+      document.getElementById('viewCardDetails').textContent = details;
+      document.getElementById('viewCardActions').innerHTML = `
+        <button class="btn btn-secondary" onclick="closeViewCardModal()">Đóng</button>
+        <button class="btn btn-primary" onclick="closeViewCardModal(); adminApproveStudent(${userId});">Phê Duyệt Kích Hoạt Ngay</button>
+      `;
+      const modal = document.getElementById('viewCardModal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('active'), 10);
+    }
+
+    function closeViewCardModal() {
+      const modal = document.getElementById('viewCardModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+    }
+
     // Khởi chạy khi load trang
     syncAdminViewFromHash();
     loadAdminData();
+    loadClasses();
+    loadPendingStudents();
     loadTickets();
     loadAnnouncements();
   </script>

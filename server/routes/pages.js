@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getPool, sql } = require('../config/db');
-const { isLoggedIn } = require('../middleware/authMiddleware');
+const { isLoggedIn, requireRole, isTeacherOrAdmin } = require('../middleware/authMiddleware');
 
 function redirectByRole(res, role) {
   if (role === 'Admin') return res.redirect('/admin');
@@ -130,27 +130,23 @@ router.post('/login', async (req, res) => {
 });
 
 // GET /admin
-router.get('/admin', isLoggedIn, (req, res) => {
-  if (req.session.user.VaiTro !== 'Admin') {
-    return res.redirect('/login');
-  }
+router.get('/admin', requireRole('Admin'), (req, res) => {
   res.render('dashboard/admin', { user: req.session.user });
 });
 
 // GET /teacher
-router.get('/teacher', isLoggedIn, (req, res) => {
-  if (req.session.user.VaiTro !== 'Giáo viên') {
-    return res.redirect('/login');
-  }
+router.get('/teacher', requireRole('Giáo viên'), (req, res) => {
   res.render('dashboard/teacher', { user: req.session.user });
 });
 
 // GET /student
-router.get('/student', isLoggedIn, (req, res) => {
-  if (req.session.user.VaiTro !== 'Học sinh') {
-    return res.redirect('/login');
-  }
-  res.render('dashboard/student', { user: req.session.user });
+router.get('/student', requireRole('Học sinh'), (req, res) => {
+  res.render('dashboard/student', { user: req.session.user, activeProjectId: req.query.project || null });
+});
+
+// GET /student/project/:id - Trang không gian bài tập & nộp bài chi tiết
+router.get('/student/project/:id', requireRole('Học sinh'), (req, res) => {
+  res.render('dashboard/student', { user: req.session.user, activeProjectId: req.params.id });
 });
 
 // GET /community - Phân hệ Cộng đồng & Wall of Fame (TTCĐ.01, TTCĐ.02, DF-03)
@@ -162,10 +158,7 @@ router.get('/community', isLoggedIn, (req, res) => {
 });
 
 // GET /exam - Phòng thi trực tuyến chống gian lận (KTĐG.02 & DF-06)
-router.get('/exam', isLoggedIn, (req, res) => {
-  if (req.session.user.VaiTro !== 'Học sinh') {
-    return res.redirect('/login');
-  }
+router.get('/exam', requireRole('Học sinh'), (req, res) => {
   res.render('exam', { user: req.session.user });
 });
 

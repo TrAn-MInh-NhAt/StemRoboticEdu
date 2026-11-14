@@ -13,6 +13,7 @@ const submissionRoutes = require('./routes/submissions');
 const examRoutes = require('./routes/exam');
 const materialsRoutes = require('./routes/materials');
 const supportRoutes = require('./routes/support');
+const judgeProxyRoutes = require('./routes/judgeProxy');
 const pageRoutes = require('./routes/pages');
 
 const app = express();
@@ -47,9 +48,18 @@ app.use('/api/reports', reportsRoutes);
 app.use('/api/exam', examRoutes);
 app.use('/api/materials', materialsRoutes);
 app.use('/api/support', supportRoutes);
-app.use('/api', examRoutes);
+app.use('/api/judge', judgeProxyRoutes);
 app.use('/api', submissionRoutes);
 app.use('/', pageRoutes);
+
+// Bắt lỗi toàn cục ngăn server sập đột ngột (Unhandled Exceptions / Rejections)
+process.on('uncaughtException', (err) => {
+  console.error('⚠️ [Cảnh báo Hệ thống] Đã bắt ngoại lệ UncaughtException:', err.message);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('⚠️ [Cảnh báo Hệ thống] Đã bắt UnhandledRejection:', reason);
+});
 
 // Start server after DB connection
 (async () => {

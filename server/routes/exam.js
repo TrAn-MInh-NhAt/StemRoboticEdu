@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const { getPool, sql } = require('../config/db');
+const { isLoggedIn, isTeacherOrAdmin } = require('../middleware/authMiddleware');
 
 // Thư mục lưu bài thi nộp
 const examUploadDir = path.join(__dirname, '../uploads/exams');
@@ -20,7 +21,7 @@ function getUserId(req) {
 // =========================================================================
 // 1. GET /api/exam/active - Lấy bài thi đang mở (KTĐG.02)
 // =========================================================================
-router.get('/active', async (req, res) => {
+router.get('/active', isLoggedIn, async (req, res) => {
   try {
     const pool = getPool();
     const studentId = parseInt(getUserId(req));
@@ -65,7 +66,7 @@ router.get('/active', async (req, res) => {
 // =========================================================================
 // 2. POST /api/exam/start - Bắt đầu vào phòng thi (Khởi tạo BaiNop)
 // =========================================================================
-router.post('/start', async (req, res) => {
+router.post('/start', isLoggedIn, async (req, res) => {
   const pool = getPool();
   try {
     const studentId = parseInt(getUserId(req));
@@ -118,7 +119,7 @@ router.post('/start', async (req, res) => {
 // =========================================================================
 // 3. POST /api/exam/tab-switch - Ghi nhận vi phạm chuyển tab (Trigger DF-06)
 // =========================================================================
-router.post('/tab-switch', async (req, res) => {
+router.post('/tab-switch', isLoggedIn, async (req, res) => {
   const pool = getPool();
   try {
     const maBaiNop = parseInt(req.body.maBaiNop);
@@ -164,6 +165,8 @@ router.post('/tab-switch', async (req, res) => {
       return res.json({
         success: true,
         locked: true,
+        isLocked: true,
+        soLanChuyenTab: currentCount,
         soLanChuyenTabHS: currentCount,
         maxAllowed,
         message: `BÀI THI ĐÃ BỊ TỰ ĐỘNG KHÓA (DF-06)! Bạn đã chuyển tab ${currentCount}/${maxAllowed} lần, vượt quá giới hạn quy chế thi. Hệ thống đã tự động thu bài.`
@@ -174,6 +177,8 @@ router.post('/tab-switch', async (req, res) => {
     return res.json({
       success: true,
       locked: false,
+      isLocked: false,
+      soLanChuyenTab: currentCount,
       soLanChuyenTabHS: currentCount,
       maxAllowed,
       remaining: maxAllowed - currentCount,
@@ -189,7 +194,7 @@ router.post('/tab-switch', async (req, res) => {
 // =========================================================================
 // 4. POST /api/exam/submit - Nộp bài thi
 // =========================================================================
-router.post('/submit', async (req, res) => {
+router.post('/submit', isLoggedIn, async (req, res) => {
   const pool = getPool();
   try {
     const maBaiNop = parseInt(req.body.maBaiNop);
@@ -246,7 +251,7 @@ router.post('/submit', async (req, res) => {
 // =========================================================================
 // 5. GET /api/analytics/df05-check - Phân tích tỷ lệ lỗi & Cảnh báo Học liệu (DF-05)
 // =========================================================================
-router.get('/analytics/df05-check', async (req, res) => {
+router.get('/analytics/df05-check', isTeacherOrAdmin, async (req, res) => {
   const pool = getPool();
   try {
     // 1. Phân tích kết quả nộp bài của từng dự án từ bảng KetQuaDiem & BaiNop

@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { getPool, sql } = require('../config/db');
+const { isLoggedIn, isAdmin } = require('../middleware/authMiddleware');
 
 // ==============================================================================
 // 1. POST /api/support/report-issue - HTTB.01: Gửi phiếu báo cáo sự cố kỹ thuật
 // Dành cho Học sinh (/student) và Giáo viên (/teacher)
 // ==============================================================================
-router.post('/report-issue', async (req, res) => {
+router.post('/report-issue', isLoggedIn, async (req, res) => {
   const { tieuDe, noiDung, mucDoUuTien } = req.body;
   const userId = (req.session && req.session.user) 
     ? req.session.user.MaNguoiDung 
@@ -90,7 +91,7 @@ router.get('/active-notifications', async (req, res) => {
 // ==============================================================================
 // 3. GET /api/support/admin/tickets - HTTB.01: Danh sách phiếu sự cố cho Admin
 // ==============================================================================
-router.get('/admin/tickets', async (req, res) => {
+router.get('/admin/tickets', isAdmin, async (req, res) => {
   try {
     const pool = getPool();
     const result = await pool.request().query(`
@@ -130,7 +131,7 @@ router.get('/admin/tickets', async (req, res) => {
 // ==============================================================================
 // 4. POST /api/support/admin/resolve-ticket/:id - HTTB.01: Đánh dấu Đã xử lý phiếu sự cố
 // ==============================================================================
-router.post('/admin/resolve-ticket/:id', async (req, res) => {
+router.post('/admin/resolve-ticket/:id', isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -161,7 +162,7 @@ router.post('/admin/resolve-ticket/:id', async (req, res) => {
 // ==============================================================================
 // 5. GET /api/support/admin/announcements - HTTB.02: Danh sách thông báo cho Admin
 // ==============================================================================
-router.get('/admin/announcements', async (req, res) => {
+router.get('/admin/announcements', isAdmin, async (req, res) => {
   try {
     const pool = getPool();
     const result = await pool.request().query(`
@@ -196,7 +197,7 @@ router.get('/admin/announcements', async (req, res) => {
 // ==============================================================================
 // 6. POST /api/support/admin/announcements - HTTB.02: Gửi thông báo hệ thống mới
 // ==============================================================================
-router.post('/admin/announcements', async (req, res) => {
+router.post('/admin/announcements', isAdmin, async (req, res) => {
   const { tieuDe, noiDung, mucDoUuTien } = req.body;
   const adminId = (req.session && req.session.user) ? req.session.user.MaNguoiDung : 1;
 
@@ -239,7 +240,7 @@ router.post('/admin/announcements', async (req, res) => {
 // ==============================================================================
 // 7. POST /api/support/admin/announcements/:id/toggle - HTTB.02: Ẩn/Hiện thông báo
 // ==============================================================================
-router.post('/admin/announcements/:id/toggle', async (req, res) => {
+router.post('/admin/announcements/:id/toggle', isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {

@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import time
 from typing import Any
+from services.error_analyzer import analyze
 
 logger = logging.getLogger(__name__)
 
@@ -213,12 +214,16 @@ async def run_code(
 
         error_detail = ""
         if not passed:
-            if run_result.get("stderr"):
-                error_detail = run_result["stderr"].strip()
-            else:
-                error_detail = f"Sai kết quả đầu ra (Wrong Answer). Mong đợi: '{expected_output}', Thực tế: '{actual_output}'."
-            if hint:
-                error_detail += f" [Gợi ý: {hint}]"
+            analysis = analyze(
+                stderr=run_result.get("stderr", ""),
+                stdout=actual_output,
+                expected=expected_output,
+                lang=language,
+                hint=hint,
+            )
+            error_detail = analysis.get("message_vi", "")
+            if analysis.get("hint_vi"):
+                error_detail += f" [Gợi ý: {analysis['hint_vi']}]"
 
         tc_log = (
             f"Test #{tc_id}: {'[PASS]' if passed else '[FAIL]'} "

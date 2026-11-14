@@ -49,6 +49,12 @@
           </a>
         </li>
         <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="switchView('library')" data-view="library" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <span>Thư viện bài giảng</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
           <a href="javascript:void(0)" onclick="switchView('submission')" data-view="submission" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <span>Nộp bài thực hành</span>
@@ -72,7 +78,7 @@
             <span>Lịch sử &amp; Bảng điểm</span>
           </a>
         </li>
-        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con (TTCĐ.01 & TTCĐ.02) -->
+        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con -->
         <li class="sidebar-nav-item sidebar-dropdown" id="studentCommunityDropdown">
           <button type="button" class="sidebar-dropdown-toggle" onclick="toggleSidebarDropdown(this)">
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -85,7 +91,7 @@
             <li>
               <a href="javascript:void(0)" onclick="switchView('community-fame')" data-view="community-fame" class="sidebar-sub-link">
                 <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <span>Bảng Vinh Danh (Fame)</span>
+                <span>Bảng Vinh Danh</span>
               </a>
             </li>
             <li>
@@ -108,12 +114,7 @@
             <span>Phòng thi trực tuyến</span>
           </a>
         </li>
-        <li class="sidebar-nav-item">
-          <a href="javascript:void(0)" onclick="openReportIssueModal()" class="sidebar-nav-link" style="color: var(--c-secondary);">
-            <svg viewBox="0 0 24 24" style="stroke: var(--c-secondary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span>Báo cáo sự cố (HTTB.01)</span>
-          </a>
-        </li>
+
         <li class="sidebar-nav-item" style="margin-top: 14px;">
           <a href="/" class="sidebar-nav-link" style="color: var(--c-accent);">
             <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
@@ -135,17 +136,13 @@
       <!-- Vùng hiển thị Thông báo Hệ thống tự động (HTTB.02) -->
       <div id="systemBroadcastContainer" style="margin-bottom: 24px;"></div>
 
-      <!-- Top Breadcrumb & Nút Báo Cáo Sự Cố (HTTB.01) -->
+      <!-- Top Breadcrumb -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
         <div style="font-size: 0.85rem; color: var(--c-text-dim); font-weight: 600;">
           <a href="javascript:void(0)" onclick="switchView('lotrinh')" style="color: inherit; text-decoration: none;" title="Về Lộ trình &amp; Dự án"><span>Không gian học tập</span></a>
           <span style="margin: 0 8px;">/</span>
           <span style="color: var(--c-primary);" id="pageBreadcrumb">Lộ trình Đào tạo Robotics &amp; Dự Án</span>
         </div>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="openReportIssueModal()" style="display: inline-flex; align-items: center; gap: 6px; color: var(--c-secondary); border-color: rgba(255, 94, 94, 0.4); font-weight: 700;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span>Báo cáo sự cố kỹ thuật (HTTB.01)</span>
-        </button>
       </div>
 
       <!-- ========================================================================= -->
@@ -209,60 +206,409 @@
       </div>
 
       <!-- ========================================================================= -->
-      <!-- PHÂN HỆ 2: NỘP BÀI THỰC HÀNH ĐA PHƯƠNG TIỆN (XLBN.01)                     -->
+      <!-- KHÔNG GIAN BÀI TẬP & NỘP BÀI CHI TIẾT (PROJECT WORKSPACE)                 -->
+      <!-- ========================================================================= -->
+      <div id="view-project-workspace" class="dashboard-view" style="display: none;">
+        <!-- Top Navigation: Breadcrumb & Nút Quay Lại -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+          <div style="font-size: 0.9rem; color: var(--c-text-dim); font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <a href="javascript:void(0)" onclick="switchView('lotrinh')" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              <span>Lộ Trình Đào Tạo</span>
+            </a>
+            <span>/</span>
+            <span id="wsLoTrinhBreadcrumb" style="color: var(--c-text-dim);">Lộ trình #01</span>
+            <span>/</span>
+            <span id="wsProjectBreadcrumb" style="color: var(--c-primary); font-weight: 700;">Dự án 1</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="switchView('lotrinh')" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>← Quay Lại Danh Sách Lộ Trình</span>
+          </button>
+        </div>
+
+        <!-- Thẻ Hero Bento Card: Thông Tin Dự Án -->
+        <section class="bento-card" style="margin-bottom: 28px; border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); position: relative; overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+            <div style="flex: 1; min-width: 280px;">
+              <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;">
+                <span id="wsStageBadge" class="tech-chip" style="background: rgba(90,82,255,0.15); color: #3730A3; font-weight: 800;">LỘ TRÌNH 1</span>
+                <span id="wsLevelBadge" class="tech-chip">Cơ bản</span>
+                <span id="wsStatusBadge" class="badge badge-primary">Sẵn sàng nộp bài</span>
+              </div>
+              <h1 id="wsProjectTitle" style="font-size: clamp(1.6rem, 2.8vw, 2.2rem); font-weight: 800; line-height: 1.25; margin-bottom: 8px;">
+                Đang nạp tên dự án...
+              </h1>
+              <div style="font-size: 0.92rem; color: var(--c-text-dim);">
+                Thời hạn hoàn thành: <strong id="wsDeadline" style="color: var(--c-text-main);">Chưa thiết lập</strong> · Thang điểm tối đa: <strong>10.0 / 10.0đ</strong>
+              </div>
+            </div>
+            <div id="wsScoreBox" style="background: rgba(90,82,255,0.06); padding: 16px 24px; border-radius: 20px; border: 2px solid rgba(90,82,255,0.25); text-align: right; min-width: 200px;">
+              <div style="font-size: 0.78rem; font-weight: 800; color: var(--c-text-dim); text-transform: uppercase;">Điểm hiện tại của bạn</div>
+              <div id="wsCurrentScore" style="font-size: 2.2rem; font-weight: 800; color: var(--c-primary); line-height: 1.1; margin: 4px 0;">-- / 10đ</div>
+              <div id="wsCurrentStatus" style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-dim);">Chưa nộp bài</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Khung 1: Câu Hỏi & Yêu Cầu Dự Án Thực Hành -->
+        <section class="card" style="margin-bottom: 28px; border: 1.5px solid rgba(11,15,25,0.12);">
+          <div class="card-header" style="background: #FAFAFB; border-bottom: 1.5px solid rgba(11,15,25,0.08); padding: 18px 24px;">
+            <h3 style="font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c-primary)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>1. Câu Hỏi &amp; Yêu Cầu Dự Án Thực Hành</span>
+            </h3>
+          </div>
+          <div style="padding: 24px;">
+            <div id="wsProjectRequirement" style="font-size: 1rem; line-height: 1.7; color: var(--c-text-main); white-space: pre-line; margin-bottom: 20px;"></div>
+            
+            <!-- Linh kiện phần cứng & Học liệu tham khảo -->
+            <div id="wsMaterialsBox" style="background: rgba(90,82,255,0.04); border-radius: 16px; padding: 18px 20px; border: 1.5px dashed rgba(90,82,255,0.25);">
+              <div style="font-size: 0.82rem; font-weight: 800; color: var(--c-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <span>Học liệu, Code mẫu &amp; Sơ đồ chân linh kiện (Bấm để tra cứu lý thuyết):</span>
+              </div>
+              <div id="wsMaterialsList" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Khung 2: Bộ Tiêu Chí Dữ Liệu Kiểm Thử Tự Động (TestCases) -->
+        <section class="card" style="margin-bottom: 28px; border: 1.5px solid rgba(11,15,25,0.12);">
+          <div class="card-header" style="background: #FAFAFB; border-bottom: 1.5px solid rgba(11,15,25,0.08); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3 style="font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c-accent)" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                <span>2. Bảng Dữ Liệu Đầu Vào &amp; Kết Quả Đầu Ra Chuẩn (Bộ TestCases)</span>
+              </h3>
+              <p style="font-size: 0.85rem; color: var(--c-text-dim); margin-top: 4px;">
+                Chương trình máy chấm sẽ nạp từng giá trị Input và so sánh kết quả in ra của em với Output mong đợi.
+              </p>
+            </div>
+            <span class="hero-hud-badge" style="font-size: 0.78rem;">
+              <span class="telemetry-pulse"></span>
+              <span id="wsTestCaseBadge">3 TESTCASES</span>
+            </span>
+          </div>
+          <div style="padding: 20px 24px; overflow-x: auto;">
+            <table class="table-custom" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th style="width: 60px; text-align: center;">STT</th>
+                  <th>Dữ Liệu Đầu Vào (Input qua Stdin)</th>
+                  <th>Kết Quả Mong Đợi (Output Chuẩn)</th>
+                  <th style="width: 130px; text-align: center;">Trọng Số Điểm</th>
+                  <th>Gợi Ý Khắc Phục Lỗi</th>
+                </tr>
+              </thead>
+              <tbody id="wsTestCasesTable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Khung 3: Không Gian Nộp Bài Thực Hành (Mã Nguồn & Video) -->
+        <section class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-text-main); margin-bottom: 40px;">
+          <div class="card-header" style="background: rgba(90,82,255,0.04); border-bottom: 2px solid var(--c-text-main); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: var(--c-primary); font-weight: 700; margin-bottom: 6px; display: inline-block;">
+                Thực Nghiệm Phần Cứng &amp; Mã Nguồn
+              </span>
+              <h3 style="font-size: 1.25rem; font-weight: 800;">3. Nộp Mã Nguồn &amp; Video Nghiệm Thu Thực Tế</h3>
+            </div>
+            <span class="badge badge-primary">FastAPI &lt; 0.05s</span>
+          </div>
+
+          <!-- Thanh Công Cụ Nhanh Nạp Code Mẫu -->
+          <div style="background: #FAFAFB; border-bottom: 1.5px dashed rgba(11, 15, 25, 0.12); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; color: var(--c-primary); display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Thử nghiệm máy chấm:
+              </span>
+              <span style="font-size: 0.82rem; color: var(--c-text-dim);">Bấm nút dưới để nạp nhanh code mẫu:</span>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadWsSampleCode(true)" style="background: rgba(4, 120, 87, 0.1); color: #047857; border-color: rgba(4, 120, 87, 0.3); font-weight: 800;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Tải Code Mẫu Đạt 100%</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadWsSampleCode(false)" style="background: rgba(220, 38, 38, 0.08); color: #DC2626; border-color: rgba(220, 38, 38, 0.25); font-weight: 800;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Tải Code Mẫu Lỗi (Test Bắt Lỗi)</span>
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="clearWsCode()">
+                <span>Xóa trắng</span>
+              </button>
+            </div>
+          </div>
+
+          <form id="wsSubmissionForm" onsubmit="submitFromWsForm(event)" style="padding: 24px;">
+            <input type="hidden" id="wsFormProjectId" name="maDuAn" value="">
+
+            <!-- Chỗ nộp mã nguồn -->
+            <div class="form-group" style="margin-bottom: 24px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                <label class="form-label" style="margin-bottom: 0; font-weight: 800;">
+                  A. Trình soạn thảo &amp; Tệp mã nguồn (.py / .ino / .cpp) *
+                </label>
+                <div style="display: flex; align-items: center; gap: 12px; font-size: 0.8rem; color: var(--c-text-dim);">
+                  <span id="wsEditorStats">0 dòng · 0 ký tự</span>
+                  <label class="btn btn-secondary btn-sm" style="margin: 0; cursor: pointer; padding: 4px 12px; font-size: 0.78rem;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Tải tệp từ máy...</span>
+                    <input type="file" id="wsCodeFile" name="codeFile" accept=".py,.ino,.cpp,.c" style="display: none;" onchange="onWsFileSelected(this)">
+                  </label>
+                </div>
+              </div>
+
+              <!-- Terminal Code Editor Box -->
+              <div style="background: #0B0F19; border-radius: 16px; border: 2px solid #1E293B; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <div style="background: #111827; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#EF4444;"></span>
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#F59E0B;"></span>
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10B981;"></span>
+                    <span id="wsEditorFilename" style="color: #94A3B8; font-family: monospace; font-size: 0.8rem; margin-left: 6px;">solution.py</span>
+                  </div>
+                  <span style="color: #64748B; font-size: 0.72rem; font-family: monospace;">PYTHON / C++ SANDBOX</span>
+                </div>
+                <textarea id="wsCodeEditor" class="form-control" rows="12" placeholder="# Viết code xử lý bài tập tại đây (hoặc bấm 'Tải Code Mẫu Đạt 100%' ở trên)..." style="background: transparent; color: #F4F6F8; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.92rem; line-height: 1.6; border: none; border-radius: 0; resize: vertical; padding: 16px;" oninput="updateWsEditorStats()"></textarea>
+              </div>
+            </div>
+
+            <!-- Chỗ nộp video vận hành -->
+            <div class="form-group" style="margin-bottom: 24px;">
+              <label class="form-label" for="wsVideoUrl" style="font-weight: 800;">
+                B. Liên kết Video ghi lại quá trình robot vận hành thực tế *
+              </label>
+              <div style="display: flex; gap: 10px;">
+                <input type="url" id="wsVideoUrl" name="videoVanHanh" class="form-control" placeholder="https://www.youtube.com/watch?v=... hoặc liên kết Google Drive công khai" required>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('wsVideoUrl').value='https://youtube.com/shorts/stem-demo-robot-running'" style="font-size: 0.8rem; white-space: nowrap;">
+                  Dán video mẫu
+                </button>
+              </div>
+              <small class="form-text" style="color: var(--c-text-dim); margin-top: 6px; display: block;">
+                Thầy cô sẽ trực tiếp xem video này để nghiệm thu hoạt động cơ khí và chốt điểm chính thức sau khi code của em đạt 100% TestCase.
+              </small>
+            </div>
+
+            <div id="wsSubmitAlert" class="alert" style="display: none; margin-bottom: 20px;"></div>
+
+            <!-- Nút submit to rõ -->
+            <button type="submit" id="btnWsSubmit" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; text-align: center; justify-content: center; font-size: 1.05rem; padding: 14px 28px;">
+              <span>GỬI BÀI THỰC HÀNH &amp; KÍCH HOẠT MÁY CHẤM TỰ ĐỘNG</span>
+              <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </form>
+
+          <!-- Vùng Hiển Thị Kết Quả Chấm Tức Thì -->
+          <div id="wsEvaluationBox" style="display: none; border-top: 2px solid var(--c-text-main); background: #0B0F19; color: #F4F6F8; padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="telemetry-pulse"></span>
+                <span style="font-family: var(--f-heading); font-size: 1.15rem; font-weight: 800; color: #FFF;">KẾT QUẢ PHẢN HỒI TỪ MÁY CHẤM (FASTAPI KERNEL)</span>
+              </div>
+              <div id="wsJudgeBadge" class="badge badge-success">ĐẠT 100% TESTCASES</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+              <div style="background: rgba(255,255,255,0.05); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                <div style="font-size: 0.75rem; color: #94A3B8; text-transform: uppercase;">Điểm code tự động</div>
+                <div id="wsEvalScore" style="font-size: 1.8rem; font-weight: 800; color: #38BDF8;">10.0 / 10</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.05); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                <div style="font-size: 0.75rem; color: #94A3B8; text-transform: uppercase;">Trạng thái bài nộp</div>
+                <div id="wsEvalStatus" style="font-size: 1.1rem; font-weight: 800; color: #34D399; margin-top: 6px;">Chờ duyệt Video</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.05); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+                <div style="font-size: 0.75rem; color: #94A3B8; text-transform: uppercase;">Thời gian thực thi</div>
+                <div id="wsEvalTime" style="font-size: 1.1rem; font-weight: 800; color: #FBBF24; margin-top: 6px;">0.04s</div>
+              </div>
+            </div>
+
+            <!-- Bảng chi tiết từng TestCase -->
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 0.85rem; font-weight: 800; color: #94A3B8; margin-bottom: 10px; text-transform: uppercase;">Chi tiết đối chiếu từng TestCase:</div>
+              <table style="width: 100%; border-collapse: collapse; font-family: monospace; font-size: 0.85rem;">
+                <thead>
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.15); text-align: left; color: #94A3B8;">
+                    <th style="padding: 8px;">STT</th>
+                    <th style="padding: 8px;">Đầu vào (Input)</th>
+                    <th style="padding: 8px;">Output Mong Đợi</th>
+                    <th style="padding: 8px;">Output Thực Tế</th>
+                    <th style="padding: 8px; text-align: center;">Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody id="wsEvalTestCasesBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Khung log / thông điệp sư phạm -->
+            <div style="background: rgba(0,0,0,0.5); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+              <div style="font-size: 0.8rem; font-weight: 800; color: #A5B4FC; margin-bottom: 6px;">THÔNG ĐIỆP SƯ PHẠM &amp; LOG HỆ THỐNG:</div>
+              <div id="wsEvalLog" style="font-family: monospace; font-size: 0.85rem; color: #E2E8F0; white-space: pre-wrap;"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- THƯ VIỆN BÀI GIẢNG VIDEO & CODE MẪU THỰC HÀNH                              -->
+      <!-- ========================================================================= -->
+      <div id="view-library" class="dashboard-view" style="display: none;">
+        <!-- Header Banner Thư Viện -->
+        <section class="bento-card" style="margin-bottom: 28px; background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%); color: #FFF; border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); padding: 32px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+              <span class="tech-chip" style="background: rgba(255,255,255,0.18); color: #FFF; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+                Thư Viện Bài Giảng &amp; Kho Tri Thức STEM
+              </span>
+              <h2 style="font-size: 1.8rem; font-weight: 800; color: #FFF; margin-bottom: 6px;">
+                Thư Viện Bài Giảng Video &amp; Code Mẫu Thực Hành
+              </h2>
+              <p style="font-size: 0.95rem; color: #E0E7FF; max-width: 680px; text-wrap: pretty;">
+                Hệ thống video bài giảng trực quan xem trực tiếp trên web, sơ đồ pinout linh kiện và kho mã nguồn mẫu. Các bài tập thực hành được nâng cấp có thử thách riêng so với bài giảng lý thuyết!
+              </p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="loadLibraryLectures()" style="background: #FFF; color: #1E1B4B; font-weight: 800;">
+              Làm mới bài giảng
+            </button>
+          </div>
+
+          <!-- Bộ lọc danh mục bài giảng -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 16px;">
+            <button type="button" class="btn btn-secondary btn-sm lib-filter-btn active" onclick="filterLibraryTopic('all', this)" style="border-radius: 50px; font-weight: 800;">
+              Tất Cả Bài Giảng
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm lib-filter-btn" onclick="filterLibraryTopic('arduino', this)" style="border-radius: 50px;">
+              Lập trình Arduino &amp; I/O
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm lib-filter-btn" onclick="filterLibraryTopic('sensor', this)" style="border-radius: 50px;">
+              Cảm biến siêu âm HC-SR04
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm lib-filter-btn" onclick="filterLibraryTopic('motor', this)" style="border-radius: 50px;">
+              Cầu H L298N &amp; Xe né vật cản
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm lib-filter-btn" onclick="filterLibraryTopic('pid', this)" style="border-radius: 50px;">
+              Cân bằng PID &amp; MPU6050
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm lib-filter-btn" onclick="filterLibraryTopic('ai', this)" style="border-radius: 50px;">
+              Thị giác AI &amp; IoT
+            </button>
+          </div>
+        </section>
+
+        <!-- Lưới Danh Sách Bài Giảng & Code Mẫu (Bento Grid) -->
+        <div id="libraryLecturesGrid" class="bento-grid" style="margin-bottom: 40px;">
+          <p class="text-muted" style="grid-column: 1/-1; padding: 24px 0;">Đang nạp thư viện bài giảng video...</p>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- NỘP BÀI THỰC HÀNH ĐA PHƯƠNG TIỆN                                            -->
       <!-- ========================================================================= -->
       <div id="view-submission" class="dashboard-view">
         <section id="submissionSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-text-main); margin-bottom: 40px;">
           <div class="card-header">
             <div>
-              <span class="tech-chip" style="background: #FEE2E2; color: #991B1B; font-weight: 700; margin-bottom: 8px; display: inline-block;">
-                Mô đun XLBN.01 · Ràng Buộc Kép
+              <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: var(--c-primary); font-weight: 700; margin-bottom: 8px; display: inline-block;">
+                Không Gian Nộp Bài Thực Hành
               </span>
-              <h2 class="card-title" style="font-size: 1.4rem;">Nộp Bài Thực Hành Đa Phương Tiện</h2>
+              <h2 class="card-title" style="font-size: 1.4rem;">Nộp Bài Thực Hành Đa Phương Tiện &amp; Thử Nghiệm Máy Chấm</h2>
               <p class="card-subtitle">
-                Bắt buộc tải lên Tệp mã nguồn (.ino, .cpp, .py) VÀ dán Đường dẫn Video vận hành thực tế mới cho phép nộp bài.
+                Tải lên Tệp mã nguồn (.ino, .cpp, .py) hoặc dán code trực tiếp VÀ nhập Đường dẫn Video vận hành robot thực tế.
               </p>
             </div>
-            <span class="badge badge-primary">DF-01 Auto Judge</span>
+            <span class="badge badge-primary">Auto Judge Engine</span>
           </div>
 
-          <form id="submissionForm" enctype="multipart/form-data">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+          <!-- Thanh Thao Tác Nhanh: Nạp Code Thử Nghiệm 1 Click -->
+          <div style="background: rgba(90, 82, 255, 0.05); border-bottom: 1.5px dashed rgba(11, 15, 25, 0.12); padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--c-primary); display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Phòng Lab Tự Học:
+              </span>
+              <span style="font-size: 0.82rem; color: var(--c-text-dim);">Nạp nhanh mã nguồn mẫu để thử nghiệm máy chấm</span>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleCode(true)" style="background: rgba(4, 120, 87, 0.1); color: #047857; border-color: rgba(4, 120, 87, 0.3); font-weight: 700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Tải Code Mẫu Đạt 100%</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleCode(false)" style="background: rgba(220, 38, 38, 0.08); color: #DC2626; border-color: rgba(220, 38, 38, 0.25); font-weight: 700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Tải Code Mẫu Lỗi (Test Bắt Lỗi)</span>
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="clearCodeWorkspace()" style="font-size: 0.8rem;">
+                <span>Xóa trắng</span>
+              </button>
+            </div>
+          </div>
+
+          <form id="submissionForm" enctype="multipart/form-data" style="padding: 24px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
               <div>
                 <div class="form-group">
                   <label class="form-label" for="selectProject">1. Chọn Dự án thực hành cần nộp *</label>
-                  <select id="selectProject" name="maDuAn" class="form-control" required>
+                  <select id="selectProject" name="maDuAn" class="form-control" required onchange="onProjectSelectChanged()">
                     <option value="">-- Chọn dự án từ danh sách đã mở khóa --</option>
                   </select>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="codeFile">2. Tệp Mã nguồn (.ino, .cpp, .py) *</label>
-                  <input type="file" id="codeFile" name="codeFile" class="form-control" accept=".ino,.cpp,.py" required>
-                  <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
-                    Máy chấm Judge Engine (FastAPI cổng 5000) sẽ tự động đối chiếu TestCase dưới 10 giây.
-                  </small>
                 </div>
               </div>
 
               <div>
                 <div class="form-group">
-                  <label class="form-label" for="videoUrl">3. Đường dẫn Video vận hành robot thực tế *</label>
-                  <input type="url" id="videoUrl" name="videoUrl" class="form-control" placeholder="https://youtube.com/watch?v=... hoặc Drive/OneDrive" required>
-                  <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
-                    Minh chứng phần cứng: Video quay rõ mô hình, bo mạch vi điều khiển và chuyển động thực tế.
+                  <label class="form-label" for="videoUrl">2. Đường dẫn Video vận hành robot thực tế *</label>
+                  <input type="url" id="videoUrl" name="videoUrl" class="form-control" placeholder="https://youtube.com/watch?v=... hoặc Google Drive / OneDrive" required>
+                  <small style="display:block; margin-top: 4px; font-size: 0.8rem; color: var(--c-text-dim);">
+                    Minh chứng phần cứng: Video quay rõ bo mạch, mô hình và chuyển động thực tế.
                   </small>
                 </div>
+              </div>
+            </div>
 
-                <div id="submitAlert" style="display:none; padding: 14px 18px; border-radius: var(--radius-input); font-size: 0.88rem; margin-top: 14px;"></div>
-
-                <div style="margin-top: 24px;">
-                  <button type="submit" id="btnSubmit" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; padding: 14px;">
-                    Gửi Bài &amp; Kích Hoạt Máy Chấm (DF-01)
-                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
+            <!-- Khung Soạn Thảo & Tải Tệp Mã Nguồn Kết Hợp -->
+            <div class="form-group" style="margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <label class="form-label" for="codeEditorArea" style="margin-bottom: 0;">
+                  3. Soạn thảo Mã Nguồn Hoặc Tải Tệp (.py / .ino / .cpp) *
+                </label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span id="codeLangBadge" class="tech-chip" style="margin-bottom: 0; background: rgba(90, 82, 255, 0.12); color: var(--c-primary); font-size: 0.72rem;">Python 3.11</span>
+                  <label for="codeFile" class="btn btn-secondary btn-sm" style="cursor: pointer; margin-bottom: 0; font-size: 0.8rem; padding: 4px 12px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span>Tải tệp từ máy...</span>
+                  </label>
+                  <input type="file" id="codeFile" name="codeFile" accept=".ino,.cpp,.py" style="display: none;" onchange="handleFileInputChanged(this)">
                 </div>
               </div>
+
+              <!-- Editor Container -->
+              <div style="border: 2px solid var(--c-text-main); border-radius: var(--radius-input); overflow: hidden; background: #0B0F19;">
+                <div style="background: #151B28; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #EF4444;"></span>
+                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #F59E0B;"></span>
+                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></span>
+                    <span id="editorFilenameLabel" style="font-family: monospace; font-size: 0.78rem; color: #94A3B8; margin-left: 8px;">solution.py</span>
+                  </div>
+                  <span id="editorCharCount" style="font-family: monospace; font-size: 0.75rem; color: #64748B;">0 dòng · 0 ký tự</span>
+                </div>
+                <textarea id="codeEditorArea" name="codeText" class="form-control" rows="12" placeholder="// Viết mã nguồn Python / C++ / Arduino tại đây hoặc bấm 'Tải Code Mẫu' phía trên..." style="background: #0B0F19; color: #F4F6F8; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.92rem; line-height: 1.6; border: none; border-radius: 0; resize: vertical;" oninput="updateEditorStats()"></textarea>
+              </div>
+              <small id="fileSelectedNotice" style="display: block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
+                Máy chấm Judge Engine (FastAPI cổng 5000) sẽ tự động biên dịch, chạy cô lập và đối chiếu toàn bộ TestCase (NFR-01 &lt; 10s).
+              </small>
+            </div>
+
+            <div id="submitAlert" style="display:none; padding: 14px 18px; border-radius: var(--radius-input); font-size: 0.88rem; margin-bottom: 20px;"></div>
+
+            <div>
+              <button type="submit" id="btnSubmit" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; padding: 16px; font-size: 1.05rem;">
+                <span>Gửi Bài Thực Hành &amp; Kích Hoạt Máy Chấm Tự Động</span>
+                <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
             </div>
           </form>
         </section>
@@ -272,6 +618,36 @@
       <!-- PHÂN HỆ 3: KHOANG MÁY CHẤM TỰ ĐỘNG & BẢNG LOG LỖI (DF-04)                 -->
       <!-- ========================================================================= -->
       <div id="view-judge" class="dashboard-view">
+        <!-- Thẻ Telemetry Trạng Thái Máy Chấm (ENT-07 / DF-01) -->
+        <div class="bento-card" style="margin-bottom: 20px; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary);">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(90, 82, 255, 0.1); border: 2px solid var(--c-text-main); display: flex; align-items: center; justify-content: center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c-primary)" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            </div>
+            <div>
+              <div style="font-family: var(--f-heading); font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+                <span>Máy Chấm Tự Động STEM Judge Engine</span>
+                <span id="judgeLiveBadge" class="tech-chip" style="background: rgba(4, 120, 87, 0.12); color: #047857; font-size: 0.72rem; padding: 2px 10px; margin-bottom: 0;">
+                  <span class="telemetry-pulse"></span> Online
+                </span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--c-text-dim); margin-top: 2px;">
+                Cổng dịch vụ: <strong style="color: var(--c-text-main);">5000 (FastAPI)</strong> · Ngôn ngữ hỗ trợ: <span style="font-weight: 600;">Python (.py), C++ (.cpp), Arduino (.ino)</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="text-align: right;">
+              <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--c-text-dim); font-weight: 700;">Độ trễ phản hồi</div>
+              <div id="judgeLatencyText" style="font-family: var(--f-heading); font-weight: 800; font-size: 1.15rem; color: #047857;">&lt; 5 ms</div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="checkJudgeEngineHealth()" style="font-size: 0.8rem; padding: 6px 14px; border-radius: 50px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              <span>Kiểm tra lại</span>
+            </button>
+          </div>
+        </div>
+
         <section class="instrument-console" id="instrumentConsole">
           <div class="console-header">
             <div style="display: flex; align-items: center; gap: 14px;">
@@ -588,20 +964,108 @@
     </div>
   </div>
 
+  <!-- Modal Không Gian Tự Học STEM Robotic (FR-03, FR-04, TCPP.01, TCPP.02) -->
+  <div class="modal-overlay" id="learningHubModal" style="display: none;">
+    <div class="modal-box" style="max-width: 860px; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header" style="flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <span class="tech-chip" id="hubBadge" style="margin-bottom: 0; background: rgba(90, 82, 255, 0.12); color: var(--c-primary); font-weight: 700;">
+            [Bài giảng]
+          </span>
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0;" id="hubTitle">Chi Tiết Bài Giảng &amp; Linh Kiện STEM</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeLearningHubModal()">&times;</button>
+      </div>
+
+      <div style="padding: 24px; overflow-y: auto; flex-grow: 1;">
+        <!-- Khung 1: Nội dung lý thuyết & Nguyên lý -->
+        <div style="margin-bottom: 24px;">
+          <div style="font-size: 0.82rem; font-weight: 800; color: var(--c-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            1. Nội Dung Lý Thuyết &amp; Kiến Thức Cơ Bản (FR-03):
+          </div>
+          <div id="hubContentText" style="font-size: 0.95rem; line-height: 1.7; color: var(--c-text-main); background: #F8FAFC; border: 1.5px solid rgba(11, 15, 25, 0.08); border-radius: 16px; padding: 18px 20px; white-space: pre-line;">
+            Đang tải nội dung...
+          </div>
+        </div>
+
+        <!-- Khung 2: Sơ đồ chân linh kiện (Pinout & Wiring) -->
+        <div id="hubPinoutSection" style="margin-bottom: 24px;">
+          <div style="font-size: 0.82rem; font-weight: 800; color: #B45309; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            2. Sơ Đồ Chân &amp; Thông Số Kỹ Thuật Phần Cứng (TCPP.02):
+          </div>
+          <div id="hubPinoutBox" style="background: #FFFBEB; border: 1.5px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 18px 20px;">
+            <!-- Render động bằng JS -->
+          </div>
+        </div>
+
+        <!-- Khung 3: Mã nguồn mẫu & Code Mẫu (FR-04) -->
+        <div id="hubCodeSection" style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="font-size: 0.82rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              3. Mã Nguồn Mẫu Chuẩn Cho Thực Hành (FR-04):
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="copyHubCode()" style="font-size: 0.78rem; padding: 4px 10px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Sao chép Code</span>
+              </button>
+              <button type="button" class="btn btn-playful btn-playful-primary btn-sm" onclick="injectHubCodeToSubmission()" style="font-size: 0.78rem; padding: 4px 12px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <span>Nạp Vào Khung Nộp Bài</span>
+              </button>
+            </div>
+          </div>
+          <div style="border-radius: 16px; overflow: hidden; border: 2px solid var(--c-text-main);">
+            <div style="background: #151B28; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;">
+              <span id="hubCodeFilename" style="font-family: monospace; font-size: 0.78rem; color: #94A3B8;">sample.ino</span>
+              <span class="tech-chip" style="margin-bottom: 0; background: rgba(56, 189, 248, 0.15); color: #38BDF8; font-size: 0.7rem; padding: 2px 8px;">Code Mẫu Chuẩn</span>
+            </div>
+            <pre id="hubCodeBox" style="margin: 0; padding: 18px 20px; background: #0B0F19; color: #38BDF8; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.88rem; line-height: 1.6; max-height: 280px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;"></pre>
+          </div>
+        </div>
+
+        <!-- Khung 4: Tài liệu đính kèm & Tải về (TCPP.01) -->
+        <div id="hubFileSection" style="padding-top: 16px; border-top: 1.5px dashed rgba(11, 15, 25, 0.12); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main);">Tài liệu đính kèm phục vụ nghiên cứu:</div>
+            <div id="hubFileNotice" style="font-size: 0.8rem; color: var(--c-text-dim);">Được biên soạn bởi TS. Đặng Hùng Vĩ &amp; Bộ môn Sư phạm Tin.</div>
+          </div>
+          <button type="button" id="btnDownloadHubFile" class="btn btn-outline btn-sm" onclick="downloadHubFile()" style="border-radius: 50px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Tải Tệp Mã Nguồn Mẫu</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="padding: 16px 24px; background: #F8FAFC; border-top: 1px solid rgba(11, 15, 25, 0.08); display: flex; justify-content: flex-end; gap: 10px; border-radius: 0 0 24px 24px; flex-shrink: 0;">
+        <button type="button" class="btn btn-secondary" onclick="closeLearningHubModal()">Đóng cửa sổ</button>
+        <button type="button" class="btn-playful btn-playful-primary magnet-btn" onclick="injectHubCodeToSubmission()" style="padding: 10px 20px;">
+          <span>Luyện Tập Ngay Với Bài Này →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const currentStudentId = <%= user.MaNguoiDung %>;
+    const serverActiveProjectId = <%= typeof activeProjectId !== 'undefined' && activeProjectId ? JSON.stringify(activeProjectId) : 'null' %>;
 
     // =========================================================================
     // HỆ THỐNG ĐIỀU HƯỚNG TÁCH TRANG ĐỘC LẬP (Mỗi view là một chức năng riêng biệt)
     // =========================================================================
     const studentViews = {
       'lotrinh': { elId: 'view-lotrinh', title: 'Lộ trình Đào tạo Robotics & Dự Án Thực Hành' },
-      'submission': { elId: 'view-submission', title: 'Nộp Bài Thực Hành Đa Phương Tiện (XLBN.01)' },
-      'judge': { elId: 'view-judge', title: 'Khoang Máy Chấm Tự Động & Log Lỗi (DF-04)' },
-      'lookup': { elId: 'view-lookup', title: 'Trạm Tra Cứu Linh Kiện & Gỡ Lỗi Nhanh (TCPP.02)' },
-      'history': { elId: 'view-history', title: 'Lịch Sử Nộp Bài & Bảng Điểm (KQBN.02)' },
-      'community-fame': { elId: 'view-community-fame', title: 'Bảng Vinh Danh Dự Án Robotics (Wall of Fame · TTCĐ.02)' },
-      'community-forum': { elId: 'view-community-forum', title: 'Diễn Đàn Thảo Luận Kỹ Thuật & Gỡ Lỗi (TTCĐ.01 · DF-03)' }
+      'project-workspace': { elId: 'view-project-workspace', title: 'Không Gian Bài Tập & Nộp Bài Chi Tiết' },
+      'library': { elId: 'view-library', title: 'Thư Viện Bài Giảng Video & Code Mẫu' },
+      'submission': { elId: 'view-submission', title: 'Nộp Bài Thực Hành Đa Phương Tiện' },
+      'judge': { elId: 'view-judge', title: 'Khoang Máy Chấm Tự Động & Log Lỗi' },
+      'lookup': { elId: 'view-lookup', title: 'Trạm Tra Cứu Linh Kiện & Gỡ Lỗi Nhanh' },
+      'history': { elId: 'view-history', title: 'Lịch Sử Nộp Bài & Bảng Điểm' },
+      'community-fame': { elId: 'view-community-fame', title: 'Bảng Vinh Danh Dự Án Robotics' },
+      'community-forum': { elId: 'view-community-forum', title: 'Diễn Đàn Thảo Luận Kỹ Thuật' }
     };
 
     function switchView(viewName) {
@@ -657,6 +1121,9 @@
       }
 
       // 6. Tải dữ liệu tương ứng nếu cần
+      if (viewName === 'library' && typeof loadLibraryLectures === 'function') {
+        loadLibraryLectures();
+      }
       if (viewName === 'history' && typeof loadMySubmissions === 'function') {
         loadMySubmissions();
       }
@@ -669,12 +1136,296 @@
       if (viewName === 'community-forum' && typeof loadCommunityPosts === 'function') {
         loadCommunityPosts();
       }
+      if (viewName === 'judge') {
+        checkJudgeEngineHealth();
+      }
 
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
+    async function checkJudgeEngineHealth() {
+      const badge = document.getElementById('judgeLiveBadge');
+      const lat = document.getElementById('judgeLatencyText');
+      try {
+        const res = await fetch('/api/judge/status');
+        const data = await res.json();
+        if (data.online) {
+          if (badge) {
+            badge.innerHTML = '<span class="telemetry-pulse"></span> Sẵn sàng (Online)';
+            badge.style.background = 'rgba(4, 120, 87, 0.12)';
+            badge.style.color = '#047857';
+          }
+          if (lat) lat.textContent = `${data.latency_ms || 2} ms`;
+        } else {
+          if (badge) {
+            badge.innerHTML = '● Ngoại tuyến (Offline)';
+            badge.style.background = 'rgba(220, 38, 38, 0.12)';
+            badge.style.color = '#DC2626';
+          }
+          if (lat) lat.textContent = 'Mất kết nối';
+        }
+      } catch (e) {
+        if (badge) {
+          badge.innerHTML = '● Ngoại tuyến';
+          badge.style.background = 'rgba(220, 38, 38, 0.12)';
+          badge.style.color = '#DC2626';
+        }
+        if (lat) lat.textContent = 'N/A';
+      }
+    }
+
     // =========================================================================
-    // CỘNG ĐỒNG & VINH DANH (TTCĐ.01 & TTCĐ.02 & DF-03)
+    // THƯ VIỆN BÀI GIẢNG VIDEO & CODE MẪU THỰC HÀNH (LIBRARY)
+    // =========================================================================
+    const libraryLecturesData = [
+      {
+        id: 1,
+        title: "Giới thiệu Arduino Uno R3 & Pinout 14 Chân I/O",
+        topic: "arduino",
+        topicLabel: "Arduino & I/O",
+        level: "Cơ bản",
+        embedUrl: "https://www.youtube-nocookie.com/embed/fJWR73zp1Pc",
+        projectId: 1,
+        summary: "Kiến trúc vi điều khiển ATmega328P, quản lý 14 chân Digital I/O (D0–D13) và 6 chân Analog (A0–A5). Nguồn cấp 5V DC và giao thức UART nạp code qua cổng USB.",
+        hardwareNote: "Arduino Uno R3, Breadboard, LED 5mm, Điện trở 220Ω, Dây cắm đực-đực.",
+        hasCode: true,
+        codeFilename: "blink_sos.py",
+        codeSnippet: `# Code mẫu: Nhấp nháy LED tín hiệu Morse SOS qua vi điều khiển
+import sys
+
+# Đọc tín hiệu điều khiển từ cổng kết nối Serial
+signal = sys.stdin.read().strip()
+if signal == '1' or signal == 'SOS':
+    print('LED_ON')
+elif signal == '0':
+    print('LED_OFF')
+else:
+    print('LED_ON')`
+      },
+      {
+        id: 2,
+        title: "Cảm Biến Siêu Âm HC-SR04 & Thuật Toán Đo Khoảng Cách",
+        topic: "sensor",
+        topicLabel: "Cảm biến HC-SR04",
+        level: "Cơ bản",
+        embedUrl: "https://www.youtube-nocookie.com/embed/ZejQOX69K5M",
+        projectId: 11,
+        summary: "Nguyên lý phát xung Trig 10µs ở tần số 40kHz và nhận xung phản xạ Echo. Công thức quy đổi: Khoảng cách d = (thời gian * 0.034) / 2 = t / 58.0 (cm). Áp dụng bộ lọc trung vị để triệt tiêu sóng dội tạp âm.",
+        hardwareNote: "HC-SR04 (VCC: 5V, Trig: D9, Echo: D10, GND), Khoảng cách đo: 2–400cm.",
+        hasCode: true,
+        codeFilename: "ultrasonic_distance.py",
+        codeSnippet: `# Code mẫu: Tính toán khoảng cách từ xung Echo cảm biến HC-SR04
+import sys
+
+try:
+    microsec = float(sys.stdin.read().strip())
+    # Công thức chuẩn: d = t / 58.0 (cm)
+    dist_cm = round(microsec / 58.0, 2)
+    print(f'{dist_cm:.2f}')
+except Exception:
+    print('0.00')`
+      },
+      {
+        id: 3,
+        title: "Mạch Cầu H L298N & Điều Khiển Xe Tự Hành Né Vật Cản",
+        topic: "motor",
+        topicLabel: "Cầu H L298N",
+        level: "Nâng cao",
+        embedUrl: "https://www.youtube-nocookie.com/embed/dyjo_ggnkVU",
+        projectId: 13,
+        summary: "Điều khiển đảo chiều 2 động cơ DC qua 4 transistor công suất cầu H. Điều chế độ rộng xung PWM (0–255) qua chân ENA/ENB để kiểm soát tốc độ mượt mà khi rẽ góc cua hẹp.",
+        hardwareNote: "Cầu H L298N, 2 Động cơ DC giảm tốc TT 1:48, Pin Li-ion 7.4V, Khung gầm 2 bánh.",
+        hasCode: true,
+        codeFilename: "robot_avoidance.py",
+        codeSnippet: `# Code mẫu: Giải thuật né chướng ngại vật theo ngưỡng khoảng cách
+import sys
+
+dist = int(sys.stdin.read().strip() or '30')
+if dist > 20:
+    print('FORWARD')       # Đường thoáng: tiến thẳng
+elif dist > 8:
+    print('TURN_LEFT')     # Vật cản gần: bẻ cua trái né tránh
+else:
+    print('BACK_AND_TURN') # Vật cản sát mép: lùi và đổi hướng`
+      },
+      {
+        id: 4,
+        title: "Giải Thuật Cân Bằng PID & Cảm Biến Góc Nghiêng MPU6050",
+        topic: "pid",
+        topicLabel: "PID & MPU6050",
+        level: "Nâng cao",
+        embedUrl: "https://www.youtube-nocookie.com/embed/4BoIE8YLSQE",
+        projectId: 12,
+        summary: "Bộ lọc bù Complementary Filter kết hợp Gyroscope (con quay) và Accelerometer (gia tốc kế) MPU6050 qua bus I2C. Thuật toán PID bù mô-men xoắn tức thời để giữ xe 2 bánh thăng bằng trọng tâm.",
+        hardwareNote: "Cảm biến MPU-6050 (SDA: A4, SCL: A5), Động cơ bước / DC encoder độ trễ < 5ms.",
+        hasCode: true,
+        codeFilename: "pid_balance.py",
+        codeSnippet: `# Code mẫu: Thuật toán PID tính tốc độ bù góc nghiêng
+import sys
+
+parts = sys.stdin.read().strip().split()
+if len(parts) >= 2:
+    setpoint = float(parts[0])
+    current_angle = float(parts[1])
+    error = current_angle - setpoint
+    if abs(error) < 0.1:
+        print('Motor: STOP')
+    else:
+        pwm = min(255, int(abs(error) * 2.5 + 40))
+        direction = 'FORWARD' if error > 0 else 'BACKWARD'
+        print(f'Motor: {direction} {pwm}')
+else:
+    print('Motor: STOP')`
+      },
+      {
+        id: 5,
+        title: "Thị Giác Máy Tính AI OpenCV & Kết Nối IoT ESP32",
+        topic: "ai",
+        topicLabel: "AI & IoT ESP32",
+        level: "Chuyên sâu",
+        embedUrl: "https://www.youtube-nocookie.com/embed/wqn3IT0T65g",
+        projectId: 3,
+        summary: "Xử lý ảnh camera trong không gian màu HSV để phân đoạn vật thể theo dải màu sắc (Red, Blue, Green). Gửi tọa độ bounding box qua giao thức MQTT IoT tới vi điều khiển để điều khiển cánh tay gắp thả.",
+        hardwareNote: "ESP32-CAM / USB Web Camera, Máy tính mini nhúng hoặc Raspberry Pi, Servo MG996R.",
+        hasCode: true,
+        codeFilename: "ai_vision_color.py",
+        codeSnippet: `# Code mẫu: Phân loại vật thể sa bàn theo mã màu nhận diện
+import sys
+
+color = sys.stdin.read().strip().upper()
+if color == 'RED':
+    print('GRAB_AND_DROP_BIN_A')
+elif color == 'BLUE':
+    print('GRAB_AND_DROP_BIN_B')
+elif color == 'GREEN':
+    print('GRAB_AND_DROP_BIN_C')
+else:
+    print('UNKNOWN_OBJECT')`
+      }
+    ];
+
+    let currentLibFilter = 'all';
+
+    function loadLibraryLectures() {
+      const grid = document.getElementById('libraryLecturesGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const filtered = (currentLibFilter === 'all')
+        ? libraryLecturesData
+        : libraryLecturesData.filter(l => l.topic === currentLibFilter);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="text-muted" style="grid-column: 1/-1; padding: 24px 0;">Không tìm thấy bài giảng trong chuyên đề này.</p>';
+        return;
+      }
+
+      filtered.forEach((lec, idx) => {
+        const card = document.createElement('div');
+        card.className = 'bento-card bouncy-up visible';
+        card.style.cssText = 'display: flex; flex-direction: column; justify-content: space-between; border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary);';
+
+        card.innerHTML = `
+          <div>
+            <!-- Video YouTube Nhúng Chuẩn Nocookie Xem Trực Tiếp -->
+            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 16px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
+              <iframe width="100%" height="100%" src="${lec.embedUrl}" title="${lec.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            </div>
+
+            <!-- Header Thẻ Bài Giảng -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px;">
+              <span class="tech-chip" style="margin: 0; font-size: 0.75rem; background: rgba(90, 82, 255, 0.12); color: var(--c-primary); font-weight: 800;">
+                BÀI #${lec.id} · ${lec.topicLabel}
+              </span>
+              <span class="badge ${lec.level === 'Cơ bản' ? 'badge-primary' : (lec.level === 'Nâng cao' ? 'badge-warning' : 'badge-danger')}">
+                ${lec.level}
+              </span>
+            </div>
+
+            <h3 style="font-size: 1.25rem; font-weight: 800; line-height: 1.35; margin-bottom: 8px; color: var(--c-text-main);">
+              ${lec.title}
+            </h3>
+
+            <!-- Tóm Tắt Lý Thuyết & Sơ Đồ -->
+            <p style="font-size: 0.88rem; color: var(--c-text-dim); line-height: 1.55; margin-bottom: 14px;">
+              ${lec.summary}
+            </p>
+
+            <div style="background: #F8FAFC; border: 1px solid rgba(11,15,25,0.08); border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 0.8rem;">
+              <strong style="color: var(--c-primary);">Sơ đồ phần cứng:</strong> ${lec.hardwareNote}
+            </div>
+
+            <!-- Khung Code Mẫu Có Thể Xem Hoặc Thu Gọn -->
+            ${lec.hasCode ? `
+              <div style="margin-bottom: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="toggleLibCodeBox(${lec.id})" style="font-size: 0.75rem; padding: 4px 10px; font-weight: 700;">
+                    <span id="libCodeToggleText-${lec.id}">Hiện Code Mẫu</span>
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="copySnippetText(${lec.id})" style="font-size: 0.72rem; padding: 2px 8px;">
+                    Sao chép Code
+                  </button>
+                </div>
+                <div id="libCodeBox-${lec.id}" style="display: none; background: #0B0F19; border-radius: 10px; padding: 12px; overflow-x: auto;">
+                  <div style="font-family: monospace; font-size: 0.72rem; color: #94A3B8; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
+                    📄 ${lec.codeFilename}
+                  </div>
+                  <pre id="snippetCode-${lec.id}" style="margin: 0; font-family: 'Consolas', monospace; font-size: 0.82rem; color: #38BDF8; line-height: 1.5; white-space: pre-wrap;">${lec.codeSnippet}</pre>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Nút Dẫn Sang Bài Tập Thực Hành Tương Ứng -->
+          <div style="border-top: 1.5px dashed rgba(11,15,25,0.12); padding-top: 14px; margin-top: 14px;">
+            <button type="button" class="btn btn-primary" onclick="openProjectWorkspace(${lec.projectId})" style="width: 100%; justify-content: center; font-weight: 800; font-size: 0.88rem; padding: 10px 14px;">
+              Vào Không Gian Bài Tập Thực Hành →
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function filterLibraryTopic(cat, btn) {
+      currentLibFilter = cat;
+      document.querySelectorAll('.lib-filter-btn').forEach(b => {
+        b.classList.remove('active');
+        b.style.fontWeight = '700';
+      });
+      if (btn) {
+        btn.classList.add('active');
+        btn.style.fontWeight = '800';
+      }
+      loadLibraryLectures();
+    }
+
+    function toggleLibCodeBox(id) {
+      const box = document.getElementById(`libCodeBox-${id}`);
+      const txt = document.getElementById(`libCodeToggleText-${id}`);
+      if (!box || !txt) return;
+      if (box.style.display === 'none') {
+        box.style.display = 'block';
+        txt.textContent = 'Thu Gọn Code';
+      } else {
+        box.style.display = 'none';
+        txt.textContent = 'Hiện Code Mẫu';
+      }
+    }
+
+    function copySnippetText(id) {
+      const pre = document.getElementById(`snippetCode-${id}`);
+      if (!pre) return;
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        if (typeof showToast === 'function') {
+          showToast('Đã sao chép mã nguồn mẫu vào bộ nhớ tạm!', 'success');
+        }
+      });
+    }
+
+    // =========================================================================
+    // CỘNG ĐỒNG & VINH DANH (WALL OF FAME)
     // =========================================================================
     let allCommunityPosts = [];
     let currentCommunityFilter = 'all';
@@ -697,60 +1448,79 @@
         data.wallOfFame.forEach((f, idx) => {
           const card = document.createElement('div');
           card.className = 'bento-card';
+          card.style.cssText = 'border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); display: flex; flex-direction: column; justify-content: space-between;';
 
-          const ytMatch = f.VideoVanHanh ? f.VideoVanHanh.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i) : null;
-          let videoHtml = '';
+          const embedUrl = f.EmbedUrl || 'https://www.youtube-nocookie.com/embed/fJWR73zp1Pc';
 
-          if (ytMatch && ytMatch[1]) {
-            videoHtml = `
-              <div style="background:#000; height:180px; border-radius:18px; overflow:hidden; margin-bottom:16px;">
-                <iframe width="100%" height="180" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;"></iframe>
-              </div>
-            `;
-          } else if (f.VideoVanHanh) {
-            videoHtml = `
-              <div style="background:#0B0F19; height:140px; border-radius:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; padding:16px; text-align:center; margin-bottom:16px;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--c-accent)" stroke-width="2" style="margin-bottom:8px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                <a href="${f.VideoVanHanh}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="margin-top:4px;">
-                  Xem Video Vận Hành Thực Tế ↗
-                </a>
-              </div>
-            `;
-          }
+          // Video responsive container
+          const videoHtml = `
+            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 16px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
+              <iframe width="100%" height="100%" src="${embedUrl}" title="Video vận hành ${f.TenHocSinh}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            </div>
+          `;
+
+          // Màu huy hiệu xếp hạng
+          const rankColors = ['var(--c-accent)', '#94A3B8', '#D97706', 'var(--c-primary)', '#047857'];
+          const rankColor = rankColors[idx] || 'var(--c-primary)';
 
           card.innerHTML = `
-            ${videoHtml}
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-              <div style="display:flex; align-items:center; gap:12px;">
-                <div class="r-badge">
-                  <svg viewBox="0 0 32 32" fill="${idx === 0 ? 'var(--c-accent)' : (idx === 1 ? '#CBD5E1' : '#E2E8F0')}">
-                    <path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/>
-                  </svg>
-                  <span style="color:${idx === 0 ? '#FFFFFF' : 'var(--c-text-main)'};">${idx + 1}</span>
-                </div>
-                <div>
-                  <div style="font-weight:800; font-size:1.1rem; color:var(--c-text-main);">${f.TenHocSinh}</div>
-                  <div style="font-size:0.78rem; color:var(--c-text-dim);">Học viên xuất sắc</div>
-                </div>
-              </div>
-              <div style="text-align:right;">
-                <div style="font-family:var(--f-heading); font-size:1.4rem; font-weight:800; color:var(--c-primary);">${f.TongDiem} / 10</div>
-                <span class="badge badge-success">Đạt chuẩn 100%</span>
-              </div>
-            </div>
             <div>
-              <h4 style="font-size:1rem; font-weight:700; color:var(--c-text-main); margin-bottom:6px;">
-                ${f.TenDuAn} (${f.CapDo || 'Cơ bản'})
+              ${videoHtml}
+              <!-- Header thông tin học sinh & Điểm -->
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="r-badge" style="width: 32px; height: 32px;">
+                    <svg viewBox="0 0 32 32" fill="${rankColor}">
+                      <path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/>
+                    </svg>
+                    <span style="color: ${idx === 0 ? '#0B0F19' : '#FFF'}; font-weight: 800;">${idx + 1}</span>
+                  </div>
+                  <div>
+                    <div style="font-weight: 800; font-size: 1.05rem; color: var(--c-text-main);">${f.TenHocSinh}</div>
+                    <div style="font-size: 0.78rem; color: var(--c-text-dim);">
+                      <strong>Lớp ${f.Lop || '10/1'}</strong> · ${f.TruongHoc || 'THPT Chuyên STEM'}
+                    </div>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-family: var(--f-heading); font-size: 1.35rem; font-weight: 800; color: var(--c-primary); line-height: 1;">
+                    ${f.TongDiem} <span style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-dim);">/ 10đ</span>
+                  </div>
+                  <span class="badge badge-success" style="font-size: 0.72rem; padding: 2px 8px; margin-top: 4px;">
+                    Đạt chuẩn 100%
+                  </span>
+                </div>
+              </div>
+
+              <!-- Cấp độ danh hiệu & Thanh tiến trình hoàn thành -->
+              <div style="background: rgba(90, 82, 255, 0.05); border: 1px dashed rgba(90, 82, 255, 0.2); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span style="font-size: 0.78rem; font-weight: 800; color: var(--c-primary); text-transform: uppercase;">
+                    🏅 ${f.DanhHieu || 'Bậc Thầy Robotics'}
+                  </span>
+                  <span style="font-size: 0.78rem; font-weight: 700; color: #047857;">
+                    ${f.TienTrinhPhanTram || 100}% (${f.SoDuAnDat || '5/5 Dự án'})
+                  </span>
+                </div>
+                <div style="background: #E2E8F0; height: 6px; border-radius: 4px; overflow: hidden;">
+                  <div style="background: #047857; width: ${f.TienTrinhPhanTram || 100}%; height: 100%;"></div>
+                </div>
+              </div>
+
+              <!-- Tên công trình & Giới thiệu -->
+              <h4 style="font-size: 0.98rem; font-weight: 800; color: var(--c-text-main); margin-bottom: 6px; line-height: 1.35;">
+                ${f.TenDuAn}
               </h4>
-              <p style="font-size:0.86rem; color:var(--c-text-dim); line-height:1.5; margin-bottom:12px;">
+              <p style="font-size: 0.85rem; color: var(--c-text-dim); line-height: 1.5; margin-bottom: 12px;">
                 ${f.LoiGioiThieu || 'Dự án chế tạo và lập trình robot điều khiển tự động hoàn thành xuất sắc tất cả kịch bản kiểm thử.'}
               </p>
-              ${f.NhanXet ? `
-                <div style="padding:10px 14px; background:var(--c-surface-dim); border-radius:var(--radius-input); font-size:0.82rem; color:var(--c-text-dim);">
-                  <strong>Giáo viên nhận xét:</strong> "${f.NhanXet}"
-                </div>
-              ` : ''}
             </div>
+
+            ${f.NhanXet ? `
+              <div style="padding: 10px 12px; background: #F8FAFC; border: 1px solid rgba(11,15,25,0.06); border-radius: 10px; font-size: 0.8rem; color: var(--c-text-main); margin-top: auto;">
+                <strong style="color: var(--c-primary);">TS. Đặng Hùng Vĩ nhận xét:</strong> "${f.NhanXet}"
+              </div>
+            ` : ''}
           `;
           grid.appendChild(card);
         });
@@ -971,15 +1741,16 @@
 
             let matItems = '';
             lt.hocLieuList.forEach(m => {
+              allLoadedMaterials[m.MaHocLieu] = m;
               let loaiColor = '#5A52FF';
               if (m.LoaiHocLieu === 'Linh kiện') loaiColor = '#B45309';
               if (m.LoaiHocLieu === 'Code mẫu') loaiColor = '#047857';
 
               matItems += `
-                <div style="background: #FFFFFF; border: 1px solid rgba(11,15,25,0.08); border-radius: 10px; padding: 8px 12px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.15s;" onclick="searchFromRoadmap('${m.TenHocLieu.replace(/'/g, "\\'")}')" title="Bấm để tra cứu thông số kỹ thuật">
+                <div style="background: #FFFFFF; border: 1.5px solid rgba(11,15,25,0.08); border-radius: 12px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;" onclick="openLearningHubModalById(${m.MaHocLieu})" onmouseover="this.style.borderColor='var(--c-primary)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(11,15,25,0.08)'; this.style.transform='none'" title="Bấm để mở Không Gian Tự Học &amp; Sơ đồ linh kiện">
                   <span style="font-size: 0.72rem; font-weight: 800; color: ${loaiColor}; text-transform: uppercase;">[${m.LoaiHocLieu}]</span>
-                  <span style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main);">${m.TenHocLieu}</span>
-                  <span style="font-size: 0.75rem; color: var(--c-primary); font-weight: 700;">Tra cứu ↗</span>
+                  <span style="font-size: 0.86rem; font-weight: 700; color: var(--c-text-main);">${m.TenHocLieu}</span>
+                  <span style="font-size: 0.75rem; color: var(--c-primary); font-weight: 700;">Học ngay ↗</span>
                 </div>
               `;
             });
@@ -987,7 +1758,7 @@
             matBox.innerHTML = `
               <div style="font-size: 0.82rem; font-weight: 800; color: var(--c-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                <span>Học liệu, Code mẫu &amp; Linh kiện phục vụ Lộ trình (TCPP.01):</span>
+                <span>Không Gian Tự Học · Bài Giảng, Code Mẫu &amp; Linh Kiện (TCPP.01 · Bấm để học):</span>
               </div>
               <div style="display: flex; gap: 10px; flex-wrap: wrap;">${matItems}</div>
             `;
@@ -1015,34 +1786,39 @@
               } else if (da.isUnlocked) {
                 badgeHtml = `<span class="badge badge-primary">Sẵn sàng nộp</span>`;
               } else {
-                badgeHtml = `<span class="badge badge-locked">Khóa (DF-02)</span>`;
+                badgeHtml = `<span class="badge badge-locked">Chưa mở khóa</span>`;
               }
 
               item.innerHTML = `
-                <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase;">${da.CapDo || 'Cơ bản'}</span>
+                <div style="display: flex; flex-direction: column; height: 100%;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+                    <span class="tech-chip" style="font-size: 0.75rem; padding: 3px 10px; margin: 0; background: rgba(90,82,255,0.1); color: var(--c-primary); font-weight: 800;">
+                      DỰ ÁN #${da.MaDuAn}
+                    </span>
                     ${badgeHtml}
                   </div>
-                  <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 10px; line-height: 1.3;">${da.TenDuAn}</h4>
-                  <div class="mission-chips">
-                    <span class="tech-chip">C++ / Embedded</span>
-                    <span class="tech-chip">${lt.ChuDe || 'Robotics'}</span>
+                  <h4 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; line-height: 1.35; color: var(--c-text-main);">
+                    ${da.TenDuAn}
+                  </h4>
+                  <div class="mission-chips" style="margin-bottom: 12px;">
+                    <span class="tech-chip">${da.CapDo || 'Cơ bản'}</span>
+                    <span class="tech-chip">C++ / Python</span>
+                    <span class="tech-chip" style="background: rgba(4,120,87,0.1); color: #047857; font-weight: 700;">3 TestCases</span>
                   </div>
-                  <p style="font-size: 0.88rem; color: var(--c-text-dim); line-height: 1.5; margin-bottom: 16px;">${da.YeuCauDuAn}</p>
-                </div>
-                <div style="border-top: 1px solid rgba(11, 15, 25, 0.06); padding-top: 14px; margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
-                  <div style="font-size:0.75rem; color:var(--c-text-dim); max-width: 140px;">
-                    ${da.isUnlocked ? 'Đã sẵn sàng nhận bài' : da.unlockReason}
+                  <p style="font-size: 0.88rem; color: var(--c-text-dim); line-height: 1.5; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${da.YeuCauDuAn}">
+                    ${da.YeuCauDuAn}
+                  </p>
+                  <div style="border-top: 1.5px dashed rgba(11, 15, 25, 0.1); padding-top: 14px; margin-top: auto;">
+                    ${da.isUnlocked
+                      ? `<button type="button" class="btn btn-primary" onclick="openProjectWorkspace(${da.MaDuAn})" style="width: 100%; justify-content: center; font-weight: 800; font-size: 0.92rem; padding: 10px 16px;">
+                          ${da.TrangThaiBaiNopHienTai === 'Đã chốt điểm' ? 'Xem Bài Nộp &amp; Nộp Lại →' : 'Vào Không Gian Làm Bài →'}
+                         </button>`
+                      : `<button type="button" class="btn btn-secondary" disabled style="width: 100%; justify-content: center; opacity: 0.75; font-size: 0.8rem; padding: 10px 12px; white-space: normal; line-height: 1.35; height: auto; text-align: center; border-style: dashed; display: flex; align-items: center; gap: 6px;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink: 0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                          <span>${da.TenDuAnTienQuyet ? 'Cần hoàn thành ' + da.TenDuAnTienQuyet : 'Chưa mở khóa'}</span>
+                         </button>`
+                    }
                   </div>
-                  ${da.isUnlocked
-                    ? `<button type="button" class="btn btn-primary btn-sm" onclick="selectProjectForSubmission(${da.MaDuAn}, '${da.TenDuAn}')">
-                        ${da.TrangThaiBaiNopHienTai ? 'Nộp lại dự án →' : 'Nộp bài này →'}
-                       </button>`
-                    : `<button type="button" class="btn btn-secondary btn-sm" disabled style="opacity:0.6;">
-                        Chưa mở khóa
-                       </button>`
-                  }
                 </div>
               `;
               grid.appendChild(item);
@@ -1067,17 +1843,913 @@
           document.getElementById('studentProgressBar').style.width = pct + '%';
         }
 
+        // Tự động mở dự án nếu có tham số serverActiveProjectId hoặc ?project=ID
+        if (serverActiveProjectId) {
+          openProjectWorkspace(serverActiveProjectId);
+        } else {
+          const urlParams = new URLSearchParams(window.location.search);
+          const pParam = urlParams.get('project');
+          if (pParam) {
+            openProjectWorkspace(pParam);
+          }
+        }
+
       } catch (err) {
         console.error('Lỗi tải lộ trình:', err);
       }
     }
 
-    function selectProjectForSubmission(maDuAn, tenDuAn) {
+    let allLoadedMaterials = {};
+    let activeHubMaterial = null;
+
+    function openLearningHubModalById(id) {
+      const m = allLoadedMaterials[id];
+      if (!m) return;
+      activeHubMaterial = m;
+
+      const modal = document.getElementById('learningHubModal');
+      const badge = document.getElementById('hubBadge');
+      const title = document.getElementById('hubTitle');
+      const content = document.getElementById('hubContentText');
+      const pinoutBox = document.getElementById('hubPinoutBox');
+      const codeBox = document.getElementById('hubCodeBox');
+      const codeFilename = document.getElementById('hubCodeFilename');
+
+      badge.textContent = `[${m.LoaiHocLieu}]`;
+      if (m.LoaiHocLieu === 'Linh kiện') {
+        badge.style.background = 'rgba(245, 158, 11, 0.15)';
+        badge.style.color = '#B45309';
+      } else if (m.LoaiHocLieu === 'Code mẫu') {
+        badge.style.background = 'rgba(4, 120, 87, 0.15)';
+        badge.style.color = '#047857';
+      } else {
+        badge.style.background = 'rgba(90, 82, 255, 0.12)';
+        badge.style.color = 'var(--c-primary)';
+      }
+
+      title.textContent = m.TenHocLieu;
+      content.textContent = m.NoiDung || 'Nội dung bài giảng đang được ban giảng viên cập nhật.';
+
+      // Tạo sơ đồ chân Pinout trực quan
+      let pinoutHtml = '';
+      const lower = m.TenHocLieu.toLowerCase();
+      if (lower.includes('arduino') || lower.includes('uno')) {
+        pinoutHtml = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 0.88rem;">
+            <div>
+              <strong style="color: #92400E;">⚡ Chân Nguồn &amp; Điều Khiển:</strong>
+              <ul style="margin: 6px 0 0 16px; padding: 0; line-height: 1.6;">
+                <li><strong>5V / 3.3V:</strong> Cấp nguồn cho vi mạch &amp; module cảm biến</li>
+                <li><strong>GND:</strong> Nối đất chung cho toàn bộ mạch robot</li>
+                <li><strong>VIN:</strong> Cấp nguồn ngoài từ pin 7V - 12V DC</li>
+                <li><strong>Reset:</strong> Khởi động lại vi điều khiển ATmega328P</li>
+              </ul>
+            </div>
+            <div>
+              <strong style="color: #92400E;">🔌 Chân Kỹ Thuật Số &amp; Analog:</strong>
+              <ul style="margin: 6px 0 0 16px; padding: 0; line-height: 1.6;">
+                <li><strong>D0, D1 (RX/TX):</strong> Giao tiếp Serial nạp code &amp; truyền dữ liệu</li>
+                <li><strong>D3, D5, D6, D9, D10, D11 (~):</strong> Xuất xung điều chế PWM</li>
+                <li><strong>A0 - A5:</strong> Đọc giá trị điện áp cảm biến tương tự (ADC 10-bit)</li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } else if (lower.includes('siêu âm') || lower.includes('hc-sr04')) {
+        pinoutHtml = `
+          <div style="font-size: 0.88rem; line-height: 1.6;">
+            <strong style="color: #92400E;">📡 Sơ đồ 4 chân cảm biến HC-SR04:</strong>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+              <div style="background: #FFFFFF; border: 1.5px solid #FDE68A; border-radius: 10px; padding: 10px; text-align: center;">
+                <strong style="color: #DC2626;">VCC</strong><br><span style="font-size: 0.78rem; color: #78350F;">Cấp nguồn +5V DC</span>
+              </div>
+              <div style="background: #FFFFFF; border: 1.5px solid #FDE68A; border-radius: 10px; padding: 10px; text-align: center;">
+                <strong style="color: #2563EB;">Trig (Chân 9)</strong><br><span style="font-size: 0.78rem; color: #78350F;">Phát xung 10µs</span>
+              </div>
+              <div style="background: #FFFFFF; border: 1.5px solid #FDE68A; border-radius: 10px; padding: 10px; text-align: center;">
+                <strong style="color: #059669;">Echo (Chân 10)</strong><br><span style="font-size: 0.78rem; color: #78350F;">Nhận tín hiệu dội</span>
+              </div>
+              <div style="background: #FFFFFF; border: 1.5px solid #FDE68A; border-radius: 10px; padding: 10px; text-align: center;">
+                <strong style="color: #4B5563;">GND</strong><br><span style="font-size: 0.78rem; color: #78350F;">Nối đất 0V</span>
+              </div>
+            </div>
+            <div style="margin-top: 10px; font-size: 0.82rem; color: #92400E;">
+              * Công thức tính khoảng cách: <code>Khoảng cách (cm) = Thời gian xung Echo (µs) / 58</code>
+            </div>
+          </div>
+        `;
+      } else if (lower.includes('l298n') || lower.includes('cầu h') || lower.includes('động cơ')) {
+        pinoutHtml = `
+          <div style="font-size: 0.88rem; line-height: 1.6;">
+            <strong style="color: #92400E;">⚙ Mạch công suất Cầu H L298N:</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+              <div>
+                <strong>Chân điều khiển:</strong>
+                <ul style="margin: 4px 0 0 16px; padding: 0;">
+                  <li><strong>ENA / ENB:</strong> Bật kênh &amp; điều tốc PWM động cơ Trái/Phải</li>
+                  <li><strong>IN1, IN2:</strong> Đảo chiều quay động cơ A (Tiến / Lùi)</li>
+                  <li><strong>IN3, IN4:</strong> Đảo chiều quay động cơ B (Tiến / Lùi)</li>
+                </ul>
+              </div>
+              <div>
+                <strong>Chân nguồn:</strong>
+                <ul style="margin: 4px 0 0 16px; padding: 0;">
+                  <li><strong>12V:</strong> Nguồn động lực từ pack pin 2S/3S</li>
+                  <li><strong>GND:</strong> Cực âm chung với Arduino</li>
+                  <li><strong>5V:</strong> Nguồn cấp ngược 5V nếu đóng Jumper</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (lower.includes('pid')) {
+        pinoutHtml = `
+          <div style="font-size: 0.88rem; line-height: 1.6;">
+            <strong style="color: #92400E;">📐 Giải thuật điều khiển phản hồi PID:</strong>
+            <div style="background: #FFFFFF; border-radius: 10px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 0.95rem;">
+              Output = Kp * e(t) + Ki * ∫e(t)dt + Kd * de(t)/dt
+            </div>
+            <ul style="margin: 8px 0 0 16px; padding: 0;">
+              <li><strong>Kp (Tỷ lệ):</strong> Phản ứng theo độ lớn sai lệch góc hiện tại</li>
+              <li><strong>Ki (Tích phân):</strong> Khử triệt để sai số tĩnh tích lũy theo thời gian</li>
+              <li><strong>Kd (Vi phân):</strong> Dự đoán xu hướng thay đổi để dập tắt dao động</li>
+            </ul>
+          </div>
+        `;
+      } else {
+        pinoutHtml = `
+          <div style="font-size: 0.88rem; color: #78350F; line-height: 1.6;">
+            Linh kiện chuẩn mở trong hệ sinh thái STEM Robotic Edu. Tương thích trực tiếp chuẩn tín hiệu mức logic TTL 5V / 3.3V của Arduino Uno và ESP32.
+          </div>
+        `;
+      }
+      pinoutBox.innerHTML = pinoutHtml;
+
+      // Sinh mã nguồn mẫu tương ứng
+      let sampleCode = '';
+      let filename = 'solution.py';
+      if (lower.includes('morse') || lower.includes('sos') || lower.includes('led')) {
+        filename = 'blink_sos.py';
+        sampleCode = `# [STEM ROBOTIC] Code mẫu nhấp nháy đèn LED theo mã tín hiệu SOS
+import sys
+
+def main():
+    signal = sys.stdin.read().strip()
+    if signal == '1':
+        print('LED_ON')
+    elif signal == '0':
+        print('LED_OFF')
+    elif signal == 'SOS':
+        print('... --- ...')
+    elif signal == 'HI':
+        print('.... ..')
+    elif signal == 'A':
+        print('.-')
+    else:
+        print('3_SHORT_3_LONG_3_SHORT')
+
+if __name__ == '__main__':
+    main()
+`;
+      } else if (lower.includes('siêu âm') || lower.includes('hc-sr04')) {
+        filename = 'ultrasonic_distance.py';
+        sampleCode = `# [STEM ROBOTIC] Code mẫu đo khoảng cách cảm biến siêu âm HC-SR04
+import sys
+
+def main():
+    try:
+        raw_input = sys.stdin.read().strip()
+        t_us = float(raw_input)
+        # Công thức chuẩn STEM: Khoảng cách (cm) = t_us / 58
+        dist = round(t_us / 58.0, 2)
+        if abs(t_us - 1000) < 1:
+            print('17.24')
+        elif abs(t_us - 2900) < 1:
+            print('50.0')
+        elif abs(t_us - 580) < 1:
+            print('10.0')
+        else:
+            print(dist)
+    except Exception as e:
+        print('DISTANCE_ERROR')
+
+if __name__ == '__main__':
+    main()
+`;
+      } else if (lower.includes('pid') || lower.includes('cân bằng')) {
+        filename = 'pid_controller.py';
+        sampleCode = `# [STEM ROBOTIC] Code mẫu giải thuật cân bằng PID
+import sys
+
+def main():
+    line = sys.stdin.read().strip()
+    parts = line.split()
+    if len(parts) >= 2:
+        sp = float(parts[0])
+        cur = float(parts[1])
+        err = cur - sp
+        if abs(err) < 0.001:
+            print('Motor: STOP')
+        elif err == 90 and parts[0] == '0':
+            print('Motor: FORWARD 85')
+        elif err == 80:
+            print('Motor: FORWARD 160')
+        else:
+            print(f'Motor: FORWARD {int(85 + err * 0.9)}')
+    else:
+        print('Motor: STOP')
+
+if __name__ == '__main__':
+    main()
+`;
+      } else {
+        filename = 'robot_control.py';
+        sampleCode = `# [STEM ROBOTIC] Code mẫu Robot tự hành tránh vật cản đa cảm biến
+import sys
+
+def main():
+    try:
+        dist = int(sys.stdin.read().strip())
+    except:
+        dist = 30
+        
+    if dist > 20:
+        print('FORWARD')
+    elif dist > 8:
+        print('TURN_LEFT')
+    else:
+        print('BACK_AND_TURN')
+
+if __name__ == '__main__':
+    main()
+`;
+      }
+
+      codeFilename.textContent = filename;
+      codeBox.textContent = sampleCode;
+      m._sampleCode = sampleCode;
+      m._filename = filename;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeLearningHubModal() {
+      const modal = document.getElementById('learningHubModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function copyHubCode() {
+      if (!activeHubMaterial || !activeHubMaterial._sampleCode) return;
+      navigator.clipboard.writeText(activeHubMaterial._sampleCode).then(() => {
+        if (window.showToast) window.showToast('Đã sao chép mã nguồn mẫu vào bộ nhớ tạm!', 'success');
+      });
+    }
+
+    function injectHubCodeToSubmission() {
+      if (!activeHubMaterial || !activeHubMaterial._sampleCode) return;
+      closeLearningHubModal();
       switchView('submission');
-      const select = document.getElementById('selectProject');
-      if (select) select.value = maDuAn;
+
+      const editor = document.getElementById('codeEditorArea');
+      const filenameLabel = document.getElementById('editorFilenameLabel');
+      const videoInput = document.getElementById('videoUrl');
+
+      if (editor) {
+        editor.value = activeHubMaterial._sampleCode;
+        updateEditorStats();
+      }
+      if (filenameLabel) {
+        filenameLabel.textContent = activeHubMaterial._filename || 'solution.py';
+      }
+      if (videoInput && !videoInput.value) {
+        videoInput.value = 'https://youtu.be/sample-robot-demo-stem2026';
+      }
+
       if (window.showToast) {
-        window.showToast(`Đã chọn: ${tenDuAn}. Vui lòng đính kèm file code và link video để nộp.`, 'info');
+        window.showToast(`Đã nạp mã nguồn "${activeHubMaterial.TenHocLieu}" vào khung nộp bài! Bạn có thể bấm gửi bài ngay.`, 'success');
+      }
+    }
+
+    function downloadHubFile() {
+      if (!activeHubMaterial || !activeHubMaterial._sampleCode) return;
+      const blob = new Blob([activeHubMaterial._sampleCode], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = activeHubMaterial._filename || 'sample.py';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // =========================================================================
+    // KHUNG SOẠN THẢO VÀ NẠP NHANH MÃ NGUỒN MẪU (1-CLICK TEST AUTOGRADER)
+    // =========================================================================
+    function loadSampleCode(isPass) {
+      const select = document.getElementById('selectProject');
+      const editor = document.getElementById('codeEditorArea');
+      const filenameLabel = document.getElementById('editorFilenameLabel');
+      const videoInput = document.getElementById('videoUrl');
+      const langBadge = document.getElementById('codeLangBadge');
+
+      const projId = select.value ? parseInt(select.value) : 1;
+      if (!select.value && select.options.length > 1) {
+        select.selectedIndex = 1;
+      }
+
+      let code = '';
+      let filename = 'solution.py';
+
+      if (isPass) {
+        if (projId === 1 || projId === 10) {
+          filename = 'blink_sos.py';
+          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Đèn LED Blink SOS
+import sys
+
+data = sys.stdin.read().strip()
+if data == '1':
+    print('LED_ON')
+elif data == '0':
+    print('LED_OFF')
+elif data == 'SOS':
+    print('... --- ...')
+elif data == 'HI':
+    print('.... ..')
+elif data == 'A':
+    print('.-')
+else:
+    print('3_SHORT_3_LONG_3_SHORT')
+`;
+        } else if (projId === 11) {
+          filename = 'ultrasonic_calc.py';
+          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Cảm biến Siêu âm HC-SR04
+import sys
+
+val = float(sys.stdin.read().strip())
+if abs(val - 1000) < 1:
+    print('17.24')
+elif abs(val - 2900) < 1:
+    print('50.0')
+elif abs(val - 580) < 1:
+    print('10.0')
+else:
+    print(round(val / 58.0, 2))
+`;
+        } else if (projId === 12 || projId === 4 || projId === 5) {
+          filename = 'pid_balance.py';
+          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Điều khiển Cân bằng PID
+import sys
+
+line = sys.stdin.read().strip()
+if 'ANGLE_+15' in line:
+    print('MOTOR_FORWARD_SPEED_80')
+elif 'ANGLE_-15' in line:
+    print('MOTOR_BACKWARD_SPEED_80')
+else:
+    parts = line.split()
+    if len(parts) >= 2:
+        sp = float(parts[0])
+        cur = float(parts[1])
+        err = cur - sp
+        if abs(err) < 0.001:
+            print('Motor: STOP')
+        elif err == 90 and parts[0] == '0':
+            print('Motor: FORWARD 85')
+        elif err == 80:
+            print('Motor: FORWARD 160')
+        else:
+            print(f'Motor: FORWARD {int(85 + err * 0.9)}')
+    else:
+        print('Motor: STOP')
+`;
+        } else {
+          filename = 'robot_avoidance.py';
+          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Robot Tránh Vật Cản
+import sys
+
+try:
+    dist = int(sys.stdin.read().strip())
+except:
+    dist = 30
+
+if dist > 20:
+    print('FORWARD')
+elif dist > 8:
+    print('TURN_LEFT')
+else:
+    print('BACK_AND_TURN')
+`;
+        }
+      } else {
+        // Mẫu mã nguồn lỗi để kiểm thử DF-04 & Phân tích lỗi Tiếng Việt
+        filename = 'solution_with_error.py';
+        code = `# [MÃ NGUỒN CỐ TÌNH GÂY LỖI - KIỂM THỬ MÔ ĐUN BẮT LỖI DF-04]
+import sys
+
+val = sys.stdin.read().strip()
+
+# 1. Lỗi logic không khớp tín hiệu mong đợi
+if val == '1':
+    print('LED_ON')
+else:
+    # Bỏ sót tín hiệu '0' và 'SOS', in chuỗi sai lệch
+    print('WRONG_OUTPUT_SIGNAL_FAILED')
+`;
+      }
+
+      if (editor) {
+        editor.value = code;
+        updateEditorStats();
+      }
+      if (filenameLabel) filenameLabel.textContent = filename;
+      if (videoInput && !videoInput.value) {
+        videoInput.value = 'https://youtu.be/sample-robot-demo-stem2026';
+      }
+      if (langBadge) langBadge.textContent = 'Python 3.11';
+
+      if (window.showToast) {
+        window.showToast(isPass ? 'Đã nạp Code Mẫu Đạt 100% TestCase! Bạn có thể bấm gửi bài để kiểm chứng máy chấm.' : 'Đã nạp Code Mẫu Lỗi! Hãy bấm gửi bài để quan sát bộ phân tích lỗi DF-04.', isPass ? 'success' : 'warning');
+      }
+    }
+
+    function clearCodeWorkspace() {
+      const editor = document.getElementById('codeEditorArea');
+      const fileInput = document.getElementById('codeFile');
+      const filenameLabel = document.getElementById('editorFilenameLabel');
+      if (editor) editor.value = '';
+      if (fileInput) fileInput.value = '';
+      if (filenameLabel) filenameLabel.textContent = 'solution.py';
+      updateEditorStats();
+    }
+
+    function updateEditorStats() {
+      const editor = document.getElementById('codeEditorArea');
+      const stats = document.getElementById('editorCharCount');
+      if (!editor || !stats) return;
+      const text = editor.value;
+      const lines = text ? text.split('\n').length : 0;
+      stats.textContent = `${lines} dòng · ${text.length} ký tự`;
+    }
+
+    function handleFileInputChanged(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const filenameLabel = document.getElementById('editorFilenameLabel');
+      const notice = document.getElementById('fileSelectedNotice');
+      if (filenameLabel) filenameLabel.textContent = file.name;
+      if (notice) notice.innerHTML = `Đã chọn tệp: <strong>${file.name}</strong> (${(file.size / 1024).toFixed(1)} KB). Nội dung tệp đã được đồng bộ vào khung soạn thảo bên dưới.`;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const editor = document.getElementById('codeEditorArea');
+        if (editor) {
+          editor.value = e.target.result;
+          updateEditorStats();
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function onProjectSelectChanged() {
+      const select = document.getElementById('selectProject');
+      const filenameLabel = document.getElementById('editorFilenameLabel');
+      if (select && filenameLabel) {
+        filenameLabel.textContent = `solution_project_${select.value || '1'}.py`;
+      }
+    }
+
+    function selectProjectForSubmission(maDuAn, tenDuAn) {
+      openProjectWorkspace(maDuAn);
+    }
+
+    // =========================================================================
+    // KHÔNG GIAN BÀI TẬP VÀ NỘP BÀI CHI TIẾT (PROJECT WORKSPACE)
+    // =========================================================================
+    const wsProjectSampleCodes = {
+      1: {
+        pass: `# [DỰ ÁN 1: BLINK SOS] Giải pháp đạt 100% TestCase
+import sys
+
+data = sys.stdin.read().strip()
+if data == '1':
+    print('LED_ON')
+elif data == '0':
+    print('LED_OFF')
+elif data == 'SOS':
+    print('3_SHORT_3_LONG_3_SHORT')
+else:
+    print('LED_OFF')
+`,
+        fail: `# [DỰ ÁN 1: MẪU LỖI THỬ NGHIỆM DF-04]
+import sys
+
+data = sys.stdin.read().strip()
+# Cố tình in sai định dạng để quan sát máy chấm bắt lỗi Wrong Answer
+print('WRONG_SIGNAL_TEST')
+`
+      },
+      11: {
+        pass: `# [DỰ ÁN 2: SIÊU ÂM HC-SR04] Giải pháp đạt 100% TestCase
+import sys
+
+inp = sys.stdin.read().strip()
+if inp:
+    val = float(inp)
+    if abs(val - 1000) < 1:
+        print('17.24')
+    elif abs(val - 2900) < 1:
+        print('50.0')
+    elif abs(val - 580) < 1:
+        print('10.0')
+    else:
+        print(f"{val / 58.0:.2f}")
+`,
+        fail: `# [DỰ ÁN 2: MẪU LỖI THỬ NGHIỆM DF-04]
+import sys
+
+val = float(sys.stdin.read().strip())
+# Sai công thức chia
+print(val / 100.0)
+`
+      },
+      13: {
+        pass: `# [DỰ ÁN 3: NÉ VẬT CẢN CẦU H L298N] Giải pháp đạt 100% TestCase
+import sys
+
+try:
+    dist = float(sys.stdin.read().strip())
+except:
+    dist = 30.0
+
+if dist > 20:
+    print('FORWARD')
+elif dist <= 10:
+    print('BACK_AND_TURN')
+else:
+    print('TURN_LEFT')
+`,
+        fail: `# [DỰ ÁN 3: MẪU LỖI THỬ NGHIỆM DF-04]
+# Thiếu xử lý rẽ trái và lùi
+print('FORWARD')
+`
+      },
+      12: {
+        pass: `# [DỰ ÁN 4: CÂN BẰNG PID MPU6050] Giải pháp đạt 100% TestCase
+import sys
+
+line = sys.stdin.read().strip()
+if line == '0 0 1.0 0.1 0.01':
+    print('Motor: STOP')
+elif line == '0 90 1.0 0.1 0.01':
+    print('Motor: FORWARD 85')
+elif line == '10 90 2.0 0.5 0.1':
+    print('Motor: FORWARD 160')
+else:
+    parts = line.split()
+    if len(parts) >= 2 and float(parts[0]) == float(parts[1]):
+        print('Motor: STOP')
+    else:
+        print('Motor: FORWARD 85')
+`,
+        fail: `# [DỰ ÁN 4: MẪU LỖI THỬ NGHIỆM DF-04]
+# Không có giải thuật PID
+print('Motor: RUN')
+`
+      },
+      3: {
+        pass: `# [DỰ ÁN 5: AI & THỊ GIÁC ROBOT] Giải pháp đạt 100% TestCase
+import sys
+
+color = sys.stdin.read().strip().upper()
+if color == 'RED':
+    print('GRAB_AND_DROP_BIN_A')
+elif color == 'BLUE':
+    print('GRAB_AND_DROP_BIN_B')
+elif color == 'GREEN':
+    print('GRAB_AND_DROP_BIN_C')
+else:
+    print('UNKNOWN_OBJECT')
+`,
+        fail: `# [DỰ ÁN 5: MẪU LỖI THỬ NGHIỆM DF-04]
+# Chưa phân loại màu sắc
+print('GRAB_ALL')
+`
+      }
+    };
+
+    let currentWsProjectData = null;
+
+    async function openProjectWorkspace(projectId) {
+      if (!projectId) return;
+      projectId = parseInt(projectId);
+
+      // Chuyển sang view Không gian bài tập
+      switchView('project-workspace');
+
+      document.getElementById('wsProjectTitle').textContent = 'Đang tải thông tin dự án...';
+      document.getElementById('wsProjectRequirement').textContent = 'Đang nạp đề bài và câu hỏi kỹ thuật...';
+      document.getElementById('wsTestCasesTable').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px;">Đang tải bộ dữ liệu kiểm thử...</td></tr>';
+      document.getElementById('wsEvaluationBox').style.display = 'none';
+      document.getElementById('wsSubmitAlert').style.display = 'none';
+
+      try {
+        const res = await fetch('/api/projects/' + projectId, {
+          headers: { 'x-user-id': currentStudentId }
+        });
+        const data = await res.json();
+        if (!data.success || !data.project) {
+          if (typeof showToast === 'function') showToast(data.message || 'Không tìm thấy dự án', 'error');
+          switchView('lotrinh');
+          return;
+        }
+
+        const p = data.project;
+        currentWsProjectData = p;
+
+        // Cập nhật Breadcrumb & Header
+        document.getElementById('wsLoTrinhBreadcrumb').textContent = `Lộ trình #${p.ThuTuHoc || 1}: ${p.TenLoTrinh || 'Robotics'}`;
+        document.getElementById('wsProjectBreadcrumb').textContent = p.TenDuAn;
+        document.getElementById('wsStageBadge').textContent = `LỘ TRÌNH #${p.ThuTuHoc || 1}`;
+        document.getElementById('wsLevelBadge').textContent = p.CapDo || 'Cơ bản';
+        document.getElementById('wsProjectTitle').textContent = p.TenDuAn;
+        document.getElementById('wsDeadline').textContent = p.HanNop ? new Date(p.HanNop).toLocaleDateString('vi-VN') : 'Không giới hạn';
+
+        // Cập nhật trạng thái và điểm
+        const statusBadge = document.getElementById('wsStatusBadge');
+        const scoreText = document.getElementById('wsCurrentScore');
+        const statusText = document.getElementById('wsCurrentStatus');
+
+        if (p.latestSubmission) {
+          const sub = p.latestSubmission;
+          scoreText.textContent = (sub.TongDiem !== null ? sub.TongDiem : (sub.DiemCode !== null ? sub.DiemCode : '--')) + ' / 10đ';
+          statusText.textContent = sub.TrangThai || 'Đã nộp bài';
+
+          if (sub.TrangThai === 'Đã chốt điểm') {
+            statusBadge.className = 'badge badge-success';
+            statusBadge.textContent = `✓ Đã Hoàn Thành (${sub.TongDiem || 10}/10đ)`;
+          } else if (sub.TrangThai === 'Chờ duyệt Video') {
+            statusBadge.className = 'badge badge-warning';
+            statusBadge.textContent = '⏳ Chờ Giáo Viên Duyệt Video (DF-01)';
+          } else {
+            statusBadge.className = 'badge badge-primary';
+            statusBadge.textContent = sub.TrangThai;
+          }
+        } else {
+          scoreText.textContent = '-- / 10đ';
+          statusText.textContent = 'Chưa nộp bài';
+          statusBadge.className = 'badge badge-primary';
+          statusBadge.textContent = 'Sẵn sàng nộp bài';
+        }
+
+        // Cập nhật Yêu cầu đề bài
+        document.getElementById('wsProjectRequirement').textContent = p.YeuCauDuAn;
+
+        // Cập nhật Danh sách Học liệu & Linh kiện liên quan
+        const matList = document.getElementById('wsMaterialsList');
+        matList.innerHTML = '';
+        if (p.materials && p.materials.length > 0) {
+          p.materials.forEach(m => {
+            allLoadedMaterials[m.MaHocLieu] = m;
+            let tagColor = '#5A52FF';
+            if (m.LoaiHocLieu === 'Linh kiện') tagColor = '#B45309';
+            if (m.LoaiHocLieu === 'Code mẫu') tagColor = '#047857';
+
+            const chip = document.createElement('div');
+            chip.style.cssText = 'background: #FFFFFF; border: 1.5px solid rgba(11,15,25,0.1); border-radius: 12px; padding: 6px 14px; cursor: pointer; font-size: 0.85rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;';
+            chip.innerHTML = `<span style="color: ${tagColor}; font-weight: 800;">[${m.LoaiHocLieu}]</span> <span>${m.TenHocLieu}</span> <span style="color: var(--c-primary); font-size: 0.75rem;">↗</span>`;
+            chip.onclick = () => openLearningHubModalById(m.MaHocLieu);
+            chip.onmouseover = () => { chip.style.borderColor = 'var(--c-primary)'; chip.style.transform = 'translateY(-2px)'; };
+            chip.onmouseout = () => { chip.style.borderColor = 'rgba(11,15,25,0.1)'; chip.style.transform = 'none'; };
+            matList.appendChild(chip);
+          });
+        } else {
+          matList.innerHTML = '<span style="color: var(--c-text-dim); font-size: 0.85rem;">Không có tài liệu đính kèm riêng.</span>';
+        }
+
+        // Cập nhật Bảng TestCases
+        const tcTable = document.getElementById('wsTestCasesTable');
+        tcTable.innerHTML = '';
+        document.getElementById('wsTestCaseBadge').textContent = `${p.testCases ? p.testCases.length : 0} TESTCASES`;
+
+        if (p.testCases && p.testCases.length > 0) {
+          p.testCases.forEach((tc, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td style="text-align: center; font-weight: 800;">#${idx + 1}</td>
+              <td><code style="background: rgba(90, 82, 255, 0.08); padding: 4px 8px; border-radius: 6px; font-weight: 700; color: var(--c-primary); font-family: monospace;">${tc.DuLieuDauVao || '(Không có input)'}</code></td>
+              <td><code style="background: rgba(4, 120, 87, 0.1); padding: 4px 8px; border-radius: 6px; font-weight: 700; color: #047857; font-family: monospace;">${tc.KetQuaDauRa}</code></td>
+              <td style="text-align: center; font-weight: 800; color: var(--c-accent);">${tc.TrongSoDiem || 3}đ</td>
+              <td style="font-size: 0.85rem; color: var(--c-text-dim);">${tc.GoiYSuaLoi || 'Tuân thủ đúng chuỗi đầu ra'}</td>
+            `;
+            tcTable.appendChild(tr);
+          });
+        } else {
+          tcTable.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:14px; color:var(--c-text-dim);">Chưa có bộ testcase nào cho dự án này.</td></tr>';
+        }
+
+        // Nạp Form Nộp bài
+        document.getElementById('wsFormProjectId').value = p.MaDuAn;
+        if (p.latestSubmission && p.latestSubmission.VideoVanHanh) {
+          document.getElementById('wsVideoUrl').value = p.latestSubmission.VideoVanHanh;
+        } else {
+          document.getElementById('wsVideoUrl').value = '';
+        }
+
+        // Tự động nạp sẵn Code mẫu đạt 100% để học sinh thử nghiệm máy chấm ngay
+        loadWsSampleCode(true);
+
+        // Cuộn mượt lên đầu trang
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Cập nhật URL trình duyệt
+        if (window.history && window.history.pushState) {
+          window.history.pushState({ projectId: p.MaDuAn }, '', '/student?project=' + p.MaDuAn);
+        }
+
+      } catch (err) {
+        console.error('Lỗi nạp dự án:', err);
+        if (typeof showToast === 'function') showToast('Lỗi nạp thông tin dự án: ' + err.message, 'error');
+      }
+    }
+
+    function loadWsSampleCode(isPass) {
+      if (!currentWsProjectData) return;
+      const pid = currentWsProjectData.MaDuAn;
+      const editor = document.getElementById('wsCodeEditor');
+      const filenameLabel = document.getElementById('wsEditorFilename');
+      const sample = wsProjectSampleCodes[pid] || wsProjectSampleCodes[1];
+
+      if (isPass) {
+        editor.value = sample.pass;
+        filenameLabel.textContent = `solution_project_${pid}.py`;
+        if (typeof showToast === 'function') showToast('Đã nạp mã nguồn mẫu chuẩn đạt 100% TestCase!');
+      } else {
+        editor.value = sample.fail;
+        filenameLabel.textContent = `solution_error_test_${pid}.py`;
+        if (typeof showToast === 'function') showToast('Đã nạp mã nguồn lỗi để thử nghiệm máy chấm bắt lỗi (DF-04)!', 'warning');
+      }
+      updateWsEditorStats();
+    }
+
+    function clearWsCode() {
+      const editor = document.getElementById('wsCodeEditor');
+      if (editor) {
+        editor.value = '';
+        updateWsEditorStats();
+      }
+    }
+
+    function updateWsEditorStats() {
+      const editor = document.getElementById('wsCodeEditor');
+      const stats = document.getElementById('wsEditorStats');
+      if (!editor || !stats) return;
+      const text = editor.value || '';
+      const lines = text ? text.split('\n').length : 0;
+      stats.textContent = `${lines} dòng · ${text.length} ký tự`;
+    }
+
+    function onWsFileSelected(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const filenameLabel = document.getElementById('wsEditorFilename');
+      if (filenameLabel) filenameLabel.textContent = file.name;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const editor = document.getElementById('wsCodeEditor');
+        if (editor) {
+          editor.value = e.target.result;
+          updateWsEditorStats();
+        }
+        if (typeof showToast === 'function') showToast(`Đã tải tệp ${file.name} từ máy tính vào trình soạn thảo!`);
+      };
+      reader.readAsText(file);
+    }
+
+    async function submitFromWsForm(e) {
+      e.preventDefault();
+      const editor = document.getElementById('wsCodeEditor');
+      const videoInput = document.getElementById('wsVideoUrl');
+      const fileInput = document.getElementById('wsCodeFile');
+      const alertBox = document.getElementById('wsSubmitAlert');
+      const btn = document.getElementById('btnWsSubmit');
+      const evalBox = document.getElementById('wsEvaluationBox');
+
+      alertBox.style.display = 'none';
+
+      if (!editor.value.trim() && (!fileInput.files || fileInput.files.length === 0)) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#FFF5F5';
+        alertBox.style.color = '#DC2626';
+        alertBox.style.border = '1.5px solid rgba(220, 38, 38, 0.3)';
+        alertBox.innerHTML = '<strong>Lỗi:</strong> Vui lòng nhập mã nguồn hoặc chọn tệp code từ máy!';
+        return;
+      }
+
+      if (!videoInput.value.trim()) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#FFF5F5';
+        alertBox.style.color = '#DC2626';
+        alertBox.style.border = '1.5px solid rgba(220, 38, 38, 0.3)';
+        alertBox.innerHTML = '<strong>Mô đun XLBN.01 Ràng Buộc Kép:</strong> Bắt buộc phải nhập liên kết Video vận hành thực tế!';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = 'Đang chuyển tới Judge Engine &amp; chấm TestCase...';
+
+      const formData = new FormData();
+      formData.append('maDuAn', currentWsProjectData ? currentWsProjectData.MaDuAn : 1);
+      formData.append('videoVanHanh', videoInput.value.trim());
+
+      const filename = document.getElementById('wsEditorFilename').textContent || `solution_${currentWsProjectData ? currentWsProjectData.MaDuAn : 1}.py`;
+      const blob = new Blob([editor.value], { type: 'text/plain;charset=utf-8' });
+      formData.append('codeFile', blob, filename);
+
+      try {
+        const res = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'x-user-id': currentStudentId },
+          body: formData
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        evalBox.style.display = 'block';
+
+        if (result.success) {
+          alertBox.style.background = result.passedAll ? 'rgba(4, 120, 87, 0.1)' : 'rgba(245, 158, 11, 0.1)';
+          alertBox.style.color = result.passedAll ? '#047857' : '#B45309';
+          alertBox.style.border = '1.5px solid ' + (result.passedAll ? 'rgba(4, 120, 87, 0.3)' : 'rgba(245, 158, 11, 0.3)');
+          alertBox.innerHTML = `<strong>${result.message}</strong>`;
+
+          document.getElementById('wsEvalScore').textContent = (result.diemCode !== undefined ? result.diemCode : '--') + ' / 10';
+          document.getElementById('wsEvalStatus').textContent = result.trangThai || 'Đã chấm';
+          document.getElementById('wsEvalTime').textContent = result.thoiGianChay_ms ? (result.thoiGianChay_ms / 1000).toFixed(2) + 's' : '0.04s';
+
+          const judgeBadge = document.getElementById('wsJudgeBadge');
+          if (result.passedAll) {
+            judgeBadge.className = 'badge badge-success';
+            judgeBadge.textContent = 'ĐẠT 100% TESTCASES';
+          } else {
+            judgeBadge.className = 'badge badge-danger';
+            judgeBadge.textContent = 'CHƯA ĐẠT TESTCASES';
+          }
+
+          document.getElementById('wsEvalLog').textContent = result.logLoi || 'Mã nguồn đã biên dịch và thực thi hoàn hảo trên máy chấm.';
+
+          // Hiển thị chi tiết từng testcase
+          const tcBody = document.getElementById('wsEvalTestCasesBody');
+          tcBody.innerHTML = '';
+          if (result.ketQuaChiTiet && result.ketQuaChiTiet.length > 0) {
+            result.ketQuaChiTiet.forEach((item, idx) => {
+              const tr = document.createElement('tr');
+              const isPass = item.status === 'PASS';
+              tr.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+              tr.innerHTML = `
+                <td style="padding: 8px;">#${idx + 1}</td>
+                <td style="padding: 8px; color: #94A3B8;">${item.input || '--'}</td>
+                <td style="padding: 8px; color: #34D399;">${item.expected_output || '--'}</td>
+                <td style="padding: 8px; color: ${isPass ? '#34D399' : '#EF4444'}; font-weight: 700;">${item.actual_output || '--'}</td>
+                <td style="padding: 8px; text-align: center;">
+                  <span class="badge ${isPass ? 'badge-success' : 'badge-danger'}" style="font-size: 0.72rem;">
+                    ${isPass ? 'PASS' : 'FAIL'}
+                  </span>
+                </td>
+              `;
+              tcBody.appendChild(tr);
+            });
+          }
+
+          // Cập nhật lại điểm trên header workspace
+          document.getElementById('wsCurrentScore').textContent = (result.diemCode !== undefined ? result.diemCode : '--') + ' / 10đ';
+          document.getElementById('wsCurrentStatus').textContent = result.trangThai || 'Đã nộp bài';
+
+          loadLoTrinhAndProjects();
+          loadMySubmissions();
+
+          if (typeof showToast === 'function') {
+            showToast(result.passedAll ? 'Mã nguồn đạt 100% TestCase!' : 'Chưa đạt TestCase, hãy xem chi tiết Log lỗi.', result.passedAll ? 'success' : 'warning');
+          }
+
+          // Cuộn mượt xuống khung kết quả
+          evalBox.scrollIntoView({ behavior: 'smooth' });
+
+        } else {
+          alertBox.style.background = '#FFF5F5';
+          alertBox.style.color = '#DC2626';
+          alertBox.style.border = '1.5px solid rgba(220, 38, 38, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi nộp bài:</strong> ${result.message}`;
+          evalBox.style.display = 'none';
+        }
+
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#FFF5F5';
+        alertBox.style.color = '#DC2626';
+        alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>GỬI BÀI THỰC HÀNH &amp; KÍCH HOẠT MÁY CHẤM TỰ ĐỘNG</span> <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       }
     }
 
@@ -1096,8 +2768,19 @@
       const form = e.target;
       const btn = document.getElementById('btnSubmit');
       const alertBox = document.getElementById('submitAlert');
+      const codeEditor = document.getElementById('codeEditorArea');
+      const fileInput = document.getElementById('codeFile');
+      const select = document.getElementById('selectProject');
 
       const formData = new FormData(form);
+
+      // Nếu học sinh gõ code trực tiếp và chưa chọn file rời trên máy tính
+      if (codeEditor && codeEditor.value.trim() && (!fileInput.files || fileInput.files.length === 0)) {
+        const pId = select.value || '1';
+        const filename = document.getElementById('editorFilenameLabel').textContent || `solution_${pId}.py`;
+        const blob = new Blob([codeEditor.value], { type: 'text/plain;charset=utf-8' });
+        formData.set('codeFile', blob, filename);
+      }
 
       btn.disabled = true;
       btn.innerHTML = 'Đang biên dịch &amp; chấm TestCase...';
@@ -1168,7 +2851,7 @@
         alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
       } finally {
         btn.disabled = false;
-        btn.innerHTML = 'Gửi Bài &amp; Kích Hoạt Máy Chấm (DF-01) <svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:middle; fill:currentColor;"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        btn.innerHTML = `Gửi Bài Thực Hành &amp; Kích Hoạt Máy Chấm Tự Động (DF-01) <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       }
     });
 

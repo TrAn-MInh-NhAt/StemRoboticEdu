@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { getPool, sql } = require('../config/db');
+const { isLoggedIn, isTeacherOrAdmin } = require('../middleware/authMiddleware');
 
 // ==============================================================================
 // 1. GET /api/materials/lookup - TCPP.02: Tra cứu linh kiện & Bắt lỗi code
 // (Đặt trước route /:id để tránh trùng lặp param id)
 // ==============================================================================
-router.get('/lookup', async (req, res) => {
+router.get('/lookup', isLoggedIn, async (req, res) => {
   const { q } = req.query;
   const keyword = q ? q.trim() : '';
 
@@ -82,7 +83,7 @@ router.get('/lookup', async (req, res) => {
 // ==============================================================================
 // 2. GET /api/materials - Lấy toàn bộ danh sách học liệu cho Giáo viên & Admin
 // ==============================================================================
-router.get('/', async (req, res) => {
+router.get('/', isLoggedIn, async (req, res) => {
   try {
     const pool = getPool();
     const result = await pool.request().query(`
@@ -115,7 +116,7 @@ router.get('/', async (req, res) => {
 // ==============================================================================
 // 3. GET /api/materials/:id - Lấy chi tiết 1 học liệu để chỉnh sửa
 // ==============================================================================
-router.get('/:id', async (req, res) => {
+router.get('/:id', isLoggedIn, async (req, res) => {
   const { id } = req.params;
   try {
     const pool = getPool();
@@ -141,7 +142,7 @@ router.get('/:id', async (req, res) => {
 // ==============================================================================
 // 4. POST /api/materials - QTHL.01: Thêm mới bài giảng & học liệu
 // ==============================================================================
-router.post('/', async (req, res) => {
+router.post('/', isTeacherOrAdmin, async (req, res) => {
   const { tenHocLieu, loaiHocLieu, noiDung, duongDanTep, maLoTrinh, trangThai } = req.body;
   const userId = req.session && req.session.user ? req.session.user.MaNguoiDung : 2; // TS. Đặng Hùng Vĩ
 
@@ -190,7 +191,7 @@ router.post('/', async (req, res) => {
 // ==============================================================================
 // 5. PUT /api/materials/:id - QTHL.02: Chỉnh sửa học liệu & TỰ ĐỘNG TẮT CỜ DF-05
 // ==============================================================================
-router.put('/:id', async (req, res) => {
+router.put('/:id', isTeacherOrAdmin, async (req, res) => {
   const { id } = req.params;
   const { tenHocLieu, loaiHocLieu, noiDung, duongDanTep, maLoTrinh, trangThai } = req.body;
 
@@ -228,7 +229,8 @@ router.put('/:id', async (req, res) => {
 
     return res.json({
       success: true,
-      message: 'Cập nhật học liệu thành công! Cờ cảnh báo chất lượng giảng dạy (DF-05) đã được giải tỏa.'
+      message: 'Cập nhật học liệu thành công! Cờ cảnh báo chất lượng giảng dạy (DF-05) đã được giải tỏa.',
+      df05_status: 'Tắt cờ cảnh báo DF-05'
     });
 
   } catch (err) {
@@ -299,8 +301,8 @@ async function handleToggleMaterialStatus(req, res) {
   }
 }
 
-router.patch('/:id/toggle', handleToggleMaterialStatus);
-router.post('/:id/toggle', handleToggleMaterialStatus);
-router.post('/:id/toggle-status', handleToggleMaterialStatus);
+router.patch('/:id/toggle', isTeacherOrAdmin, handleToggleMaterialStatus);
+router.post('/:id/toggle', isTeacherOrAdmin, handleToggleMaterialStatus);
+router.post('/:id/toggle-status', isTeacherOrAdmin, handleToggleMaterialStatus);
 
 module.exports = router;
