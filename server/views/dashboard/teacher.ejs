@@ -27,7 +27,7 @@
       </a>
 
       <!-- Thẻ người dùng: Bấm Avatar hoặc tên để vào Hồ sơ cá nhân -->
-      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân (QTHT.02)">
+      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân">
         <div class="user-avatar-circle" style="background: var(--c-accent); color: var(--c-text-main);">
           <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'G' %>
         </div>
@@ -495,7 +495,7 @@
 
             <div style="text-align: right;">
               <button type="submit" id="btnCreateMaterial" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
-                Thêm Học Liệu Vào Hệ Thống (QTHL.01)
+                Thêm Học Liệu Vào Hệ Thống
               </button>
             </div>
           </form>
@@ -1328,7 +1328,7 @@
           // Cờ DF-05 badge
           let df05Badge = '<span class="badge badge-success" style="font-size:0.75rem;">Chuẩn hoá</span>';
           if (m.CoCanCapNhat) {
-            df05Badge = '<span class="badge badge-danger" style="animation: pulse-core 2s infinite; font-size:0.75rem;">Cần cập nhật (DF-05)</span>';
+            df05Badge = '<span class="badge badge-danger" style="animation: pulse-core 2s infinite; font-size:0.75rem;">Cần cập nhật</span>';
           }
 
           // Trạng thái badge
@@ -1422,7 +1422,7 @@
         alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Thêm Học Liệu Vào Hệ Thống (QTHL.01)';
+        btn.textContent = 'Thêm Học Liệu Vào Hệ Thống';
       }
     });
 
@@ -1585,7 +1585,7 @@
           summary.textContent = `Hệ thống phân tích log lỗi (TKDL.02) phát hiện có ${data.stats.totalFailures} lượt nộp bài không đạt. Bài tập "${data.stats.sampleExercise || 'Dự án STEM'}" có tỷ lệ lỗi lên tới ${data.stats.failureRate}% (> ngưỡng 30%). Hệ thống đã tự động bật cờ CoCanCapNhat = 1 ở bảng HocLieu để nhắc Giảng viên cập nhật.`;
 
           if (data.allFlaggedMaterials && data.allFlaggedMaterials.length > 0) {
-            let html = '<div style="font-weight:700; margin-bottom:8px; color:#991B1B;">Danh sách học liệu đã tự động gắn cờ CoCanCapNhat = 1 (DF-05):</div><ul style="padding-left: 20px;">';
+            let html = '<div style="font-weight:700; margin-bottom:8px; color:#991B1B;">Danh sách học liệu đã tự động gắn cờ CoCanCapNhat = 1:</div><ul style="padding-left: 20px;">';
             data.allFlaggedMaterials.forEach(m => {
               html += `<li style="margin-bottom:4px;"><strong>[Mã HL #${m.MaHocLieu}] ${m.TieuDe}</strong> (Loại: ${m.LoaiHocLieu}) · Lộ trình: <em>${m.TenLoTrinh}</em></li>`;
             });
@@ -1659,7 +1659,7 @@
         alertBox.textContent = 'Lỗi kết nối: ' + err.message;
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Gửi Báo Cáo Sự Cố (HTTB.01)';
+        btn.textContent = 'Gửi Báo Cáo Sự Cố';
       }
     });
 
@@ -1690,7 +1690,7 @@
                     </div>
                     <div>
                       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
-                        <span class="badge badge-danger" style="animation: pulse-core 2s infinite;">THÔNG BÁO KHẨN CẤP (HTTB.02)</span>
+                        <span class="badge badge-danger" style="animation: pulse-core 2s infinite;">THÔNG BÁO KHẨN CẤP</span>
                         <span style="font-size: 0.78rem; color: #991B1B; font-weight: 600;">Phát lúc: ${n.NgayTaoFmt || n.NgayTao} · Bởi: ${n.NguoiGui || 'Ban Quản Trị'}</span>
                       </div>
                       <h3 style="font-size: 1.15rem; font-weight: 800; color: #991B1B; margin-bottom: 6px;">${n.TieuDe}</h3>

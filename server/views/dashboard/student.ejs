@@ -27,7 +27,7 @@
       </a>
 
       <!-- Thẻ người dùng: Bấm Avatar hoặc tên để vào Hồ sơ cá nhân -->
-      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân (QTHT.02)">
+      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân">
         <div class="user-avatar-circle">
           <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'H' %>
         </div>
@@ -674,11 +674,11 @@
               </div>
               <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
                 <div style="font-family: var(--f-heading); font-size: 1.6rem; font-weight: 800; color: #10B981;" id="metricStatus">--</div>
-                <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Trạng Thái Bài Nộp (DF-01)</div>
+                <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Trạng Thái Bài Nộp</div>
               </div>
             </div>
             <div style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
-              Nhật Ký Thực Thi &amp; Phân Tích Lỗi Chi Tiết (Telemetry DF-04):
+              Nhật Ký Thực Thi &amp; Phân Tích Lỗi Chi Tiết:
             </div>
             <div class="console-screen" id="consoleLog">Chưa có dữ liệu chấm bài. Hãy chọn dự án và nộp file code để chạy máy chấm tự động.</div>
           </div>
@@ -834,10 +834,10 @@
             </button>
           </div>
 
-          <!-- Bộ lọc tab & DF-03 -->
+          <!-- Bộ lọc tab -->
           <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
             <button class="btn btn-secondary btn-sm active" data-filter="all" onclick="filterCommunityPosts('all', this)">Tất cả chủ đề</button>
-            <button class="btn btn-secondary btn-sm" data-filter="trending" onclick="filterCommunityPosts('trending', this)">Top Trending (DF-03)</button>
+            <button class="btn btn-secondary btn-sm" data-filter="trending" onclick="filterCommunityPosts('trending', this)">Top Trending</button>
             <button class="btn btn-secondary btn-sm" data-filter="Thảo luận" onclick="filterCommunityPosts('Thảo luận', this)">Thảo luận chung</button>
             <button class="btn btn-secondary btn-sm" data-filter="Chia sẻ lỗi" onclick="filterCommunityPosts('Chia sẻ lỗi', this)">Kinh nghiệm gỡ lỗi</button>
           </div>
@@ -850,11 +850,11 @@
     </main>
   </div>
 
-  <!-- Modal Đăng bài mới Cộng đồng (TTCĐ.01) -->
+  <!-- Modal Đăng bài mới Cộng đồng -->
   <div class="modal-overlay" id="communityPostModal">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 style="font-size: 1.15rem; font-weight: 800;">Tạo Chủ Đề Thảo Luận Mới (TTCĐ.01)</h3>
+        <h3 style="font-size: 1.15rem; font-weight: 800;">Tạo Chủ Đề Thảo Luận Mới</h3>
         <button class="btn btn-secondary btn-sm" onclick="closeNewCommunityPostModal()">Đóng</button>
       </div>
       <div style="padding: 24px;">
@@ -910,7 +910,7 @@
           <div>Điểm code: <strong style="color:var(--c-primary);" id="modalScore">--</strong></div>
           <div>Trạng thái: <strong id="modalStatus">--</strong></div>
         </div>
-        <label class="form-label">Toàn bộ Log thực thi &amp; Bắt lỗi TestCase (DF-04):</label>
+        <label class="form-label">Toàn bộ Log thực thi &amp; Bắt lỗi TestCase:</label>
         <div class="console-screen" id="modalLogContent" style="max-height: 380px;"></div>
         <div style="margin-top: 16px; padding-top: 14px; border-top: 1.5px dashed rgba(11, 15, 25, 0.12); font-size: 0.88rem;" id="modalFeedbackBox">
           Nhận xét của Giáo viên: <em id="modalTeacherFeedback">Chưa có nhận xét</em>
@@ -919,13 +919,13 @@
     </div>
   </div>
 
-  <!-- Modal Báo Cáo Sự Cố Kỹ Thuật (HTTB.01) -->
+  <!-- Modal Báo Cáo Sự Cố Kỹ Thuật -->
   <div class="modal-overlay" id="reportIssueModal" style="display: none;">
     <div class="modal-box" style="max-width: 580px;">
       <div class="modal-header">
         <h3 style="font-size: 1.15rem; font-weight: 800; display:flex; align-items:center; gap: 8px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-secondary)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Báo Cáo Sự Cố Kỹ Thuật (HTTB.01)
+          Báo Cáo Sự Cố Kỹ Thuật
         </h3>
         <button type="button" class="btn btn-secondary btn-sm" onclick="closeReportIssueModal()">&times;</button>
       </div>
@@ -957,7 +957,7 @@
         <div style="display: flex; justify-content: flex-end; gap: 12px;">
           <button type="button" class="btn btn-secondary" onclick="closeReportIssueModal()">Hủy</button>
           <button type="submit" id="btnSubmitIssue" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
-            Gửi Báo Cáo Sự Cố (HTTB.01)
+            Gửi Báo Cáo Sự Cố
           </button>
         </div>
       </form>
@@ -993,7 +993,7 @@
         <div id="hubPinoutSection" style="margin-bottom: 24px;">
           <div style="font-size: 0.82rem; font-weight: 800; color: #B45309; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            2. Sơ Đồ Chân &amp; Thông Số Kỹ Thuật Phần Cứng (TCPP.02):
+            2. Sơ Đồ Chân &amp; Thông Số Kỹ Thuật Phần Cứng:
           </div>
           <div id="hubPinoutBox" style="background: #FFFBEB; border: 1.5px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 18px 20px;">
             <!-- Render động bằng JS -->
@@ -1005,7 +1005,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.82rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              3. Mã Nguồn Mẫu Chuẩn Cho Thực Hành (FR-04):
+              3. Mã Nguồn Mẫu Chuẩn Cho Thực Hành:
             </div>
             <div style="display: flex; gap: 8px;">
               <button type="button" class="btn btn-secondary btn-sm" onclick="copyHubCode()" style="font-size: 0.78rem; padding: 4px 10px;">
@@ -1569,7 +1569,7 @@ else:
             <div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
                 <span class="tech-chip" style="font-size: 0.72rem; padding: 2px 10px;">${p.LoaiNoiDung}</span>
-                ${p.isTopTrending ? '<span class="badge badge-warning" style="font-weight: 800;">TOP TRENDING (DF-03)</span>' : ''}
+                ${p.isTopTrending ? '<span class="badge badge-warning" style="font-weight: 800;">TOP TRENDING</span>' : ''}
                 ${p.TenDuAn ? `<span class="text-muted" style="font-size: 0.78rem;">Dự án: ${p.TenDuAn}</span>` : ''}
               </div>
               <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--c-text-main); margin-bottom: 6px;">${p.TieuDe}</h3>
@@ -2488,7 +2488,7 @@ print('GRAB_ALL')
             statusBadge.textContent = `✓ Đã Hoàn Thành (${sub.TongDiem || 10}/10đ)`;
           } else if (sub.TrangThai === 'Chờ duyệt Video') {
             statusBadge.className = 'badge badge-warning';
-            statusBadge.textContent = '⏳ Chờ Giáo Viên Duyệt Video (DF-01)';
+            statusBadge.textContent = '⏳ Chờ Giáo Viên Duyệt Video';
           } else {
             statusBadge.className = 'badge badge-primary';
             statusBadge.textContent = sub.TrangThai;
@@ -2585,7 +2585,7 @@ print('GRAB_ALL')
       } else {
         editor.value = sample.fail;
         filenameLabel.textContent = `solution_error_test_${pid}.py`;
-        if (typeof showToast === 'function') showToast('Đã nạp mã nguồn lỗi để thử nghiệm máy chấm bắt lỗi (DF-04)!', 'warning');
+        if (typeof showToast === 'function') showToast('Đã nạp mã nguồn lỗi để thử nghiệm máy chấm bắt lỗi!', 'warning');
       }
       updateWsEditorStats();
     }
@@ -2817,7 +2817,7 @@ print('GRAB_ALL')
 
           if (result.passedAll) {
             consoleBadge.className = 'badge badge-success';
-            consoleBadge.textContent = 'Đạt 100% TestCase (DF-01)';
+            consoleBadge.textContent = 'Đạt 100% TestCase';
           } else {
             consoleBadge.className = 'badge badge-danger';
             consoleBadge.textContent = 'Chưa đạt TestCase';
@@ -2851,7 +2851,7 @@ print('GRAB_ALL')
         alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `Gửi Bài Thực Hành &amp; Kích Hoạt Máy Chấm Tự Động (DF-01) <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        btn.innerHTML = `Gửi Bài Thực Hành &amp; Kích Hoạt Máy Chấm Tự Động <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       }
     });
 
@@ -3158,7 +3158,7 @@ print('GRAB_ALL')
         alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Gửi Báo Cáo Sự Cố (HTTB.01)';
+        btn.textContent = 'Gửi Báo Cáo Sự Cố';
       }
     });
 
@@ -3190,7 +3190,7 @@ print('GRAB_ALL')
                     </div>
                     <div>
                       <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
-                        <span class="badge badge-danger" style="animation: pulse-core 2s infinite;">THÔNG BÁO KHẨN CẤP (HTTB.02)</span>
+                        <span class="badge badge-danger" style="animation: pulse-core 2s infinite;">THÔNG BÁO KHẨN CẤP</span>
                         <span style="font-size: 0.78rem; color: #991B1B; font-weight: 600;">Phát lúc: ${n.NgayTaoFmt || n.NgayTao} · Bởi: ${n.NguoiGui || 'Ban Quản Trị'}</span>
                       </div>
                       <h3 style="font-size: 1.15rem; font-weight: 800; color: #991B1B; margin-bottom: 6px;">${n.TieuDe}</h3>

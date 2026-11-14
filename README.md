@@ -13,6 +13,17 @@
 
 ---
 
+## 📌 Lịch Sử Cập Nhật & Tiến Độ Dự Án (Milestones & Changelog)
+
+| Phiên bản | Mốc Thời Gian | Trạng Thái 27/27 IPO | Luồng DF-01..07 | Kiểm Thử Tự Động | Tài Liệu Chi Tiết |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **v2.0.0 (Milestone 2)** | **14/11/2026 (Chiều)** | **27/27 Hoàn Thành (100%)** | **7/7 Kích Hoạt (100%)** | **37/37 PASS (100%)** | [Xem CHANGELOG.md](CHANGELOG.md) · [Judge Engine Guide](judge_engine/README.md) |
+| **v1.0.0 (Milestone 1)** | 14/11/2026 (Sáng) | 19/27 Khởi Tạo | 7/7 Kiến Trúc Cốt Lõi | Sơ bộ | [Xem CHANGELOG.md](CHANGELOG.md) |
+
+> 🎯 **Đánh giá tổng quan:** Hệ thống đã hoàn thiện 100% tất cả 27 mô đun IPO, 7 luồng tự động DF-01 đến DF-07, đạt chuẩn chất lượng NFR-01 (< 10s máy chấm), bảo mật phân quyền RBAC 4 vai trò, và vượt qua toàn bộ 37/37 kịch bản kiểm thử tích hợp E2E (`npm test`). Chi tiết toàn bộ tiến trình lịch sử phát triển xem tại [CHANGELOG.md](CHANGELOG.md).
+
+---
+
 ## 📖 1. Giới Thiệu Tổng Quan Dự Án
 
 Hệ thống **STEM Robotic Edu** là nền tảng trực tuyến chuyên sâu hỗ trợ dạy, học và thực hành lập trình điều khiển Robot (C++/Arduino & Python) dành cho học sinh cấp Trung học. Nền tảng giải quyết triệt để bài toán đánh giá sản phẩm thực hành bằng cách kết hợp **Máy chấm tự động Sandbox cô lập (Judge Engine)** kiểm thử mã nguồn và **Quy trình nghiệm thu Video vận hành mô hình thực tế**.

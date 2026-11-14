@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phòng Thi Trực Tuyến Chống Gian Lận (KTĐG.02) — STEM Robotic</title>
+  <title>Phòng Thi Trực Tuyến Chống Gian Lận — STEM Robotic</title>
   <link rel="stylesheet" href="/css/theme.css">
 </head>
 <body>
@@ -25,8 +25,8 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Hồ sơ cá nhân
           </a>
-          <span class="badge badge-info" style="font-size: 0.8rem; font-weight: 700;">Phòng Thi Trực Tuyến KTĐG.02</span>
-          <span class="badge badge-danger" style="font-size: 0.8rem; font-weight: 700; background: #FEE2E2; color: #991B1B; border: 1px solid #EF4444;">Giám sát DF-06</span>
+          <span class="badge badge-info" style="font-size: 0.8rem; font-weight: 700;">Phòng Thi Trực Tuyến</span>
+          <span class="badge badge-danger" style="font-size: 0.8rem; font-weight: 700; background: #FEE2E2; color: #991B1B; border: 1px solid #EF4444;">Giám sát Chống Gian Lận</span>
           <span id="examDurationBadge" class="tech-chip" style="background: var(--c-accent); color: var(--c-text-main); font-weight: 800; font-size: 0.8rem; padding: 4px 12px;">-- phút</span>
         </div>
         <h1 class="exam-title-text" id="examTitle" style="margin-top: 8px;">Đang nạp bài thi...</h1>
@@ -39,7 +39,7 @@
         <!-- Huy hiệu đếm số lần rời tab -->
         <div class="cheat-counter" id="cheatCounter">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>Rời tab: <strong id="tabSwitchCount">0</strong> / <span id="maxAllowed">3</span> <span id="remainingText" style="font-weight:800; color:#B45309;">(Còn 3 lần)</span> (DF-06)</span>
+          <span>Rời tab: <strong id="tabSwitchCount">0</strong> / <span id="maxAllowed">3</span> <span id="remainingText" style="font-weight:800; color:#B45309;">(Còn 3 lần)</span></span>
         </div>
 
         <!-- Đồng hồ đếm ngược -->
@@ -63,7 +63,7 @@
       <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid #EF4444;">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
-      <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; color: #EF4444;">BÀI THI ĐÃ BỊ TỰ ĐỘNG KHÓA VÀ THU BÀI (DF-06)</h2>
+      <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; color: #EF4444;">BÀI THI ĐÃ BỊ TỰ ĐỘNG KHÓA VÀ THU BÀI</h2>
       <p style="max-width: 520px; font-size: 0.95rem; line-height: 1.6; color: #CBD5E1; margin-bottom: 28px; text-align: center;">
         Hệ thống JS Tracking phát hiện bạn đã chuyển tab hoặc mất tiêu điểm cửa sổ quá 3 lần, vi phạm nghiêm trọng quy chế phòng thi trực tuyến. Bài thi đã được niêm phong và gửi lên hệ thống.
       </p>
@@ -298,7 +298,7 @@ def doc_cam_bien_khoang_cach():
       document.getElementById('btnSubmitExam').disabled = true;
       document.getElementById('lockedOverlay').style.display = 'flex';
       document.getElementById('violationBanner').style.display = 'block';
-      document.getElementById('violationMessage').textContent = 'BÀI THI ĐÃ BỊ KHÓA VĨNH VIỄN DO VI PHẠM QUY CHẾ CHUYỂN TAB (DF-06).';
+      document.getElementById('violationMessage').textContent = 'BÀI THI ĐÃ BỊ KHÓA VĨNH VIỄN DO VI PHẠM QUY CHẾ CHUYỂN TAB.';
     }
 
     // 4. Nộp bài thi

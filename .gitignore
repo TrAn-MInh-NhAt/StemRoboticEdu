@@ -20,6 +20,10 @@ env/
 ENV/
 judge/venv/
 judge/.venv/
+judge_engine/venv/
+judge_engine/.venv/
+judge_engine/__pycache__/
+judge_engine/*/__pycache__/
 __pycache__/
 */__pycache__/
 */*/__pycache__/
@@ -74,3 +78,8 @@ test_*.js
 test_*.py
 temp/
 tmp/
+
+# 7. Dynamic User Uploads
+public/uploads/*
+!public/uploads/.gitkeep
+
