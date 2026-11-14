@@ -31,8 +31,14 @@
                 <li><a href="/community" class="nav-link">Cộng Đồng &amp; Vinh Danh</a></li>
                 <% if (user) { %>
                     <li>
+                        <a href="/profile" class="nav-link" style="display: flex; align-items: center; gap: 6px; font-weight: 700;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Hồ Sơ Cá Nhân</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="<%= user.VaiTro === 'Admin' ? '/admin' : (user.VaiTro === 'Giáo viên' ? '/teacher' : '/student') %>" class="btn btn-primary btn-sm">
-                            Vào Không Gian <%= user.VaiTro %> (<%= user.HoTen %>) →
+                            Vào Không Gian <%= user.VaiTro %> →
                         </a>
                     </li>
                 <% } else { %>
@@ -306,90 +312,209 @@
     </div>
 
     <!-- 3. CÁC LỘ TRÌNH ĐÀO TẠO KỸ THUẬT -->
-    <section id="courses" style="padding: 60px 0;">
+    <section id="courses" style="padding: 70px 0;">
         <div class="nav-container">
-            <div style="text-align: center; margin-bottom: 60px;">
+            <div style="text-align: center; margin-bottom: 50px;">
                 <span class="tech-chip" style="background: rgba(90, 82, 255, 0.15); color: #3730A3; font-weight: 700; padding: 6px 16px;">Lộ Trình Chuẩn Quốc Tế</span>
                 <h2 style="font-size: clamp(2.2rem, 4vw, 3.2rem); margin-top: 14px;">
                     Chinh phục <span class="title-highlight">Thế Giới Robot</span>
                 </h2>
-                <p style="color: var(--c-text-dim); margin-top: 12px; font-size: 1.15rem; max-width: 600px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
-                    Hệ thống bài giảng từ vi điều khiển cơ bản đến xe tự hành cân bằng và thị giác máy tính AI.
+                <p style="color: var(--c-text-dim); margin-top: 12px; font-size: 1.15rem; max-width: 680px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
+                    Hệ thống bài giảng từ vi điều khiển cơ bản đến xe tự hành cân bằng và thị giác máy tính AI (Phân hệ 1 · Lộ trình DF-02).
                 </p>
             </div>
 
-            <!-- Module 1 -->
-            <div class="bento-card b-card-wide bouncy-up" style="margin-bottom: 40px; display: grid; grid-template-columns: 5fr 7fr; gap: 40px; align-items: center;">
-                <div style="background: #E0E7FF; border-radius: 24px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; position: relative;">
-                    <svg width="60%" height="60%" viewBox="0 0 100 100" fill="none">
-                        <rect x="20" y="20" width="60" height="60" rx="12" fill="var(--c-primary)" opacity="0.1"/>
-                        <rect x="30" y="30" width="40" height="40" rx="8" fill="var(--c-primary)"/>
-                        <path d="M30 50 L10 50 M70 50 L90 50 M50 30 L50 10 M50 70 L50 90" stroke="var(--c-primary)" stroke-width="6" stroke-linecap="round"/>
-                        <circle cx="50" cy="50" r="8" fill="#FFF"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="tech-chip" style="background: rgba(90, 82, 255, 0.15); color: #3730A3; font-weight: 700; margin-bottom: 12px; display: inline-block;">Lộ trình #01 · Cơ bản</div>
-                    <h3 style="font-size: 1.8rem; margin-bottom: 14px;">Lập trình Arduino Cơ bản &amp; Tín hiệu I/O</h3>
-                    <p style="color: var(--c-text-dim); margin-bottom: 24px; font-size: 1.05rem; text-wrap: pretty;">
-                        Làm quen với lập trình vi điều khiển, các cổng xuất/nhập I/O, nhấp nháy đèn tín hiệu Morse SOS và các thuật toán điều khiển xung PWM.
-                    </p>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
-                        <span class="tech-chip">C++ Embedded</span>
-                        <span class="tech-chip">Arduino UNO / Nano</span>
-                        <span class="tech-chip">Máy chấm tự động 3 TestCase</span>
+            <!-- Bento Grid 3 Lộ trình bao quát 100% diện tích màn hình -->
+            <div class="bento-grid" style="margin-bottom: 28px;">
+                <!-- Track 1: Cơ bản -->
+                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 0;">Lộ trình #01 · Cơ bản</span>
+                            <div class="hero-hud-badge" style="font-size: 0.72rem; padding: 3px 8px;">
+                                <span class="telemetry-pulse"></span>
+                                <span>3 TESTCASE</span>
+                            </div>
+                        </div>
+
+                        <div style="background: #EEF2FF; border-radius: 20px; height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 1px solid rgba(90, 82, 255, 0.15); position: relative; overflow: hidden;">
+                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+                                <rect x="25" y="25" width="50" height="50" rx="10" fill="var(--c-primary)" opacity="0.12"/>
+                                <rect x="35" y="35" width="30" height="30" rx="6" fill="var(--c-primary)"/>
+                                <path d="M35 50 L15 50 M65 50 L85 50 M50 35 L50 15 M50 65 L50 85" stroke="var(--c-primary)" stroke-width="4.5" stroke-linecap="round"/>
+                                <circle cx="50" cy="50" r="6" fill="#FFF"/>
+                            </svg>
+                        </div>
+
+                        <h3 style="font-size: 1.45rem; font-weight: 800; margin-bottom: 10px; line-height: 1.25;">
+                            Lập trình Arduino &amp; Tín hiệu I/O
+                        </h3>
+                        <p style="color: var(--c-text-dim); font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; text-wrap: pretty;">
+                            Làm quen lập trình C++ vi điều khiển, quản lý chân GPIO, nhấp nháy đèn LED mã Morse SOS và thuật toán xung PWM.
+                        </p>
                     </div>
-                    <a href="/login" class="btn btn-primary">Bắt Đầu Học Lộ Trình →</a>
+
+                    <div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+                            <span class="tech-chip">C++ Embedded</span>
+                            <span class="tech-chip">Arduino Uno R3</span>
+                            <span class="tech-chip">Morse SOS</span>
+                        </div>
+                        <a href="<%= user ? '/student' : '/login' %>" class="btn btn-primary" style="width: 100%; text-align: center;">
+                            Bắt Đầu Học Lộ Trình →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Track 2: Nâng cao -->
+                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <span class="tech-chip" style="background: rgba(255, 94, 94, 0.12); color: #DC2626; font-weight: 700; margin-bottom: 0;">Lộ trình #02 · Nâng cao</span>
+                            <div class="hero-hud-badge" style="font-size: 0.72rem; padding: 3px 8px; color: var(--c-secondary); border-color: rgba(255,94,94,0.3);">
+                                <span>KHÓA TIÊN QUYẾT DF-02</span>
+                            </div>
+                        </div>
+
+                        <div style="background: #FFF1F2; border-radius: 20px; height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 1px solid rgba(255, 94, 94, 0.15); position: relative; overflow: hidden;">
+                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+                                <circle cx="50" cy="50" r="36" stroke="#DC2626" stroke-width="3" stroke-dasharray="6 6"/>
+                                <rect x="36" y="36" width="28" height="28" rx="8" fill="#DC2626"/>
+                                <path d="M20 50 L32 50 M68 50 L80 50 M50 20 L50 32 M50 68 L50 80" stroke="#DC2626" stroke-width="4" stroke-linecap="round"/>
+                                <circle cx="50" cy="50" r="5" fill="#FFF"/>
+                            </svg>
+                        </div>
+
+                        <h3 style="font-size: 1.45rem; font-weight: 800; margin-bottom: 10px; line-height: 1.25;">
+                            Robot Tránh Vật Cản &amp; Cầu H L298N
+                        </h3>
+                        <p style="color: var(--c-text-dim); font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; text-wrap: pretty;">
+                            Xử lý sóng siêu âm cảm biến HC-SR04, điều tốc động cơ 2 kênh cầu H L298N và giải thuật né vật cản trong mê cung.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+                            <span class="tech-chip">HC-SR04 Ultra</span>
+                            <span class="tech-chip">Cầu H L298N</span>
+                            <span class="tech-chip">Mở khóa DF-02</span>
+                        </div>
+                        <a href="<%= user ? '/student' : '/login' %>" class="btn btn-primary" style="background: #DC2626; border-color: #B91C1C; width: 100%; text-align: center;">
+                            Bắt Đầu Học Lộ Trình →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Track 3: Chuyên sâu -->
+                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <span class="tech-chip" style="background: rgba(255, 184, 0, 0.16); color: #B45309; font-weight: 700; margin-bottom: 0;">Lộ trình #03 · Chuyên sâu</span>
+                            <div class="hero-hud-badge" style="font-size: 0.72rem; padding: 3px 8px; color: #B45309; border-color: rgba(255,184,0,0.4);">
+                                <span>THẨM ĐỊNH VIDEO DF-01</span>
+                            </div>
+                        </div>
+
+                        <div style="background: #FEFCE8; border-radius: 20px; height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 1px solid rgba(255, 184, 0, 0.25); position: relative; overflow: hidden;">
+                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+                                <circle cx="50" cy="50" r="32" stroke="#D97706" stroke-width="3"/>
+                                <path d="M25 50 A 25 25 0 0 1 75 50" stroke="#B45309" stroke-width="4" stroke-linecap="round"/>
+                                <polygon points="50,26 62,46 38,46" fill="#D97706"/>
+                                <circle cx="50" cy="50" r="6" fill="#0B0F19"/>
+                            </svg>
+                        </div>
+
+                        <h3 style="font-size: 1.45rem; font-weight: 800; margin-bottom: 10px; line-height: 1.25;">
+                            Xe Cân Bằng 2 Bánh &amp; Thị Giác AI
+                        </h3>
+                        <p style="color: var(--c-text-dim); font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; text-wrap: pretty;">
+                            Thuật toán cân bằng PID, lọc nhiễu cảm biến góc nghiêng MPU6050 kết hợp camera AI nhận diện sa bàn và cấp chứng chỉ.
+                        </p>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+                            <span class="tech-chip">MPU6050 Gyro</span>
+                            <span class="tech-chip">Giải thuật PID</span>
+                            <span class="tech-chip">Thị giác AI</span>
+                        </div>
+                        <a href="<%= user ? '/student' : '/login' %>" class="btn btn-primary" style="background: #D97706; border-color: #B45309; width: 100%; text-align: center;">
+                            Bắt Đầu Học Lộ Trình →
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <!-- Module 2 -->
-            <div class="bento-card b-card-wide bouncy-up" style="display: grid; grid-template-columns: 7fr 5fr; gap: 40px; align-items: center;">
-                <div>
-                    <div class="tech-chip" style="background: #FEE2E2; color: #991B1B; font-weight: 700; margin-bottom: 12px; display: inline-block;">Lộ trình #02 · Nâng cao</div>
-                    <h3 style="font-size: 1.8rem; margin-bottom: 14px;">Điều Khiển Robot Tránh Vật Cản &amp; Tự Hành</h3>
-                    <p style="color: var(--c-text-dim); margin-bottom: 24px; font-size: 1.05rem; text-wrap: pretty;">
-                        Xử lý cảm biến siêu âm HC-SR04, cảm biến góc nghiêng MPU6050, giải thuật cân bằng 2 bánh PID và tự động né tránh chướng ngại vật trong mê cung.
-                    </p>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
-                        <span class="tech-chip">PID Algorithm</span>
-                        <span class="tech-chip">MPU6050 I2C</span>
-                        <span class="tech-chip">Yêu cầu hoàn thành Dự án 1 (DF-02)</span>
+            <!-- Bento Bar Thông Số Phòng Lab Chạy Đầy Màn Hình -->
+            <div class="bento-card bouncy-up" style="background: var(--c-dark-console); color: #F4F6F8; padding: 24px 32px; border-radius: 24px; border: 2px solid rgba(255,255,255,0.08);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div class="b-icon-box" style="background: rgba(90, 82, 255, 0.2); width: 44px; height: 44px; margin-bottom: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 1rem; color: #FFF;">FastAPI Judge Engine</div>
+                            <div style="font-size: 0.8rem; color: #94A3B8;">Chấm tự động tốc độ &lt; 0.05s</div>
+                        </div>
                     </div>
-                    <a href="/login" class="btn btn-primary" style="background: #DC2626; border-color: #B91C1C;">Bắt Đầu Học Lộ Trình →</a>
-                </div>
-                <div style="background: #FFE4E6; border-radius: 24px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; position: relative;">
-                    <svg width="60%" height="60%" viewBox="0 0 100 100" fill="none">
-                        <path d="M10 50 C30 20, 70 20, 90 50 C70 80, 30 80, 10 50 Z" fill="#DC2626" opacity="0.1" stroke="#DC2626" stroke-width="4"/>
-                        <circle cx="50" cy="50" r="20" fill="#DC2626"/>
-                        <circle cx="55" cy="45" r="6" fill="#FFF"/>
-                        <path d="M30 30 L20 30 L20 40 M70 30 L80 30 L80 40 M30 70 L20 70 L20 60 M70 70 L80 70 L80 60" stroke="var(--c-text-main)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div class="b-icon-box" style="background: rgba(4, 120, 87, 0.2); width: 44px; height: 44px; margin-bottom: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 1rem; color: #FFF;">7 Luồng Tự Động Hóa</div>
+                            <div style="font-size: 0.8rem; color: #94A3B8;">Khép kín từ DF-01 đến DF-07</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div class="b-icon-box" style="background: rgba(255, 94, 94, 0.2); width: 44px; height: 44px; margin-bottom: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FCA5A5" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 1rem; color: #FFF;">SQL Server Chuẩn Hóa</div>
+                            <div style="font-size: 0.8rem; color: #94A3B8;">StemRoboticDB_V2 toàn vẹn</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div class="b-icon-box" style="background: rgba(255, 184, 0, 0.2); width: 44px; height: 44px; margin-bottom: 0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FDE047" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 1rem; color: #FFF;">Chứng Chỉ Số Tự Động</div>
+                            <div style="font-size: 0.8rem; color: #94A3B8;">Cấp mã xác thực khi đạt chuẩn</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- 4. LEADERBOARD BENTO — DỮ LIỆU THẬT TỪ SQL SERVER -->
-    <section class="leaderboard" id="leaderboard" style="padding: 60px 0;">
+    <section class="leaderboard" id="leaderboard" style="padding: 70px 0;">
         <div class="nav-container">
-            <h2 class="bouncy-up" style="text-align: center; margin-bottom: 10px; font-size: clamp(2.2rem, 4vw, 3.2rem);">
-                Bảng Xếp Hạng <span style="color: var(--c-primary);">Đỉnh Cao</span>
-            </h2>
-            <p class="bouncy-up" style="text-align: center; color: var(--c-text-dim); margin-bottom: 40px; font-size: 1.15rem; max-width: 600px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
-                Cập nhật tự động từ kết quả chấm điểm thật của máy chấm Python và duyệt video giáo viên (bảng KetQuaDiem).
-            </p>
+            <div style="text-align: center; margin-bottom: 50px;">
+                <span class="tech-chip" style="background: rgba(255, 184, 0, 0.16); color: #B45309; font-weight: 700; padding: 6px 16px;">Vinh Danh Kỷ Lục Phòng Lab</span>
+                <h2 class="bouncy-up" style="margin-top: 14px; font-size: clamp(2.2rem, 4vw, 3.2rem);">
+                    Bảng Xếp Hạng <span style="color: var(--c-primary);">Đỉnh Cao</span>
+                </h2>
+                <p class="bouncy-up" style="color: var(--c-text-dim); margin-top: 12px; font-size: 1.15rem; max-width: 680px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
+                    Cập nhật tự động từ kết quả chấm điểm thật của máy chấm Python và duyệt video giáo viên (bảng KetQuaDiem &amp; Luồng DF-01).
+                </p>
+            </div>
             
             <div class="bento-grid">
-                <!-- Thẻ Highlight 1 -->
-                <div class="bento-card bouncy-up" style="background: linear-gradient(145deg, #3730A3, #1E1B4B); color: #FFFFFF;">
+                <!-- Hàng 1 - Cột 1: Quán Quân Bảng Vàng (Bento Highlight) -->
+                <div class="bento-card bouncy-up" style="background: linear-gradient(145deg, #3730A3, #1E1B4B); color: #FFFFFF; display: flex; flex-direction: column; justify-content: space-between;">
                     <div>
                         <div class="b-icon-box" style="background: rgba(255,255,255,0.18); color: #FFFFFF;">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFF" stroke="#FFF" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
                         <div class="b-label" style="color: #E0E7FF; font-weight: 700;">Quán Quân Bảng Vàng</div>
-                        <div class="b-value" style="color: #FFFFFF;">
+                        <div class="b-value" style="color: #FFFFFF; font-size: 1.8rem; margin: 6px 0;">
                             <%= leaderboard && leaderboard[0] ? leaderboard[0].HoTen : 'Trần Minh Nhật' %>
+                        </div>
+                        <div style="font-size: 0.85rem; color: #CBD5E1;">
+                            Học viên đạt chuỗi TestCase tuyệt đối và thẩm định video xuất sắc.
                         </div>
                     </div>
                     <div style="margin-top: 24px; display: inline-block; background: #FFFFFF; color: #1E1B4B; padding: 8px 20px; border-radius: 50px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
@@ -397,49 +522,74 @@
                     </div>
                 </div>
                 
-                <!-- Thẻ Thống kê 2 -->
-                <div class="bento-card bouncy-up">
+                <!-- Hàng 1 - Cột 2: Máy Chấm Tốc Độ (Python FastAPI) -->
+                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between;">
                     <div>
                         <div class="b-icon-box" style="background: #FEE2E2; color: #DC2626;">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="#DC2626" stroke="#DC2626" stroke-width="1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                         </div>
                         <div class="b-label">Máy Chấm Tốc Độ (Python)</div>
-                        <div class="b-value" style="color: var(--c-text-main);">
+                        <div class="b-value" style="color: var(--c-text-main); font-size: 2.2rem;">
                             <%= stats && stats.ThoiGianTrungBinh_ms ? (stats.ThoiGianTrungBinh_ms / 1000).toFixed(2) : '0.04' %>s
                         </div>
+                        <div style="margin-top: 14px; color: var(--c-text-dim); font-size: 0.9rem; text-wrap: pretty;">
+                            Tốc độ AI biên dịch và đối chiếu TestCase tự động trên cổng 5000 (DF-01 / XLBN.02).
+                        </div>
                     </div>
-                    <div style="margin-top: 20px; color: var(--c-text-dim); font-size: 0.9rem; text-wrap: pretty;">
-                        Tốc độ AI biên dịch và đối chiếu TestCase tự động trên cổng 5000 (DF-01 / XLBN.02).
+                    <div style="margin-top: 20px; font-size: 0.82rem; font-weight: 700; color: #047857; display: flex; align-items: center; gap: 6px;">
+                        <span class="telemetry-pulse"></span>
+                        <span>KERNEL SẴN SÀNG // UPTIME 99.9%</span>
+                    </div>
+                </div>
+
+                <!-- Hàng 1 - Cột 3: Dự Án Robot Tiêu Biểu (Wall of Fame Showcase) -->
+                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(4, 120, 87, 0.12); color: #047857;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        </div>
+                        <div class="b-label">Dự Án Tiêu Biểu Phòng Lab</div>
+                        <div class="b-value" style="color: var(--c-text-main); font-size: 1.6rem; margin: 4px 0;">
+                            Xe Cân Bằng 2 Bánh PID
+                        </div>
+                        <div style="margin-top: 10px; color: var(--c-text-dim); font-size: 0.9rem; text-wrap: pretty;">
+                            Mô hình phần cứng kết hợp MPU6050, động cơ DC giảm tốc và thuật toán giữ thăng bằng tự động.
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <a href="/community" class="btn btn-secondary btn-sm" style="width: 100%; text-align: center;">
+                            Xem Video Wall of Fame ↗
+                        </a>
                     </div>
                 </div>
                 
-                <!-- Thẻ Danh sách 3: Top Học Viên -->
+                <!-- Hàng 2 - Cột 1 & 2: Top Học Viên Xuất Sắc (Span 2) -->
                 <div class="bento-card b-card-wide bouncy-up">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
                         <div>
-                            <div class="b-label">Top Học Viên Xuất Sắc</div>
-                            <div class="b-value" style="font-size: 2.2rem;">Vinh Danh Điểm Số</div>
+                            <div class="b-label">Bảng Vàng Điểm Số (TTCĐ.02)</div>
+                            <div class="b-value" style="font-size: 2rem;">Top Học Viên Xuất Sắc</div>
                         </div>
                         <a href="/community" class="btn btn-secondary btn-sm">Xem Wall of Fame →</a>
                     </div>
                     
                     <ul class="rank-list">
                         <% if (leaderboard && leaderboard.length > 0) { %>
-                            <% leaderboard.forEach((item, idx) => { %>
+                            <% leaderboard.slice(0, 5).forEach((item, idx) => { %>
                                 <li class="rank-item">
                                     <div class="r-user">
                                         <div class="r-badge">
-                                            <svg viewBox="0 0 32 32" fill="<%= idx === 0 ? 'var(--c-accent)' : (idx === 1 ? '#CBD5E1' : '#E2E8F0') %>">
+                                            <svg viewBox="0 0 32 32" fill="<%= idx === 0 ? 'var(--c-accent)' : (idx === 1 ? '#CBD5E1' : (idx === 2 ? '#F59E0B' : '#E2E8F0')) %>">
                                                 <path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/>
                                             </svg>
                                             <span style="color: <%= idx === 0 ? '#0B0F19' : 'var(--c-text-main)' %>;"><%= idx + 1 %></span>
                                         </div> 
                                         <div>
-                                            <div style="font-weight: 700; color: var(--c-text-main);"><%= item.HoTen %></div>
-                                            <div style="font-size: 0.78rem; color: var(--c-text-dim);"><%= item.Email %> · <%= item.SoBaiNop %> bài nộp</div>
+                                            <div style="font-weight: 700; color: var(--c-text-main); font-size: 1rem;"><%= item.HoTen %></div>
+                                            <div style="font-size: 0.8rem; color: var(--c-text-dim);"><%= item.Email %> · <%= item.SoBaiNop %> bài nộp</div>
                                         </div>
                                     </div>
-                                    <div class="r-score"><%= item.DiemCaoNhat %>đ</div>
+                                    <div class="r-score" style="font-size: 1.25rem;"><%= item.DiemCaoNhat %>đ</div>
                                 </li>
                             <% }) %>
                         <% } else { %>
@@ -448,6 +598,27 @@
                             </li>
                         <% } %>
                     </ul>
+                </div>
+
+                <!-- Hàng 2 - Cột 3: Phòng Thi Trực Tuyến & Cấp Chứng Chỉ (Span 1) -->
+                <div class="bento-card bouncy-up" style="display: flex; flex-direction: column; justify-content: space-between; border: 2px solid var(--c-primary); box-shadow: 4px 4px 0 var(--c-primary);">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(90, 82, 255, 0.12); color: var(--c-primary);">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div class="b-label">Phân hệ KTĐG.02 &amp; Luồng DF-06</div>
+                        <div class="b-value" style="font-size: 1.5rem; color: var(--c-text-main); margin: 6px 0;">
+                            Phòng Thi Chống Gian Lận
+                        </div>
+                        <p style="color: var(--c-text-dim); font-size: 0.9rem; line-height: 1.5; margin-bottom: 16px; text-wrap: pretty;">
+                            Hệ thống giám sát tab &amp; toàn màn hình tự động (DF-06). Đạt trên 8.0 điểm để nhận chứng chỉ kỹ thuật số STEM Robotic.
+                        </p>
+                    </div>
+                    <div>
+                        <a href="<%= user ? '/exam' : '/login' %>" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; text-align: center; justify-content: center; padding: 12px 20px;">
+                            Vào Phòng Thi Ngay →
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -492,19 +663,7 @@
             });
         }, observerOptions);
         document.querySelectorAll('.bouncy-up').forEach(el => observer.observe(el));
-
-        // Nút Magnetic Effect từ giaodien8.html
-        document.querySelectorAll('.magnet-btn').forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'translate(0px, 0px)';
-            });
-        });
     </script>
+    <script src="/js/theme-engine.js"></script>
 </body>
 </html>

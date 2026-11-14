@@ -26,18 +26,18 @@ Hệ thống **STEM Robotic Edu** là nền tảng trực tuyến chuyên sâu h
 6. **MOD-06 — Tương tác Cộng đồng & Vinh danh (`/community`):** Bảng vinh danh Wall of Fame cho các dự án xuất sắc, diễn đàn trao đổi chuyên môn, hỏi đáp kỹ thuật robot.
 
 ### 1.2. Mười Hai Chức Năng Cốt Lõi (Core Capabilities)
-- **FR-01:** Đăng ký, đăng nhập và bảo mật phiên theo vai trò.
-- **FR-02:** Quản lý hồ sơ cá nhân và trạm học tập.
-- **FR-03:** Tra cứu lộ trình đào tạo, sơ đồ linh kiện và nguyên lý mạch.
-- **FR-04:** Tải mã nguồn mẫu (`.ino`, `.cpp`, `.py`) và học liệu kỹ thuật.
-- **FR-05:** Tạo đề bài thực hành STEM và cấu hình bộ dữ liệu Test Case.
-- **FR-06:** Nộp bài thực hành đa phương tiện (Source code & Video vận hành).
-- **FR-07:** Máy chấm code tự động tốc độ cao (< 0.05s) qua sandbox cách ly.
-- **FR-08:** Giáo viên kiểm duyệt video thực tế, nhập nhận xét sư phạm và chốt điểm.
-- **FR-09:** Xuất báo cáo điểm tổng kết (`.csv`) và theo dõi tiến độ cá nhân.
-- **FR-10:** Diễn đàn trao đổi lỗi code, thảo luận kỹ thuật và hỏi đáp.
-- **FR-11:** Bảng vàng vinh danh (Wall of Fame) và bình chọn dự án robot ấn tượng.
-- **FR-12:** Thi trực tuyến chống gian lận chuyển tab có đếm ngược thời gian thực.
+- **FR-01 (QLTK.01, QLTK.02):** Đăng ký, đăng nhập và bảo mật phiên theo vai trò.
+- **FR-02 (QLTK.03):** Khôi phục mật khẩu qua mã xác thực OTP 6 số (`POST /api/auth/forgot-password` & `POST /api/auth/reset-password`).
+- **FR-03 (QTHT.02):** Tra cứu & cập nhật hồ sơ cá nhân `/profile`, đổi mật khẩu bảo mật và đồng bộ Session tức thì.
+- **FR-04:** Tra cứu lộ trình đào tạo, sơ đồ linh kiện và nguyên lý mạch.
+- **FR-05:** Tải mã nguồn mẫu (`.ino`, `.cpp`, `.py`) và học liệu kỹ thuật.
+- **FR-06 (QLDA.01):** Tạo đề bài thực hành STEM và cấu hình bộ dữ liệu Test Case trên `/teacher`.
+- **FR-07:** Nộp bài thực hành đa phương tiện (Source code & Video vận hành).
+- **FR-08 (DF-01):** Máy chấm code tự động tốc độ cao (< 0.05s) qua sandbox cách ly.
+- **FR-09 (KQBN.01, KQBN.02):** Giáo viên kiểm duyệt video thực tế, nhập nhận xét sư phạm và chốt điểm.
+- **FR-10 (XBC.02):** Xuất báo cáo điểm tổng kết (`.csv`), xem trước bản in chuẩn trường học (PDF / Print Preview) và tự động ghi log vào `BaoCaoThongKe`.
+- **FR-11 (TTCĐ.01, TTCĐ.02):** Diễn đàn trao đổi lỗi code, Bảng vàng vinh danh (Wall of Fame) và bình chọn dự án robot.
+- **FR-12 (KTĐG.02, DF-06):** Thi trực tuyến chống gian lận chuyển tab có đếm ngược thời gian thực.
 
 ### 1.3. Bảy Luồng Dữ Liệu Tự Động Hóa Đột Phá (Automated Data Flows)
 | Mã luồng | Tên luồng nghiệp vụ | Cơ chế xử lý tự động |

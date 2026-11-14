@@ -15,7 +15,8 @@
   <div class="app-shell">
     <!-- Sidebar Studio Kỹ Thuật (Neo-Brutalist & Deep Dark Console) -->
     <aside class="sidebar">
-      <div class="sidebar-brand">
+      <!-- Không gian học tập: Bấm để về Lộ trình & Dự án (Không gian chính của học sinh) -->
+      <a href="javascript:void(0)" onclick="switchView('lotrinh')" class="sidebar-brand" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;" title="Về Lộ trình &amp; Dự án (Không gian học tập)">
         <div class="brand-symbol">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="#FFF" fill="none" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
@@ -23,50 +24,83 @@
           <div class="brand-title">STEM Robotic</div>
           <div class="brand-tag">Học sinh · Không gian học tập</div>
         </div>
-      </div>
+      </a>
 
-      <!-- Thẻ người dùng -->
-      <div class="sidebar-user-card">
+      <!-- Thẻ người dùng: Bấm Avatar hoặc tên để vào Hồ sơ cá nhân -->
+      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân (QTHT.02)">
         <div class="user-avatar-circle">
           <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'H' %>
         </div>
         <div class="user-meta">
-          <div class="user-name"><%= user.HoTen %></div>
-          <div class="user-role-label">Học sinh · Mã #<%= user.MaNguoiDung %></div>
+          <div class="user-name" style="display: flex; align-items: center; gap: 6px;">
+            <span><%= user.HoTen %></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="user-role-label">Hồ sơ cá nhân · Mã #<%= user.MaNguoiDung %></div>
         </div>
-      </div>
+      </a>
 
-      <!-- Menu Điều Hướng -->
+      <!-- Menu Điều Hướng Các Trang / Phân Hệ Chức Năng Riêng Biệt -->
       <ul class="sidebar-nav">
         <li class="sidebar-nav-item">
-          <a href="#lotrinhSection" class="sidebar-nav-link active">
+          <a href="javascript:void(0)" onclick="switchView('lotrinh')" data-view="lotrinh" class="sidebar-nav-link active">
             <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             <span>Lộ trình &amp; Dự án</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#submissionSection" class="sidebar-nav-link">
+          <a href="javascript:void(0)" onclick="switchView('submission')" data-view="submission" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <span>Nộp bài thực hành</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#instrumentConsole" class="sidebar-nav-link">
+          <a href="javascript:void(0)" onclick="switchView('judge')" data-view="judge" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
             <span>Khoang máy chấm</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#historySection" class="sidebar-nav-link">
+          <a href="javascript:void(0)" onclick="switchView('lookup')" data-view="lookup" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            <span>Tra cứu linh kiện &amp; Lỗi</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="switchView('history')" data-view="history" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>Lịch sử &amp; Bảng điểm</span>
           </a>
         </li>
-        <li class="sidebar-nav-item">
-          <a href="/community" class="sidebar-nav-link">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-            <span>Cộng đồng &amp; Vinh danh</span>
-          </a>
+        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con (TTCĐ.01 & TTCĐ.02) -->
+        <li class="sidebar-nav-item sidebar-dropdown" id="studentCommunityDropdown">
+          <button type="button" class="sidebar-dropdown-toggle" onclick="toggleSidebarDropdown(this)">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              <span>Cộng đồng &amp; Vinh danh</span>
+            </div>
+            <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="sidebar-submenu">
+            <li>
+              <a href="javascript:void(0)" onclick="switchView('community-fame')" data-view="community-fame" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Bảng Vinh Danh (Fame)</span>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="switchView('community-forum')" data-view="community-forum" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Diễn đàn Trao đổi</span>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" onclick="openNewCommunityPostModal()" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <span>Đăng thảo luận mới</span>
+              </a>
+            </li>
+          </ul>
         </li>
         <li class="sidebar-nav-item">
           <a href="/exam" class="sidebar-nav-link" style="color: var(--c-secondary);">
@@ -74,7 +108,13 @@
             <span>Phòng thi trực tuyến</span>
           </a>
         </li>
-        <li class="sidebar-nav-item" style="margin-top: 20px;">
+        <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="openReportIssueModal()" class="sidebar-nav-link" style="color: var(--c-secondary);">
+            <svg viewBox="0 0 24 24" style="stroke: var(--c-secondary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Báo cáo sự cố (HTTB.01)</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item" style="margin-top: 14px;">
           <a href="/" class="sidebar-nav-link" style="color: var(--c-accent);">
             <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
             <span>Về Trang Chủ (/)</span>
@@ -92,194 +132,393 @@
 
     <!-- Main Content Canvas -->
     <main class="main-content">
-      <!-- Top Breadcrumb -->
-      <div style="font-size: 0.85rem; color: var(--c-text-dim); margin-bottom: 24px; font-weight: 600;">
-        <span>Không gian học tập</span>
-        <span style="margin: 0 8px;">/</span>
-        <span style="color: var(--c-primary);">Lộ trình Đào tạo Robotics &amp; Nộp Bài</span>
+      <!-- Vùng hiển thị Thông báo Hệ thống tự động (HTTB.02) -->
+      <div id="systemBroadcastContainer" style="margin-bottom: 24px;"></div>
+
+      <!-- Top Breadcrumb & Nút Báo Cáo Sự Cố (HTTB.01) -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+        <div style="font-size: 0.85rem; color: var(--c-text-dim); font-weight: 600;">
+          <a href="javascript:void(0)" onclick="switchView('lotrinh')" style="color: inherit; text-decoration: none;" title="Về Lộ trình &amp; Dự án"><span>Không gian học tập</span></a>
+          <span style="margin: 0 8px;">/</span>
+          <span style="color: var(--c-primary);" id="pageBreadcrumb">Lộ trình Đào tạo Robotics &amp; Dự Án</span>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openReportIssueModal()" style="display: inline-flex; align-items: center; gap: 6px; color: var(--c-secondary); border-color: rgba(255, 94, 94, 0.4); font-weight: 700;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Báo cáo sự cố kỹ thuật (HTTB.01)</span>
+        </button>
       </div>
 
-      <!-- Hero Welcome Card Cá Nhân Hóa (Bento Card với chi tiết công nghệ phòng Lab) -->
-      <section class="bento-card bouncy-up visible" style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); position: relative; overflow: hidden;">
-        <!-- Watermark mạch vi điều khiển chìm góc thẻ -->
-        <svg style="position: absolute; right: -20px; top: -20px; width: 180px; height: 180px; opacity: 0.06; pointer-events: none;" viewBox="0 0 100 100" fill="none">
-          <circle cx="50" cy="50" r="40" stroke="var(--c-primary)" stroke-width="2" stroke-dasharray="6 4"/>
-          <circle cx="50" cy="50" r="24" stroke="var(--c-secondary)" stroke-width="3"/>
-          <rect x="42" y="42" width="16" height="16" fill="var(--c-accent)" transform="rotate(45 50 50)"/>
-        </svg>
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 1: LỘ TRÌNH ĐÀO TẠO & CÁC DỰ ÁN THỰC HÀNH (Trang Mặc Định)       -->
+      <!-- ========================================================================= -->
+      <div id="view-lotrinh" class="dashboard-view active">
+        <!-- Hero Welcome Card Cá Nhân Hóa (Bento Card) -->
+        <section class="bento-card" style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); position: relative; overflow: hidden;">
+          <!-- Watermark mạch vi điều khiển chìm góc thẻ -->
+          <svg style="position: absolute; right: -20px; top: -20px; width: 180px; height: 180px; opacity: 0.06; pointer-events: none;" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="40" stroke="var(--c-primary)" stroke-width="2" stroke-dasharray="6 4"/>
+            <circle cx="50" cy="50" r="24" stroke="var(--c-secondary)" stroke-width="3"/>
+            <rect x="42" y="42" width="16" height="16" fill="var(--c-accent)" transform="rotate(45 50 50)"/>
+          </svg>
 
-        <div style="position: relative; z-index: 2;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-            <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 0;">Học Viện Sáng Tạo STEM Robotic</span>
-            <div class="hero-hud-badge" style="font-size: 0.72rem; padding: 4px 10px;">
-              <span class="telemetry-pulse"></span>
-              <span>TRẠM THỰC HÀNH #<%= user.MaNguoiDung %> // KẾT NỐI MÁY CHẤM 0.05S</span>
+          <div style="position: relative; z-index: 2;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 0;">Học Viện Sáng Tạo STEM Robotic</span>
+              <div class="hero-hud-badge" style="font-size: 0.72rem; padding: 4px 10px;">
+                <span class="telemetry-pulse"></span>
+                <span>TRẠM THỰC HÀNH #<%= user.MaNguoiDung %> // KẾT NỐI MÁY CHẤM 0.05S</span>
+              </div>
             </div>
-          </div>
-          <h1 style="font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 800; margin-bottom: 10px;">
-            Xin chào, <span class="title-highlight"><%= user.HoTen %></span>
-          </h1>
-          <p style="font-size: 1.05rem; color: var(--c-text-dim); max-width: 580px; text-wrap: pretty;">
-            Chào mừng bạn quay trở lại phòng thí nghiệm. Hoàn thành các dự án thực hành để tự động mở khóa các thử thách tiếp theo (Luồng tự động DF-02).
-          </p>
-        </div>
-        <div style="min-width: 260px; padding: 12px 0; position: relative; z-index: 2;">
-          <div style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 8px;" id="studentProgressText">
-            Tiến độ hoàn thành: Đang cập nhật...
-          </div>
-          <div class="progress-track" style="width: 100%; height: 10px;">
-            <div class="progress-bar-fill" id="studentProgressBar" style="width: 30%;"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 1. LỘ TRÌNH ĐÀO TẠO & CÁC DỰ ÁN THỰC HÀNH -->
-      <section id="lotrinhSection" style="margin-bottom: 40px;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
-          <div>
-            <h2 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em;">
-              Lộ Trình Đào Tạo &amp; Dự Án Thực Hành
-            </h2>
-            <p style="font-size: 0.95rem; color: var(--c-text-dim); margin-top: 4px;">
-              Khám phá các trạm vi mạch, lập trình nhúng C++ và robot tự hành đa cảm biến.
+            <h1 style="font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 800; margin-bottom: 10px;">
+              Xin chào, <span class="title-highlight"><%= user.HoTen %></span>
+            </h1>
+            <p style="font-size: 1.05rem; color: var(--c-text-dim); max-width: 580px; text-wrap: pretty;">
+              Chào mừng bạn quay trở lại phòng thí nghiệm. Hoàn thành các dự án thực hành để tự động mở khóa các thử thách tiếp theo (Luồng tự động DF-02).
             </p>
           </div>
-          <button class="btn btn-secondary btn-sm" onclick="loadLoTrinhAndProjects()">
-            Làm mới danh sách
-          </button>
-        </div>
-
-        <div id="lotrinhContainer">
-          <p class="text-muted" style="font-size: 0.95rem; padding: 24px 0;">Đang kết nối hệ thống và nạp dữ liệu lộ trình...</p>
-        </div>
-      </section>
-
-      <!-- 2. KHU VỰC NỘP BÀI ĐA PHƯƠNG TIỆN (XLBN.01) -->
-      <section id="submissionSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-text-main); margin-bottom: 40px;">
-        <div class="card-header">
-          <div>
-            <span class="tech-chip" style="background: #FEE2E2; color: #991B1B; font-weight: 700; margin-bottom: 8px; display: inline-block;">
-              Mô đun XLBN.01 · Ràng Buộc Kép
-            </span>
-            <h2 class="card-title" style="font-size: 1.4rem;">Nộp Bài Thực Hành Đa Phương Tiện</h2>
-            <p class="card-subtitle">
-              Bắt buộc tải lên Tệp mã nguồn (.ino, .cpp, .py) VÀ dán Đường dẫn Video vận hành thực tế mới cho phép nộp bài.
-            </p>
+          <div style="min-width: 260px; padding: 12px 0; position: relative; z-index: 2;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 8px;" id="studentProgressText">
+              Tiến độ hoàn thành: Đang cập nhật...
+            </div>
+            <div class="progress-track" style="width: 100%; height: 10px;">
+              <div class="progress-bar-fill" id="studentProgressBar" style="width: 30%;"></div>
+            </div>
           </div>
-          <span class="badge badge-primary">DF-01 Auto Judge</span>
-        </div>
+        </section>
 
-        <form id="submissionForm" enctype="multipart/form-data">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <!-- 1. LỘ TRÌNH ĐÀO TẠO & CÁC DỰ ÁN THỰC HÀNH -->
+        <section id="lotrinhSection" style="margin-bottom: 40px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
             <div>
-              <div class="form-group">
-                <label class="form-label" for="selectProject">1. Chọn Dự án thực hành cần nộp *</label>
-                <select id="selectProject" name="maDuAn" class="form-control" required>
-                  <option value="">-- Chọn dự án từ danh sách đã mở khóa --</option>
-                </select>
+              <h2 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em;">
+                Lộ Trình Đào Tạo &amp; Dự Án Thực Hành
+              </h2>
+              <p style="font-size: 0.95rem; color: var(--c-text-dim); margin-top: 4px;">
+                Khám phá các trạm vi mạch, lập trình nhúng C++ và robot tự hành đa cảm biến.
+              </p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadLoTrinhAndProjects()">
+              Làm mới danh sách
+            </button>
+          </div>
+
+          <div id="lotrinhContainer">
+            <p class="text-muted" style="font-size: 0.95rem; padding: 24px 0;">Đang kết nối hệ thống và nạp dữ liệu lộ trình...</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 2: NỘP BÀI THỰC HÀNH ĐA PHƯƠNG TIỆN (XLBN.01)                     -->
+      <!-- ========================================================================= -->
+      <div id="view-submission" class="dashboard-view">
+        <section id="submissionSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-text-main); margin-bottom: 40px;">
+          <div class="card-header">
+            <div>
+              <span class="tech-chip" style="background: #FEE2E2; color: #991B1B; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+                Mô đun XLBN.01 · Ràng Buộc Kép
+              </span>
+              <h2 class="card-title" style="font-size: 1.4rem;">Nộp Bài Thực Hành Đa Phương Tiện</h2>
+              <p class="card-subtitle">
+                Bắt buộc tải lên Tệp mã nguồn (.ino, .cpp, .py) VÀ dán Đường dẫn Video vận hành thực tế mới cho phép nộp bài.
+              </p>
+            </div>
+            <span class="badge badge-primary">DF-01 Auto Judge</span>
+          </div>
+
+          <form id="submissionForm" enctype="multipart/form-data">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+              <div>
+                <div class="form-group">
+                  <label class="form-label" for="selectProject">1. Chọn Dự án thực hành cần nộp *</label>
+                  <select id="selectProject" name="maDuAn" class="form-control" required>
+                    <option value="">-- Chọn dự án từ danh sách đã mở khóa --</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="codeFile">2. Tệp Mã nguồn (.ino, .cpp, .py) *</label>
+                  <input type="file" id="codeFile" name="codeFile" class="form-control" accept=".ino,.cpp,.py" required>
+                  <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
+                    Máy chấm Judge Engine (FastAPI cổng 5000) sẽ tự động đối chiếu TestCase dưới 10 giây.
+                  </small>
+                </div>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="codeFile">2. Tệp Mã nguồn (.ino, .cpp, .py) *</label>
-                <input type="file" id="codeFile" name="codeFile" class="form-control" accept=".ino,.cpp,.py" required>
-                <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
-                  Máy chấm Judge Engine (FastAPI cổng 5000) sẽ tự động đối chiếu TestCase dưới 10 giây.
-                </small>
+              <div>
+                <div class="form-group">
+                  <label class="form-label" for="videoUrl">3. Đường dẫn Video vận hành robot thực tế *</label>
+                  <input type="url" id="videoUrl" name="videoUrl" class="form-control" placeholder="https://youtube.com/watch?v=... hoặc Drive/OneDrive" required>
+                  <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
+                    Minh chứng phần cứng: Video quay rõ mô hình, bo mạch vi điều khiển và chuyển động thực tế.
+                  </small>
+                </div>
+
+                <div id="submitAlert" style="display:none; padding: 14px 18px; border-radius: var(--radius-input); font-size: 0.88rem; margin-top: 14px;"></div>
+
+                <div style="margin-top: 24px;">
+                  <button type="submit" id="btnSubmit" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; padding: 14px;">
+                    Gửi Bài &amp; Kích Hoạt Máy Chấm (DF-01)
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
+          </form>
+        </section>
+      </div>
 
-            <div>
-              <div class="form-group">
-                <label class="form-label" for="videoUrl">3. Đường dẫn Video vận hành robot thực tế *</label>
-                <input type="url" id="videoUrl" name="videoUrl" class="form-control" placeholder="https://youtube.com/watch?v=... hoặc Drive/OneDrive" required>
-                <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
-                  Minh chứng phần cứng: Video quay rõ mô hình, bo mạch vi điều khiển và chuyển động thực tế.
-                </small>
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 3: KHOANG MÁY CHẤM TỰ ĐỘNG & BẢNG LOG LỖI (DF-04)                 -->
+      <!-- ========================================================================= -->
+      <div id="view-judge" class="dashboard-view">
+        <section class="instrument-console" id="instrumentConsole">
+          <div class="console-header">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div class="console-dots">
+                <span class="console-dot red"></span>
+                <span class="console-dot yellow"></span>
+                <span class="console-dot green"></span>
               </div>
-
-              <div id="submitAlert" style="display:none; padding: 14px 18px; border-radius: var(--radius-input); font-size: 0.88rem; margin-top: 14px;"></div>
-
-              <div style="margin-top: 24px;">
-                <button type="submit" id="btnSubmit" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; padding: 14px;">
-                  Gửi Bài &amp; Kích Hoạt Máy Chấm (DF-01)
-                  <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+              <span style="font-family: var(--f-heading); font-weight: 700; font-size: 1rem;">
+                Khoang Máy Chấm Tự Động — Bảng Phân Tích Logic &amp; Log Lỗi (XLBN.03 / DF-04)
+              </span>
+            </div>
+            <span id="consoleStatusBadge" class="badge badge-locked">Sẵn sàng nhận bài</span>
+          </div>
+          <div style="padding: 24px;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+              <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                <div style="font-family: var(--f-heading); font-size: 2.2rem; font-weight: 800; color: var(--c-accent);" id="metricScore">-- / 10</div>
+                <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Điểm Code Tự Động</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                <div style="font-family: var(--f-heading); font-size: 1.8rem; font-weight: 800; color: #38BDF8;" id="metricResult">--</div>
+                <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Đánh Giá TestCase</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
+                <div style="font-family: var(--f-heading); font-size: 1.6rem; font-weight: 800; color: #10B981;" id="metricStatus">--</div>
+                <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Trạng Thái Bài Nộp (DF-01)</div>
               </div>
             </div>
+            <div style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
+              Nhật Ký Thực Thi &amp; Phân Tích Lỗi Chi Tiết (Telemetry DF-04):
+            </div>
+            <div class="console-screen" id="consoleLog">Chưa có dữ liệu chấm bài. Hãy chọn dự án và nộp file code để chạy máy chấm tự động.</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 4: TRẠM TRA CỨU LINH KIỆN & SỬA LỖI NHANH (TCPP.02 / PHÂN HỆ 2)   -->
+      <!-- ========================================================================= -->
+      <div id="view-lookup" class="dashboard-view">
+        <section id="lookupSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); margin-bottom: 40px;">
+          <div class="card-header" style="flex-wrap: wrap; gap: 14px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 0;">
+                  Mô đun TCPP.02 · Trợ Lý Phần Cứng &amp; Gỡ Lỗi Code
+                </span>
+                <span class="badge badge-success">Tra cứu trực tuyến</span>
+              </div>
+              <h2 class="card-title" style="font-size: 1.4rem;">Trạm Tra Cứu Linh Kiện &amp; Sửa Lỗi Nhanh</h2>
+              <p class="card-subtitle">
+                Tra cứu tức thì thông số kỹ thuật (Arduino, HC-SR04, L298N), sơ đồ chân, nguyên lý kết nối và giải pháp sửa lỗi TestCase thường gặp.
+              </p>
+            </div>
+            <div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="performLookup(true)">Làm mới kết quả</button>
+            </div>
+          </div>
+
+          <!-- Ô Tìm Kiếm Nhanh với Icon SVG & Debounce -->
+          <div style="margin-bottom: 24px;">
+            <div style="position: relative;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-primary)" stroke-width="2.5" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input 
+                type="text" 
+                id="lookupKeyword" 
+                class="form-control" 
+                placeholder="Nhập tên linh kiện (Arduino, HC-SR04, L298N), mã lỗi hoặc từ khóa thuật toán (PID, PWM, động cơ)..." 
+                style="padding-left: 48px; height: 50px; font-size: 1rem; border: 2px solid var(--c-text-main); box-shadow: 2px 2px 0 var(--c-accent);"
+              >
+            </div>
+
+            <!-- Bộ lọc danh mục nhanh (Pills) -->
+            <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-primary btn-sm lookup-filter-btn" data-filter="all" onclick="filterLookupCategory('all', this)">
+                Tất cả (Linh kiện &amp; Lỗi code)
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm lookup-filter-btn" data-filter="hardware" onclick="filterLookupCategory('hardware', this)">
+                Linh kiện phần cứng (Arduino, Cảm biến, Mạch)
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm lookup-filter-btn" data-filter="code" onclick="filterLookupCategory('code', this)">
+                Code mẫu &amp; Bài giảng
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm lookup-filter-btn" data-filter="error" onclick="filterLookupCategory('error', this)">
+                Gợi ý sửa lỗi TestCase
+              </button>
+            </div>
+          </div>
+
+          <!-- Khung hiển thị kết quả -->
+          <div id="lookupResultsContainer">
+            <div style="text-align: center; padding: 36px 20px; color: var(--c-text-dim);">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.5;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <p style="font-size: 0.95rem;">Đang tải dữ liệu linh kiện và hướng dẫn gỡ lỗi...</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 5: LỊCH SỬ BÀI NỘP & BẢNG ĐIỂM (KQBN.02)                          -->
+      <!-- ========================================================================= -->
+      <div id="view-history" class="dashboard-view">
+        <section class="card" id="historySection">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Bảng Theo Dõi Điểm Số &amp; Minh Chứng Đánh Giá (KQBN.02)</h2>
+              <p class="card-subtitle">Xem kết quả chấm tự động, liên kết video và nhận xét chốt điểm từ giáo viên.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadMySubmissions()">Làm mới</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã bài</th>
+                  <th>Dự án</th>
+                  <th>Thời điểm nộp</th>
+                  <th>Điểm Code</th>
+                  <th>Minh chứng Video</th>
+                  <th>Đánh giá Video</th>
+                  <th>Tổng điểm</th>
+                  <th>Trạng thái</th>
+                  <th>Chi tiết Log</th>
+                </tr>
+              </thead>
+              <tbody id="mySubmissionsBody">
+                <tr>
+                  <td colspan="9" class="text-muted" style="text-align:center;">Đang tải lịch sử bài nộp...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 6: BẢNG VINH DANH DỰ ÁN ROBOTIC XUẤT SẮC (Wall of Fame - TTCĐ.02) -->
+      <!-- ========================================================================= -->
+      <div id="view-community-fame" class="dashboard-view">
+        <section style="margin-bottom: 36px;">
+          <div class="bento-card" style="background: linear-gradient(145deg, #3730A3, #1E1B4B); color: #FFFFFF; padding: 28px 32px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <span class="tech-chip" style="background: rgba(255,255,255,0.2); color: #FFFFFF; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+                Phân hệ TTCĐ.02 · Top Dự Án Tiêu Biểu
+              </span>
+              <h2 style="font-size: 1.6rem; font-weight: 800; color: #FFF; margin-bottom: 4px;">
+                Bảng Vinh Danh Dự Án Robotic Xuất Sắc (Wall of Fame)
+              </h2>
+              <p style="font-size: 0.95rem; color: #FFFFFF; opacity: 0.92; margin-top: 4px; text-wrap: pretty;">
+                Tự động xếp hạng và tôn vinh các công trình Robot đạt điểm tối đa (100% TestCase và Video vận hành đạt chuẩn phần cứng).
+              </p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadWallOfFame()">Làm mới</button>
+          </div>
+
+          <div class="bento-grid" id="fameGrid">
+            <p class="text-muted" style="font-size: 0.95rem; padding: 20px 0; grid-column: 1/-1;">Đang tải danh sách dự án vinh danh...</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 6: DIỄN ĐÀN TRAO ĐỔI KỸ THUẬT & GỠ LỖI (TTCĐ.01 & DF-03)           -->
+      <!-- ========================================================================= -->
+      <div id="view-community-forum" class="dashboard-view">
+        <section class="card" style="border: 1.5px solid rgba(11, 15, 25, 0.08); margin-bottom: 36px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+                Mô đun TTCĐ.01 &amp; Thuật Toán Trending DF-03
+              </span>
+              <h2 class="card-title" style="font-size: 1.4rem; font-weight: 800;">Diễn Đàn Thảo Luận Kỹ Thuật &amp; Gỡ Lỗi</h2>
+              <p class="card-subtitle">
+                Nơi giao lưu học hỏi, chia sẻ mẹo chống nhiễu cảm biến, tối ưu Timer/PWM và giải quyết lỗi vi điều khiển.
+              </p>
+            </div>
+            <button class="btn-playful btn-playful-primary btn-sm" onclick="openNewCommunityPostModal()">
+              + Đăng Thảo Luận Mới
+            </button>
+          </div>
+
+          <!-- Bộ lọc tab & DF-03 -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+            <button class="btn btn-secondary btn-sm active" data-filter="all" onclick="filterCommunityPosts('all', this)">Tất cả chủ đề</button>
+            <button class="btn btn-secondary btn-sm" data-filter="trending" onclick="filterCommunityPosts('trending', this)">Top Trending (DF-03)</button>
+            <button class="btn btn-secondary btn-sm" data-filter="Thảo luận" onclick="filterCommunityPosts('Thảo luận', this)">Thảo luận chung</button>
+            <button class="btn btn-secondary btn-sm" data-filter="Chia sẻ lỗi" onclick="filterCommunityPosts('Chia sẻ lỗi', this)">Kinh nghiệm gỡ lỗi</button>
+          </div>
+
+          <div id="postsContainer">
+            <p class="text-muted" style="font-size: 0.95rem; padding: 24px 0;">Đang tải các chủ đề thảo luận...</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Đăng bài mới Cộng đồng (TTCĐ.01) -->
+  <div class="modal-overlay" id="communityPostModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;">Tạo Chủ Đề Thảo Luận Mới (TTCĐ.01)</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeNewCommunityPostModal()">Đóng</button>
+      </div>
+      <div style="padding: 24px;">
+        <form id="newCommunityPostForm">
+          <div class="form-group">
+            <label class="form-label" for="communityPostTitle">Tiêu đề bài viết *</label>
+            <input type="text" id="communityPostTitle" name="tieuDe" class="form-control" placeholder="Ví dụ: Cách khắc phục sụt áp motor khi xe khởi động" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="communityPostCategory">Chuyên mục thảo luận *</label>
+              <select id="communityPostCategory" name="loaiNoiDung" class="form-control">
+                <option value="Thảo luận">Thảo luận kỹ thuật</option>
+                <option value="Chia sẻ lỗi">Chia sẻ &amp; Khắc phục lỗi</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="communityPostProject">Liên kết Dự án (Tùy chọn)</label>
+              <select id="communityPostProject" name="maDuAn" class="form-control">
+                <option value="">-- Không gắn dự án --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="communityPostContent">Nội dung chi tiết bài viết *</label>
+            <textarea id="communityPostContent" name="noiDung" class="form-control" rows="5" placeholder="Mô tả hiện tượng, mã lỗi, giải pháp hoặc kinh nghiệm thực chiến..." required></textarea>
+          </div>
+
+          <div id="communityPostAlert" style="display:none; padding: 12px; border-radius: var(--radius-input); font-size: 0.88rem; margin-bottom: 16px;"></div>
+
+          <div style="text-align: right;">
+            <button type="button" class="btn btn-secondary" onclick="closeNewCommunityPostModal()" style="margin-right: 8px;">Hủy bỏ</button>
+            <button type="submit" id="btnSubmitCommunityPost" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">Đăng bài viết</button>
           </div>
         </form>
-      </section>
-
-      <!-- 3. KHOANG MÁY CHẤM TỰ ĐỘNG & BẢNG LOG LỖI (DF-04) -->
-      <section class="instrument-console" id="instrumentConsole">
-        <div class="console-header">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <div class="console-dots">
-              <span class="console-dot red"></span>
-              <span class="console-dot yellow"></span>
-              <span class="console-dot green"></span>
-            </div>
-            <span style="font-family: var(--f-heading); font-weight: 700; font-size: 1rem;">
-              Khoang Máy Chấm Tự Động — Bảng Phân Tích Logic &amp; Log Lỗi (XLBN.03 / DF-04)
-            </span>
-          </div>
-          <span id="consoleStatusBadge" class="badge badge-locked">Sẵn sàng nhận bài</span>
-        </div>
-        <div style="padding: 24px;">
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
-            <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
-              <div style="font-family: var(--f-heading); font-size: 2.2rem; font-weight: 800; color: var(--c-accent);" id="metricScore">-- / 10</div>
-              <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Điểm Code Tự Động</div>
-            </div>
-            <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
-              <div style="font-family: var(--f-heading); font-size: 1.8rem; font-weight: 800; color: #38BDF8;" id="metricResult">--</div>
-              <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Đánh Giá TestCase</div>
-            </div>
-            <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
-              <div style="font-family: var(--f-heading); font-size: 1.6rem; font-weight: 800; color: #10B981;" id="metricStatus">--</div>
-              <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Trạng Thái Bài Nộp (DF-01)</div>
-            </div>
-          </div>
-          <div style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
-            Nhật Ký Thực Thi &amp; Phân Tích Lỗi Chi Tiết (Telemetry DF-04):
-          </div>
-          <div class="console-screen" id="consoleLog">Chưa có dữ liệu chấm bài. Hãy chọn dự án và nộp file code để chạy máy chấm tự động.</div>
-        </div>
-      </section>
-
-      <!-- 4. LỊCH SỬ BÀI NỘP & BẢNG ĐIỂM -->
-      <section class="card" id="historySection">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">Bảng Theo Dõi Điểm Số &amp; Minh Chứng Đánh Giá (KQBN.02)</h2>
-            <p class="card-subtitle">Xem kết quả chấm tự động, liên kết video và nhận xét chốt điểm từ giáo viên.</p>
-          </div>
-          <button class="btn btn-secondary btn-sm" onclick="loadMySubmissions()">Làm mới</button>
-        </div>
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Mã bài</th>
-                <th>Dự án</th>
-                <th>Thời điểm nộp</th>
-                <th>Điểm Code</th>
-                <th>Minh chứng Video</th>
-                <th>Đánh giá Video</th>
-                <th>Tổng điểm</th>
-                <th>Trạng thái</th>
-                <th>Chi tiết Log</th>
-              </tr>
-            </thead>
-            <tbody id="mySubmissionsBody">
-              <tr>
-                <td colspan="9" class="text-muted" style="text-align:center;">Đang tải lịch sử bài nộp...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
+      </div>
+    </div>
   </div>
 
   <!-- Modal xem Log lỗi chi tiết -->
@@ -304,8 +543,386 @@
     </div>
   </div>
 
+  <!-- Modal Báo Cáo Sự Cố Kỹ Thuật (HTTB.01) -->
+  <div class="modal-overlay" id="reportIssueModal" style="display: none;">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800; display:flex; align-items:center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-secondary)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Báo Cáo Sự Cố Kỹ Thuật (HTTB.01)
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeReportIssueModal()">&times;</button>
+      </div>
+      <form id="reportIssueForm" style="padding: 24px;">
+        <p style="font-size: 0.88rem; color: var(--c-text-dim); margin-bottom: 20px; line-height: 1.5;">
+          Gặp lỗi khi nộp bài, máy chấm không phản hồi hoặc nghi ngờ sai sót đề bài? Hãy gửi thông tin để ban quản trị và kỹ thuật viên hỗ trợ bạn ngay.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="issueTitle">Tiêu đề sự cố *</label>
+          <input type="text" id="issueTitle" class="form-control" placeholder="Ví dụ: Lỗi biên dịch thư viện Servo trên máy chấm C++" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="issuePriority">Mức độ ưu tiên *</label>
+          <select id="issuePriority" class="form-control" required>
+            <option value="Bình thường">Bình thường (Hỏi đáp, thắc mắc đề bài)</option>
+            <option value="Khẩn cấp">Khẩn cấp (Lỗi máy chấm, không nộp được bài thi)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="issueContent">Mô tả chi tiết sự cố &amp; Thông tin lỗi *</label>
+          <textarea id="issueContent" class="form-control" rows="4" placeholder="Mô tả các bước thực hiện, thông báo lỗi từ console máy chấm hoặc chụp lại mã lỗi..." required></textarea>
+        </div>
+
+        <div id="reportIssueAlert" style="display:none; padding: 12px 16px; border-radius: var(--radius-input); font-size: 0.88rem; margin-bottom: 16px;"></div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="button" class="btn btn-secondary" onclick="closeReportIssueModal()">Hủy</button>
+          <button type="submit" id="btnSubmitIssue" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
+            Gửi Báo Cáo Sự Cố (HTTB.01)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const currentStudentId = <%= user.MaNguoiDung %>;
+
+    // =========================================================================
+    // HỆ THỐNG ĐIỀU HƯỚNG TÁCH TRANG ĐỘC LẬP (Mỗi view là một chức năng riêng biệt)
+    // =========================================================================
+    const studentViews = {
+      'lotrinh': { elId: 'view-lotrinh', title: 'Lộ trình Đào tạo Robotics & Dự Án Thực Hành' },
+      'submission': { elId: 'view-submission', title: 'Nộp Bài Thực Hành Đa Phương Tiện (XLBN.01)' },
+      'judge': { elId: 'view-judge', title: 'Khoang Máy Chấm Tự Động & Log Lỗi (DF-04)' },
+      'lookup': { elId: 'view-lookup', title: 'Trạm Tra Cứu Linh Kiện & Gỡ Lỗi Nhanh (TCPP.02)' },
+      'history': { elId: 'view-history', title: 'Lịch Sử Nộp Bài & Bảng Điểm (KQBN.02)' },
+      'community-fame': { elId: 'view-community-fame', title: 'Bảng Vinh Danh Dự Án Robotics (Wall of Fame · TTCĐ.02)' },
+      'community-forum': { elId: 'view-community-forum', title: 'Diễn Đàn Thảo Luận Kỹ Thuật & Gỡ Lỗi (TTCĐ.01 · DF-03)' }
+    };
+
+    function switchView(viewName) {
+      if (!studentViews[viewName]) viewName = 'lotrinh';
+      const target = studentViews[viewName];
+
+      // 1. Ẩn tất cả các view
+      document.querySelectorAll('.dashboard-view').forEach(v => {
+        v.classList.remove('active');
+        v.style.display = 'none';
+      });
+
+      // 2. Hiện view được chọn
+      const activeEl = document.getElementById(target.elId);
+      if (activeEl) {
+        activeEl.style.display = 'block';
+        activeEl.classList.add('active');
+      }
+
+      // 3. Cập nhật breadcrumb
+      const breadcrumb = document.getElementById('pageBreadcrumb');
+      if (breadcrumb) {
+        breadcrumb.textContent = target.title;
+      }
+
+      // 4. Tô sáng (highlight) menu bên trái
+      document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-view') === viewName) {
+          link.classList.add('active');
+        }
+      });
+      document.querySelectorAll('.sidebar-sub-link').forEach(subLink => {
+        subLink.classList.remove('active');
+        if (subLink.getAttribute('data-view') === viewName) {
+          subLink.classList.add('active');
+        }
+      });
+      const commDropdown = document.getElementById('studentCommunityDropdown');
+      if (commDropdown) {
+        const toggleBtn = commDropdown.querySelector('.sidebar-dropdown-toggle');
+        if (viewName.startsWith('community-')) {
+          commDropdown.classList.add('open');
+          if (toggleBtn) toggleBtn.classList.add('active');
+        } else {
+          if (toggleBtn) toggleBtn.classList.remove('active');
+        }
+      }
+
+      // 5. Cập nhật hash URL
+      if (history.replaceState) {
+        history.replaceState(null, null, '#' + viewName);
+      }
+
+      // 6. Tải dữ liệu tương ứng nếu cần
+      if (viewName === 'history' && typeof loadMySubmissions === 'function') {
+        loadMySubmissions();
+      }
+      if (viewName === 'lookup' && typeof performLookup === 'function') {
+        performLookup();
+      }
+      if (viewName === 'community-fame' && typeof loadWallOfFame === 'function') {
+        loadWallOfFame();
+      }
+      if (viewName === 'community-forum' && typeof loadCommunityPosts === 'function') {
+        loadCommunityPosts();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    // =========================================================================
+    // CỘNG ĐỒNG & VINH DANH (TTCĐ.01 & TTCĐ.02 & DF-03)
+    // =========================================================================
+    let allCommunityPosts = [];
+    let currentCommunityFilter = 'all';
+
+    async function loadWallOfFame() {
+      try {
+        const res = await fetch('/api/community/wall-of-fame');
+        const data = await res.json();
+        if (!data.success) return;
+
+        const grid = document.getElementById('fameGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        if (!data.wallOfFame || data.wallOfFame.length === 0) {
+          grid.innerHTML = '<p class="text-muted" style="grid-column: 1/-1; padding: 20px 0;">Chưa có dự án nào được ghi nhận trên Bảng vinh danh.</p>';
+          return;
+        }
+
+        data.wallOfFame.forEach((f, idx) => {
+          const card = document.createElement('div');
+          card.className = 'bento-card';
+
+          const ytMatch = f.VideoVanHanh ? f.VideoVanHanh.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i) : null;
+          let videoHtml = '';
+
+          if (ytMatch && ytMatch[1]) {
+            videoHtml = `
+              <div style="background:#000; height:180px; border-radius:18px; overflow:hidden; margin-bottom:16px;">
+                <iframe width="100%" height="180" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;"></iframe>
+              </div>
+            `;
+          } else if (f.VideoVanHanh) {
+            videoHtml = `
+              <div style="background:#0B0F19; height:140px; border-radius:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; padding:16px; text-align:center; margin-bottom:16px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--c-accent)" stroke-width="2" style="margin-bottom:8px;"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                <a href="${f.VideoVanHanh}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="margin-top:4px;">
+                  Xem Video Vận Hành Thực Tế ↗
+                </a>
+              </div>
+            `;
+          }
+
+          card.innerHTML = `
+            ${videoHtml}
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="r-badge">
+                  <svg viewBox="0 0 32 32" fill="${idx === 0 ? 'var(--c-accent)' : (idx === 1 ? '#CBD5E1' : '#E2E8F0')}">
+                    <path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/>
+                  </svg>
+                  <span style="color:${idx === 0 ? '#FFFFFF' : 'var(--c-text-main)'};">${idx + 1}</span>
+                </div>
+                <div>
+                  <div style="font-weight:800; font-size:1.1rem; color:var(--c-text-main);">${f.TenHocSinh}</div>
+                  <div style="font-size:0.78rem; color:var(--c-text-dim);">Học viên xuất sắc</div>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-family:var(--f-heading); font-size:1.4rem; font-weight:800; color:var(--c-primary);">${f.TongDiem} / 10</div>
+                <span class="badge badge-success">Đạt chuẩn 100%</span>
+              </div>
+            </div>
+            <div>
+              <h4 style="font-size:1rem; font-weight:700; color:var(--c-text-main); margin-bottom:6px;">
+                ${f.TenDuAn} (${f.CapDo || 'Cơ bản'})
+              </h4>
+              <p style="font-size:0.86rem; color:var(--c-text-dim); line-height:1.5; margin-bottom:12px;">
+                ${f.LoiGioiThieu || 'Dự án chế tạo và lập trình robot điều khiển tự động hoàn thành xuất sắc tất cả kịch bản kiểm thử.'}
+              </p>
+              ${f.NhanXet ? `
+                <div style="padding:10px 14px; background:var(--c-surface-dim); border-radius:var(--radius-input); font-size:0.82rem; color:var(--c-text-dim);">
+                  <strong>Giáo viên nhận xét:</strong> "${f.NhanXet}"
+                </div>
+              ` : ''}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (err) {
+        console.error('Lỗi loadWallOfFame:', err);
+      }
+    }
+
+    async function loadCommunityPosts() {
+      try {
+        const res = await fetch('/api/community/posts');
+        const data = await res.json();
+        if (!data.success) return;
+
+        allCommunityPosts = data.posts;
+        renderCommunityPosts();
+      } catch (err) {
+        console.error('Lỗi loadCommunityPosts:', err);
+      }
+    }
+
+    function renderCommunityPosts() {
+      const container = document.getElementById('postsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let filtered = allCommunityPosts;
+      if (currentCommunityFilter === 'trending') {
+        filtered = allCommunityPosts.filter(p => p.isTopTrending);
+      } else if (currentCommunityFilter !== 'all') {
+        filtered = allCommunityPosts.filter(p => p.LoaiNoiDung === currentCommunityFilter);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p class="text-muted" style="padding: 24px 0;">Không có bài thảo luận nào trong mục này.</p>';
+        return;
+      }
+
+      filtered.forEach(p => {
+        const postCard = document.createElement('div');
+        postCard.className = 'card' + (p.isTopTrending ? ' b-card-highlight' : '');
+        postCard.style.cssText = 'padding: 20px 24px; margin-bottom: 16px; border: 1px solid rgba(11,15,25,0.06);';
+
+        postCard.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
+                <span class="tech-chip" style="font-size: 0.72rem; padding: 2px 10px;">${p.LoaiNoiDung}</span>
+                ${p.isTopTrending ? '<span class="badge badge-warning" style="font-weight: 800;">TOP TRENDING (DF-03)</span>' : ''}
+                ${p.TenDuAn ? `<span class="text-muted" style="font-size: 0.78rem;">Dự án: ${p.TenDuAn}</span>` : ''}
+              </div>
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--c-text-main); margin-bottom: 6px;">${p.TieuDe}</h3>
+              <p style="font-size: 0.92rem; color: var(--c-text-dim); line-height: 1.5; white-space: pre-line;">${p.NoiDung}</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="voteCommunityPost(${p.MaThaoLuan}, this)" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+              <span>${p.LuotThich || 0}</span>
+            </button>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--c-text-dim); border-top: 1px dashed rgba(11,15,25,0.08); padding-top: 10px; margin-top: 12px; display: flex; justify-content: space-between;">
+            <span>Đăng bởi: <strong>${p.TenTacGia}</strong> (${p.VaiTro})</span>
+            <span>${new Date(p.NgayTao).toLocaleDateString('vi-VN')}</span>
+          </div>
+        `;
+        container.appendChild(postCard);
+      });
+    }
+
+    function filterCommunityPosts(filter, btn) {
+      currentCommunityFilter = filter;
+      document.querySelectorAll('#view-community-forum [data-filter]').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderCommunityPosts();
+    }
+
+    async function voteCommunityPost(postId, btn) {
+      try {
+        btn.disabled = true;
+        const res = await fetch(`/api/community/posts/${postId}/vote`, { method: 'POST' });
+        const result = await res.json();
+        if (result.success) {
+          const span = btn.querySelector('span');
+          if (span) span.textContent = result.votes;
+          if (typeof showToast === 'function') showToast('Cảm ơn bạn đã bình chọn hữu ích!');
+        }
+      } catch (err) {
+        console.error('Lỗi vote:', err);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function openNewCommunityPostModal() {
+      const modal = document.getElementById('communityPostModal');
+      if (modal) {
+        modal.classList.add('active');
+        loadCommunityProjectsSelect();
+      }
+    }
+
+    function closeNewCommunityPostModal() {
+      const modal = document.getElementById('communityPostModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    async function loadCommunityProjectsSelect() {
+      const sel = document.getElementById('communityPostProject');
+      if (!sel || sel.options.length > 1) return;
+      try {
+        const res = await fetch('/api/projects');
+        const data = await res.json();
+        if (data.success && data.projects) {
+          data.projects.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.MaDuAn;
+            opt.textContent = `${p.TenDuAn} (${p.CapDo || 'Cơ bản'})`;
+            sel.appendChild(opt);
+          });
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Xử lý gửi bài viết thảo luận mới
+    const commPostForm = document.getElementById('newCommunityPostForm');
+    if (commPostForm) {
+      commPostForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const alertBox = document.getElementById('communityPostAlert');
+        const submitBtn = document.getElementById('btnSubmitCommunityPost');
+        alertBox.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang đăng...';
+
+        const body = {
+          tieuDe: document.getElementById('communityPostTitle').value.trim(),
+          loaiNoiDung: document.getElementById('communityPostCategory').value,
+          maDuAn: document.getElementById('communityPostProject').value || null,
+          noiDung: document.getElementById('communityPostContent').value.trim()
+        };
+
+        try {
+          const res = await fetch('/api/community/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const result = await res.json();
+          if (result.success) {
+            closeNewCommunityPostModal();
+            commPostForm.reset();
+            if (typeof showToast === 'function') showToast('Đăng bài thảo luận thành công!');
+            switchView('community-forum');
+            loadCommunityPosts();
+          } else {
+            alertBox.style.display = 'block';
+            alertBox.style.background = '#FFF5F5';
+            alertBox.style.color = '#991B1B';
+            alertBox.textContent = result.message || 'Lỗi khi đăng bài.';
+          }
+        } catch (err) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = '#FFF5F5';
+          alertBox.style.color = '#991B1B';
+          alertBox.textContent = 'Lỗi kết nối máy chủ.';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Đăng bài viết';
+        }
+      });
+    }
 
     // 1. Tải danh sách Lộ trình học kèm Dự án
     async function loadLoTrinhAndProjects() {
@@ -342,6 +959,40 @@
               ${lt.MoTa || 'Lộ trình nghiên cứu và thực hành chuyên đề kỹ thuật.'} · Chủ đề: <strong>${lt.ChuDe}</strong> · Cấp độ: <strong>${lt.CapDo}</strong>
             </div>
           `;
+
+          // Hiển thị Học liệu & Linh kiện gắn kèm lộ trình (TCPP.01)
+          if (lt.hocLieuList && lt.hocLieuList.length > 0) {
+            const matBox = document.createElement('div');
+            matBox.style.marginBottom = '20px';
+            matBox.style.background = 'rgba(90, 82, 255, 0.04)';
+            matBox.style.borderRadius = '16px';
+            matBox.style.padding = '14px 18px';
+            matBox.style.border = '1.5px dashed rgba(90, 82, 255, 0.2)';
+
+            let matItems = '';
+            lt.hocLieuList.forEach(m => {
+              let loaiColor = '#5A52FF';
+              if (m.LoaiHocLieu === 'Linh kiện') loaiColor = '#B45309';
+              if (m.LoaiHocLieu === 'Code mẫu') loaiColor = '#047857';
+
+              matItems += `
+                <div style="background: #FFFFFF; border: 1px solid rgba(11,15,25,0.08); border-radius: 10px; padding: 8px 12px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.15s;" onclick="searchFromRoadmap('${m.TenHocLieu.replace(/'/g, "\\'")}')" title="Bấm để tra cứu thông số kỹ thuật">
+                  <span style="font-size: 0.72rem; font-weight: 800; color: ${loaiColor}; text-transform: uppercase;">[${m.LoaiHocLieu}]</span>
+                  <span style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main);">${m.TenHocLieu}</span>
+                  <span style="font-size: 0.75rem; color: var(--c-primary); font-weight: 700;">Tra cứu ↗</span>
+                </div>
+              `;
+            });
+
+            matBox.innerHTML = `
+              <div style="font-size: 0.82rem; font-weight: 800; color: var(--c-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <span>Học liệu, Code mẫu &amp; Linh kiện phục vụ Lộ trình (TCPP.01):</span>
+              </div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">${matItems}</div>
+            `;
+            stage.appendChild(matBox);
+          }
 
           const grid = document.createElement('div');
           grid.className = 'mission-grid';
@@ -422,12 +1073,21 @@
     }
 
     function selectProjectForSubmission(maDuAn, tenDuAn) {
+      switchView('submission');
       const select = document.getElementById('selectProject');
-      select.value = maDuAn;
-      const subSec = document.getElementById('submissionSection');
-      subSec.scrollIntoView({ behavior: 'smooth' });
-      subSec.style.boxShadow = '0 0 0 4px var(--c-primary)';
-      setTimeout(() => { subSec.style.boxShadow = '4px 4px 0 var(--c-secondary)'; }, 1500);
+      if (select) select.value = maDuAn;
+      if (window.showToast) {
+        window.showToast(`Đã chọn: ${tenDuAn}. Vui lòng đính kèm file code và link video để nộp.`, 'info');
+      }
+    }
+
+    function searchFromRoadmap(name) {
+      switchView('lookup');
+      const inp = document.getElementById('lookupKeyword');
+      if (inp) {
+        inp.value = name;
+        performLookup(true);
+      }
     }
 
     // 2. Xử lý form nộp bài (XLBN.01 & DF-01)
@@ -485,7 +1145,13 @@
           loadLoTrinhAndProjects();
           loadMySubmissions();
 
-          document.getElementById('instrumentConsole').scrollIntoView({ behavior: 'smooth' });
+          // Chuyển sang Khoang máy chấm hiển thị kết quả & Telemetry log
+          setTimeout(() => {
+            switchView('judge');
+            if (window.showToast) {
+              window.showToast(result.passedAll ? 'Mã nguồn đạt 100% TestCase!' : 'Chưa đạt TestCase, hãy xem chi tiết Log lỗi.', result.passedAll ? 'success' : 'warning');
+            }
+          }, 500);
         } else {
           alertBox.style.background = 'var(--c-error-bg)';
           alertBox.style.color = 'var(--c-error)';
@@ -567,9 +1233,343 @@
       setTimeout(() => { document.getElementById('logModal').style.display = 'none'; }, 200);
     }
 
+    // ==============================================================================
+    // 4. TRẠM TRA CỨU LINH KIỆN & BẮT LỖI CODE (TCPP.02 / PHÂN HỆ 2)
+    // ==============================================================================
+    let currentLookupCategory = 'all';
+    let lookupDebounceTimer = null;
+    let cachedLookupData = { materials: [], errorGuides: [] };
+
+    function debounce(func, wait) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    async function performLookup(forceReset = false) {
+      const kwInput = document.getElementById('lookupKeyword');
+      if (forceReset && kwInput) kwInput.value = '';
+      const kw = kwInput ? kwInput.value.trim() : '';
+      const container = document.getElementById('lookupResultsContainer');
+
+      try {
+        const res = await fetch(`/api/materials/lookup?q=${encodeURIComponent(kw)}`);
+        const data = await res.json();
+
+        if (!data.success) {
+          container.innerHTML = `<div class="alert alert-danger" style="margin:20px;">Lỗi tra cứu: ${data.message}</div>`;
+          return;
+        }
+
+        cachedLookupData = {
+          materials: data.materials || [],
+          errorGuides: data.errorGuides || []
+        };
+
+        renderLookupResults();
+      } catch (err) {
+        container.innerHTML = `<div class="alert alert-danger" style="margin:20px;">Lỗi kết nối máy chủ: ${err.message}</div>`;
+      }
+    }
+
+    function renderLookupResults() {
+      const container = document.getElementById('lookupResultsContainer');
+      const { materials, errorGuides } = cachedLookupData;
+
+      // Lọc theo Category
+      let showMaterials = (currentLookupCategory === 'all' || currentLookupCategory === 'hardware' || currentLookupCategory === 'code');
+      let showErrors = (currentLookupCategory === 'all' || currentLookupCategory === 'error');
+
+      let filteredMaterials = materials;
+      if (currentLookupCategory === 'hardware') {
+        filteredMaterials = materials.filter(m => m.LoaiHocLieu === 'Linh kiện');
+      } else if (currentLookupCategory === 'code') {
+        filteredMaterials = materials.filter(m => m.LoaiHocLieu === 'Code mẫu' || m.LoaiHocLieu === 'Bài giảng');
+      }
+
+      let filteredErrors = showErrors ? errorGuides : [];
+
+      if ((!showMaterials || filteredMaterials.length === 0) && (!showErrors || filteredErrors.length === 0)) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 48px 20px; color: var(--c-text-dim);">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.6;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <h4 style="font-weight: 800; font-size: 1.15rem; color: var(--c-text-main);">Không tìm thấy kết quả phù hợp</h4>
+            <p style="font-size: 0.9rem; margin-top: 6px;">Hãy thử tìm từ khóa khác như "Arduino", "HC-SR04", "L298N", "PID", hoặc "LED".</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+
+      // 1. Phân vùng Linh Kiện & Học Liệu
+      if (showMaterials && filteredMaterials.length > 0) {
+        html += `
+          <div style="margin-bottom: 32px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--c-primary); display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                Linh Kiện Phần Cứng &amp; Học Liệu Kỹ Thuật (${filteredMaterials.length})
+              </h3>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+        `;
+
+        filteredMaterials.forEach(m => {
+          let badgeColor = 'badge-primary';
+          if (m.LoaiHocLieu === 'Linh kiện') badgeColor = 'badge-warning';
+          if (m.LoaiHocLieu === 'Code mẫu') badgeColor = 'badge-success';
+
+          html += `
+            <div class="bento-card" style="border: 1.5px solid rgba(11, 15, 25, 0.08); display: flex; flex-direction: column; justify-content: space-between; padding: 22px; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <span class="badge ${badgeColor}">${m.LoaiHocLieu}</span>
+                  <span style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-dim);">${m.TenLoTrinh || 'Hệ thống'}</span>
+                </div>
+                <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 10px; color: var(--c-text-main);">${m.TenHocLieu}</h4>
+                <div style="font-size: 0.88rem; color: var(--c-text-dim); line-height: 1.6; white-space: pre-line; margin-bottom: 16px;">
+                  ${m.NoiDung}
+                </div>
+              </div>
+              <div style="border-top: 1px dashed rgba(11, 15, 25, 0.1); padding-top: 12px; margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.78rem; color: var(--c-text-dim);">Tác giả: <strong>${m.TenTacGia || 'Giảng viên STEM'}</strong></span>
+                ${m.DuongDanTep ? `
+                  <a href="${m.DuongDanTep}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; padding: 6px 12px;">
+                    Xem Datasheet ↗
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div></div>`;
+      }
+
+      // 2. Phân vùng Gợi Ý Sửa Lỗi TestCase
+      if (showErrors && filteredErrors.length > 0) {
+        html += `
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #DC2626; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Cẩm Nang Bắt Lỗi &amp; Gợi Ý Sửa Code TestCase (${filteredErrors.length})
+              </h3>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px;">
+        `;
+
+        filteredErrors.forEach(tc => {
+          html += `
+            <div class="bento-card" style="border: 2px solid rgba(220, 38, 38, 0.2); background: #FFFBFB; padding: 22px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span class="tech-chip" style="background: rgba(220, 38, 38, 0.1); color: #DC2626; font-weight: 700; margin-bottom:0;">
+                  Dự án: ${tc.TenDuAn}
+                </span>
+                <span class="badge badge-locked">${tc.CapDo || 'Cơ bản'}</span>
+              </div>
+
+              <!-- Hộp so sánh Input -> Expected Output -->
+              <div style="background: #0B0F19; border-radius: 12px; padding: 12px 14px; font-family: monospace; font-size: 0.82rem; margin-bottom: 14px; color: #F4F6F8;">
+                <div style="color: #94A3B8; margin-bottom: 4px;">Dữ liệu đầu vào: <span style="color: #FFB800;">${tc.DuLieuDauVao || '(Không)'}</span></div>
+                <div style="color: #94A3B8;">Kết quả chuẩn (Expected): <span style="color: #38BDF8;">${tc.KetQuaDauRa}</span></div>
+              </div>
+
+              <!-- Hướng dẫn & Giải pháp -->
+              <div>
+                <div style="font-weight: 800; font-size: 0.85rem; color: #991B1B; text-transform: uppercase; margin-bottom: 6px;">
+                  Giải pháp khắc phục lỗi code:
+                </div>
+                <div style="font-size: 0.88rem; color: var(--c-text-main); line-height: 1.55; background: #FFFFFF; border: 1px solid rgba(220, 38, 38, 0.2); padding: 12px; border-radius: 10px;">
+                  ${tc.GoiYSuaLoi}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `</div></div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function filterLookupCategory(cat, btn) {
+      currentLookupCategory = cat;
+      document.querySelectorAll('.lookup-filter-btn').forEach(b => {
+        b.className = 'btn btn-secondary btn-sm lookup-filter-btn';
+      });
+      btn.className = 'btn btn-primary btn-sm lookup-filter-btn';
+      renderLookupResults();
+    }
+
+    // Gắn debounce tìm kiếm khi gõ
+    const lookupInputEl = document.getElementById('lookupKeyword');
+    if (lookupInputEl) {
+      lookupInputEl.addEventListener('input', debounce(() => {
+        performLookup();
+      }, 350));
+    }
+
+    // ==============================================================================
+    // 5. BÁO CÁO SỰ CỐ (HTTB.01) & THÔNG BÁO HỆ THỐNG (HTTB.02)
+    // ==============================================================================
+    function openReportIssueModal() {
+      const modal = document.getElementById('reportIssueModal');
+      modal.style.display = 'flex';
+      setTimeout(() => { modal.classList.add('active'); }, 10);
+    }
+
+    function closeReportIssueModal() {
+      const modal = document.getElementById('reportIssueModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+    }
+
+    document.getElementById('reportIssueForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitIssue');
+      const alertBox = document.getElementById('reportIssueAlert');
+
+      btn.disabled = true;
+      btn.textContent = 'Đang gửi phiếu sự cố...';
+      alertBox.style.display = 'none';
+
+      const payload = {
+        tieuDe: document.getElementById('issueTitle').value.trim(),
+        mucDoUuTien: document.getElementById('issuePriority').value,
+        noiDung: document.getElementById('issueContent').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/support/report-issue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        if (result.success) {
+          alertBox.style.background = 'var(--c-success-bg)';
+          alertBox.style.color = '#047857';
+          alertBox.style.border = '1.5px solid rgba(16, 185, 129, 0.3)';
+          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message}`;
+          document.getElementById('reportIssueForm').reset();
+          setTimeout(() => {
+            closeReportIssueModal();
+          }, 2000);
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi:</strong> ${result.message}`;
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Gửi Báo Cáo Sự Cố (HTTB.01)';
+      }
+    });
+
+    // Tự động tải thông báo hệ thống đang hoạt động (HTTB.02)
+    async function loadSystemBroadcasts() {
+      const container = document.getElementById('systemBroadcastContainer');
+      if (!container) return;
+
+      try {
+        const res = await fetch('/api/support/active-notifications');
+        const data = await res.json();
+
+        if (!data.success || !data.notifications || data.notifications.length === 0) {
+          container.innerHTML = '';
+          return;
+        }
+
+        let html = '';
+        data.notifications.forEach(n => {
+          const isUrgent = (n.MucDoUuTien === 'Khẩn cấp');
+
+          if (isUrgent) {
+            html += `
+              <div class="bento-card" style="background: #FFF5F5; border: 2px solid var(--c-secondary); box-shadow: 4px 4px 0 var(--c-secondary); padding: 18px 24px; position: relative; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+                  <div style="display: flex; gap: 14px; align-items: flex-start;">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: #FEE2E2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #DC2626;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <div>
+                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+                        <span class="badge badge-danger" style="animation: pulse-core 2s infinite;">THÔNG BÁO KHẨN CẤP (HTTB.02)</span>
+                        <span style="font-size: 0.78rem; color: #991B1B; font-weight: 600;">Phát lúc: ${n.NgayTaoFmt || n.NgayTao} · Bởi: ${n.NguoiGui || 'Ban Quản Trị'}</span>
+                      </div>
+                      <h3 style="font-size: 1.15rem; font-weight: 800; color: #991B1B; margin-bottom: 6px;">${n.TieuDe}</h3>
+                      <p style="font-size: 0.92rem; color: #7F1D1D; line-height: 1.55; margin-bottom: 0;">${n.NoiDung}</p>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.bento-card').remove()" style="color: #991B1B; border-color: rgba(220, 38, 38, 0.3);">Đã hiểu &times;</button>
+                </div>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="bento-card" style="background: #F0FDF4; border: 1.5px solid rgba(16, 185, 129, 0.4); box-shadow: 3px 3px 0 rgba(16, 185, 129, 0.3); padding: 16px 20px; position: relative; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+                  <div style="display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #DCFCE7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #047857;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </div>
+                    <div>
+                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+                        <span class="badge badge-success">THÔNG BÁO HỆ THỐNG</span>
+                        <span style="font-size: 0.78rem; color: #065F46;">${n.NgayTaoFmt || n.NgayTao}</span>
+                      </div>
+                      <h4 style="font-size: 1.05rem; font-weight: 800; color: #065F46; margin-bottom: 4px;">${n.TieuDe}</h4>
+                      <p style="font-size: 0.88rem; color: #064E3B; line-height: 1.5; margin-bottom: 0;">${n.NoiDung}</p>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.bento-card').remove()" style="color: #065F46; border-color: rgba(16, 185, 129, 0.3);">Đóng</button>
+                </div>
+              </div>
+            `;
+          }
+        });
+
+        container.innerHTML = html;
+      } catch (e) {
+        console.error('Lỗi loadSystemBroadcasts:', e);
+      }
+    }
+
+    // Đồng bộ view theo hash URL hoặc tham số ?view= (hỗ trợ back/forward trình duyệt và link trực tiếp)
+    function syncViewFromHash() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryView = urlParams.get('view') || urlParams.get('tab');
+      const hash = (window.location.hash || '').replace('#', '');
+      const targetView = queryView || hash;
+      if (targetView && studentViews[targetView]) {
+        switchView(targetView);
+      } else {
+        switchView('lotrinh');
+      }
+    }
+
+    window.addEventListener('hashchange', syncViewFromHash);
+
     // Khởi chạy khi vào trang
+    syncViewFromHash();
     loadLoTrinhAndProjects();
     loadMySubmissions();
+    performLookup();
+    loadSystemBroadcasts();
   </script>
+  <script src="/js/theme-engine.js"></script>
 </body>
 </html>

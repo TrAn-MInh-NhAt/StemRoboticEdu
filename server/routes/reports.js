@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { getPool } = require('../config/db');
+const { getPool, sql } = require('../config/db');
 
-// GET /api/reports/grades-csv - Xuất bảng điểm chi tiết dạng file .CSV (TKDL.01)
+// GET /api/reports/grades-csv - Xuất bảng điểm chi tiết dạng file .CSV (TKDL.01 & XBC.02)
 router.get('/grades-csv', async (req, res) => {
+  const { maDuAn, trangThai } = req.query;
+
   try {
     const pool = getPool();
-    const result = await pool.request().query(`
+    let queryStr = `
       SELECT 
         bn.MaBaiNop,
         nd.HoTen AS TenHocSinh,
@@ -25,8 +27,53 @@ router.get('/grades-csv', async (req, res) => {
       LEFT JOIN DuAnBaiTap da ON bn.MaDuAn = da.MaDuAn
       LEFT JOIN BaiThi bt ON bn.MaBaiThi = bt.MaBaiThi
       LEFT JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
-      ORDER BY bn.MaBaiNop DESC
-    `);
+      WHERE 1=1
+    `;
+
+    const request = pool.request();
+
+    if (maDuAn && maDuAn !== 'all') {
+      queryStr += ` AND bn.MaDuAn = @maDuAn`;
+      request.input('maDuAn', sql.Int, parseInt(maDuAn));
+    }
+
+    if (trangThai && trangThai !== 'all') {
+      if (trangThai === 'pass') {
+        queryStr += ` AND kq.TongDiem >= 5`;
+      } else if (trangThai === 'fail') {
+        queryStr += ` AND (kq.TongDiem < 5 OR kq.TongDiem IS NULL)`;
+      } else if (trangThai === 'excellent') {
+        queryStr += ` AND kq.TongDiem >= 9`;
+      } else if (trangThai === 'pending') {
+        queryStr += ` AND bn.TrangThai LIKE N'%Chờ duyệt%'`;
+      }
+    }
+
+    queryStr += ` ORDER BY bn.MaBaiNop DESC`;
+
+    const result = await request.query(queryStr);
+
+    // Ghi log tự động vào bảng BaoCaoThongKe (XBC.02)
+    try {
+      const userId = req.session && req.session.user ? req.session.user.MaNguoiDung : 1;
+      const logReq = pool.request();
+      logReq.input('userId', sql.Int, userId);
+      logReq.input('tenBaoCao', sql.NVarChar, `Xuất file CSV Bảng điểm STEM Robotic (${result.recordset.length} bài)`);
+      logReq.input('loaiBaoCao', sql.NVarChar, 'Điểm');
+      logReq.input('duLieuThongKe', sql.NVarChar, JSON.stringify({
+        soLuong: result.recordset.length,
+        filterDuAn: maDuAn || 'all',
+        filterTrangThai: trangThai || 'all',
+        thoiDiemXuat: new Date().toISOString()
+      }));
+      logReq.input('dinhDangTep', sql.VarChar, 'CSV');
+      await logReq.query(`
+        INSERT INTO BaoCaoThongKe (MaNguoiDung, TenBaoCao, LoaiBaoCao, DuLieuThongKe, DinhDangTep, TrangThai)
+        VALUES (@userId, @tenBaoCao, @loaiBaoCao, @duLieuThongKe, @dinhDangTep, N'Hoàn thành')
+      `);
+    } catch (logErr) {
+      console.warn('Lỗi ghi log BaoCaoThongKe (CSV):', logErr.message);
+    }
 
     // Helper escape CSV cell
     function escapeCSV(val) {
@@ -82,6 +129,31 @@ router.get('/grades-csv', async (req, res) => {
   } catch (err) {
     console.error('Lỗi xuất CSV bảng điểm:', err.message);
     return res.status(500).json({ success: false, message: 'Lỗi server khi xuất báo cáo CSV' });
+  }
+});
+
+// POST /api/reports/log-report - Ghi log thủ công khi xuất báo cáo PDF (XBC.02)
+router.post('/log-report', async (req, res) => {
+  try {
+    const pool = getPool();
+    const userId = req.session && req.session.user ? req.session.user.MaNguoiDung : 1;
+    const { tenBaoCao, loaiBaoCao, duLieuThongKe, dinhDangTep } = req.body;
+
+    await pool.request()
+      .input('userId', sql.Int, userId)
+      .input('tenBaoCao', sql.NVarChar, tenBaoCao || 'Báo cáo Bảng điểm STEM Robotic')
+      .input('loaiBaoCao', sql.NVarChar, loaiBaoCao || 'Điểm')
+      .input('duLieuThongKe', sql.NVarChar, typeof duLieuThongKe === 'object' ? JSON.stringify(duLieuThongKe) : duLieuThongKe)
+      .input('dinhDangTep', sql.VarChar, dinhDangTep || 'PDF')
+      .query(`
+        INSERT INTO BaoCaoThongKe (MaNguoiDung, TenBaoCao, LoaiBaoCao, DuLieuThongKe, DinhDangTep, TrangThai)
+        VALUES (@userId, @tenBaoCao, @loaiBaoCao, @duLieuThongKe, @dinhDangTep, N'Hoàn thành')
+      `);
+
+    return res.json({ success: true, message: 'Đã lưu lịch sử báo cáo thành công' });
+  } catch (err) {
+    console.error('Lỗi ghi log báo cáo:', err.message);
+    return res.status(500).json({ success: false, message: 'Lỗi server khi ghi log báo cáo: ' + err.message });
   }
 });
 
