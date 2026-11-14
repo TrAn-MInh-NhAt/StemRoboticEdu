@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập — STEM Robotic Edu</title>
+  <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+  <!-- Nền Blobs lơ lửng -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Thanh Topbar điều hướng về Trang chủ -->
+  <header style="padding: 20px 24px;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+      <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--c-text-main);">
+        <div style="width: 36px; height: 36px; background: var(--c-primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #FFF; box-shadow: 2px 2px 0 var(--c-text-main);">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="#FFF" fill="none" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <span style="font-family: var(--f-heading); font-weight: 800; font-size: 1.15rem;">STEM Robotic</span>
+      </a>
+      <a href="/" class="btn btn-secondary btn-sm">← Về Trang Chủ</a>
+    </div>
+  </header>
+
+  <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px;">
+    <div class="bento-card bouncy-up visible" style="width: 100%; max-width: 480px; padding: 44px 36px; border: 2px solid var(--c-text-main); box-shadow: 6px 6px 0 var(--c-primary);">
+      <div style="text-align: center; margin-bottom: 28px;">
+        <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 12px; display: inline-block;">Cổng Xác Thực Một Điểm (SSO)</span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 8px;">
+          Đăng <span class="title-highlight">Nhập</span>
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--c-text-dim); text-wrap: pretty;">
+          Học tập, nộp bài thực hành và quản trị đào tạo STEM Robotic.
+        </p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="email">Địa chỉ Email</label>
+          <input type="email" id="email" name="email" class="form-control"
+                 placeholder="admin@stemrobotic.edu.vn"
+                 required autocomplete="email">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="password">Mật khẩu</label>
+          <input type="password" id="password" name="password" class="form-control"
+                 placeholder="••••••"
+                 required autocomplete="current-password">
+        </div>
+
+        <div id="errorMsg" class="alert alert-danger" style="display:none; margin-bottom: 16px; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--c-error-bg); color: var(--c-error); border: 1px solid rgba(239, 68, 68, 0.3);"></div>
+
+        <button type="submit" class="btn-playful btn-playful-primary magnet-btn" id="btnLogin" style="width: 100%; padding: 14px; font-size: 1.05rem;">
+          Đăng Nhập Hệ Thống
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+
+      <!-- Danh sách tài khoản demo bấm 1 chạm tiện lợi -->
+      <div style="margin-top: 32px; padding-top: 20px; border-top: 1px dashed rgba(11, 15, 25, 0.12);">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.05em; text-align: center;">
+          Tài khoản mẫu thử nghiệm (Bấm để điền):
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="quickFill('admin@stemrobotic.edu.vn', '123456')">
+            Admin
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="quickFill('gv.hungvi@stemrobotic.edu.vn', '123456')">
+            Giáo viên
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="quickFill('hs.minhnhat@stemrobotic.edu.vn', '123456')">
+            Học sinh #3
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="quickFill('hs.hoangnam@stemrobotic.edu.vn', '123456')">
+            Học sinh #4
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/public/js/login.js"></script>
+  <script>
+    function quickFill(email, pwd) {
+      document.getElementById('email').value = email;
+      document.getElementById('password').value = pwd;
+      document.getElementById('email').focus();
+    }
+  </script>
+</body>
+</html>

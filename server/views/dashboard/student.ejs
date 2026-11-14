@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Không gian Học tập STEM — Học sinh</title>
+  <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body>
+  <!-- Nền Blobs lơ lửng -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="app-shell">
+    <!-- Sidebar Studio Kỹ Thuật (Neo-Brutalist & Deep Dark Console) -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-symbol">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="#FFF" fill="none" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">STEM Robotic</div>
+          <div class="brand-tag">Học sinh · Không gian học tập</div>
+        </div>
+      </div>
+
+      <!-- Thẻ người dùng -->
+      <div class="sidebar-user-card">
+        <div class="user-avatar-circle">
+          <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'H' %>
+        </div>
+        <div class="user-meta">
+          <div class="user-name"><%= user.HoTen %></div>
+          <div class="user-role-label">Học sinh · Mã #<%= user.MaNguoiDung %></div>
+        </div>
+      </div>
+
+      <!-- Menu Điều Hướng -->
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="#lotrinhSection" class="sidebar-nav-link active">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Lộ trình &amp; Dự án</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#submissionSection" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Nộp bài thực hành</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#instrumentConsole" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <span>Khoang máy chấm</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#historySection" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Lịch sử &amp; Bảng điểm</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="/community" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            <span>Cộng đồng &amp; Vinh danh</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="/exam" class="sidebar-nav-link" style="color: var(--c-secondary);">
+            <svg viewBox="0 0 24 24" style="stroke: var(--c-secondary);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Phòng thi trực tuyến</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item" style="margin-top: 20px;">
+          <a href="/" class="sidebar-nav-link" style="color: var(--c-accent);">
+            <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            <span>Về Trang Chủ (/)</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" class="btn-sidebar-logout">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Đăng xuất tài khoản</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Canvas -->
+    <main class="main-content">
+      <!-- Top Breadcrumb -->
+      <div style="font-size: 0.85rem; color: var(--c-text-dim); margin-bottom: 24px; font-weight: 600;">
+        <span>Không gian học tập</span>
+        <span style="margin: 0 8px;">/</span>
+        <span style="color: var(--c-primary);">Lộ trình Đào tạo Robotics &amp; Nộp Bài</span>
+      </div>
+
+      <!-- Hero Welcome Card Cá Nhân Hóa (Bento Card với chi tiết công nghệ phòng Lab) -->
+      <section class="bento-card bouncy-up visible" style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); position: relative; overflow: hidden;">
+        <!-- Watermark mạch vi điều khiển chìm góc thẻ -->
+        <svg style="position: absolute; right: -20px; top: -20px; width: 180px; height: 180px; opacity: 0.06; pointer-events: none;" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="40" stroke="var(--c-primary)" stroke-width="2" stroke-dasharray="6 4"/>
+          <circle cx="50" cy="50" r="24" stroke="var(--c-secondary)" stroke-width="3"/>
+          <rect x="42" y="42" width="16" height="16" fill="var(--c-accent)" transform="rotate(45 50 50)"/>
+        </svg>
+
+        <div style="position: relative; z-index: 2;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+            <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 0;">Học Viện Sáng Tạo STEM Robotic</span>
+            <div class="hero-hud-badge" style="font-size: 0.72rem; padding: 4px 10px;">
+              <span class="telemetry-pulse"></span>
+              <span>TRẠM THỰC HÀNH #<%= user.MaNguoiDung %> // KẾT NỐI MÁY CHẤM 0.05S</span>
+            </div>
+          </div>
+          <h1 style="font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 800; margin-bottom: 10px;">
+            Xin chào, <span class="title-highlight"><%= user.HoTen %></span>
+          </h1>
+          <p style="font-size: 1.05rem; color: var(--c-text-dim); max-width: 580px; text-wrap: pretty;">
+            Chào mừng bạn quay trở lại phòng thí nghiệm. Hoàn thành các dự án thực hành để tự động mở khóa các thử thách tiếp theo (Luồng tự động DF-02).
+          </p>
+        </div>
+        <div style="min-width: 260px; padding: 12px 0; position: relative; z-index: 2;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 8px;" id="studentProgressText">
+            Tiến độ hoàn thành: Đang cập nhật...
+          </div>
+          <div class="progress-track" style="width: 100%; height: 10px;">
+            <div class="progress-bar-fill" id="studentProgressBar" style="width: 30%;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. LỘ TRÌNH ĐÀO TẠO & CÁC DỰ ÁN THỰC HÀNH -->
+      <section id="lotrinhSection" style="margin-bottom: 40px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+          <div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em;">
+              Lộ Trình Đào Tạo &amp; Dự Án Thực Hành
+            </h2>
+            <p style="font-size: 0.95rem; color: var(--c-text-dim); margin-top: 4px;">
+              Khám phá các trạm vi mạch, lập trình nhúng C++ và robot tự hành đa cảm biến.
+            </p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadLoTrinhAndProjects()">
+            Làm mới danh sách
+          </button>
+        </div>
+
+        <div id="lotrinhContainer">
+          <p class="text-muted" style="font-size: 0.95rem; padding: 24px 0;">Đang kết nối hệ thống và nạp dữ liệu lộ trình...</p>
+        </div>
+      </section>
+
+      <!-- 2. KHU VỰC NỘP BÀI ĐA PHƯƠNG TIỆN (XLBN.01) -->
+      <section id="submissionSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-text-main); margin-bottom: 40px;">
+        <div class="card-header">
+          <div>
+            <span class="tech-chip" style="background: #FEE2E2; color: #991B1B; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+              Mô đun XLBN.01 · Ràng Buộc Kép
+            </span>
+            <h2 class="card-title" style="font-size: 1.4rem;">Nộp Bài Thực Hành Đa Phương Tiện</h2>
+            <p class="card-subtitle">
+              Bắt buộc tải lên Tệp mã nguồn (.ino, .cpp, .py) VÀ dán Đường dẫn Video vận hành thực tế mới cho phép nộp bài.
+            </p>
+          </div>
+          <span class="badge badge-primary">DF-01 Auto Judge</span>
+        </div>
+
+        <form id="submissionForm" enctype="multipart/form-data">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <div class="form-group">
+                <label class="form-label" for="selectProject">1. Chọn Dự án thực hành cần nộp *</label>
+                <select id="selectProject" name="maDuAn" class="form-control" required>
+                  <option value="">-- Chọn dự án từ danh sách đã mở khóa --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="codeFile">2. Tệp Mã nguồn (.ino, .cpp, .py) *</label>
+                <input type="file" id="codeFile" name="codeFile" class="form-control" accept=".ino,.cpp,.py" required>
+                <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
+                  Máy chấm Judge Engine (FastAPI cổng 5000) sẽ tự động đối chiếu TestCase dưới 10 giây.
+                </small>
+              </div>
+            </div>
+
+            <div>
+              <div class="form-group">
+                <label class="form-label" for="videoUrl">3. Đường dẫn Video vận hành robot thực tế *</label>
+                <input type="url" id="videoUrl" name="videoUrl" class="form-control" placeholder="https://youtube.com/watch?v=... hoặc Drive/OneDrive" required>
+                <small style="display:block; margin-top: 6px; font-size: 0.8rem; color: var(--c-text-dim);">
+                  Minh chứng phần cứng: Video quay rõ mô hình, bo mạch vi điều khiển và chuyển động thực tế.
+                </small>
+              </div>
+
+              <div id="submitAlert" style="display:none; padding: 14px 18px; border-radius: var(--radius-input); font-size: 0.88rem; margin-top: 14px;"></div>
+
+              <div style="margin-top: 24px;">
+                <button type="submit" id="btnSubmit" class="btn-playful btn-playful-primary magnet-btn" style="width: 100%; padding: 14px;">
+                  Gửi Bài &amp; Kích Hoạt Máy Chấm (DF-01)
+                  <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- 3. KHOANG MÁY CHẤM TỰ ĐỘNG & BẢNG LOG LỖI (DF-04) -->
+      <section class="instrument-console" id="instrumentConsole">
+        <div class="console-header">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="console-dots">
+              <span class="console-dot red"></span>
+              <span class="console-dot yellow"></span>
+              <span class="console-dot green"></span>
+            </div>
+            <span style="font-family: var(--f-heading); font-weight: 700; font-size: 1rem;">
+              Khoang Máy Chấm Tự Động — Bảng Phân Tích Logic &amp; Log Lỗi (XLBN.03 / DF-04)
+            </span>
+          </div>
+          <span id="consoleStatusBadge" class="badge badge-locked">Sẵn sàng nhận bài</span>
+        </div>
+        <div style="padding: 24px;">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+            <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
+              <div style="font-family: var(--f-heading); font-size: 2.2rem; font-weight: 800; color: var(--c-accent);" id="metricScore">-- / 10</div>
+              <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Điểm Code Tự Động</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
+              <div style="font-family: var(--f-heading); font-size: 1.8rem; font-weight: 800; color: #38BDF8;" id="metricResult">--</div>
+              <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Đánh Giá TestCase</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); padding: 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);">
+              <div style="font-family: var(--f-heading); font-size: 1.6rem; font-weight: 800; color: #10B981;" id="metricStatus">--</div>
+              <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8; font-weight: 600; margin-top: 4px;">Trạng Thái Bài Nộp (DF-01)</div>
+            </div>
+          </div>
+          <div style="font-size: 0.78rem; color: #94A3B8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
+            Nhật Ký Thực Thi &amp; Phân Tích Lỗi Chi Tiết (Telemetry DF-04):
+          </div>
+          <div class="console-screen" id="consoleLog">Chưa có dữ liệu chấm bài. Hãy chọn dự án và nộp file code để chạy máy chấm tự động.</div>
+        </div>
+      </section>
+
+      <!-- 4. LỊCH SỬ BÀI NỘP & BẢNG ĐIỂM -->
+      <section class="card" id="historySection">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Bảng Theo Dõi Điểm Số &amp; Minh Chứng Đánh Giá (KQBN.02)</h2>
+            <p class="card-subtitle">Xem kết quả chấm tự động, liên kết video và nhận xét chốt điểm từ giáo viên.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadMySubmissions()">Làm mới</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã bài</th>
+                <th>Dự án</th>
+                <th>Thời điểm nộp</th>
+                <th>Điểm Code</th>
+                <th>Minh chứng Video</th>
+                <th>Đánh giá Video</th>
+                <th>Tổng điểm</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết Log</th>
+              </tr>
+            </thead>
+            <tbody id="mySubmissionsBody">
+              <tr>
+                <td colspan="9" class="text-muted" style="text-align:center;">Đang tải lịch sử bài nộp...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal xem Log lỗi chi tiết -->
+  <div class="modal-overlay" id="logModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;" id="modalTitle">Chi tiết Log Máy chấm</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeLogModal()">Đóng</button>
+      </div>
+      <div style="padding: 24px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 16px; font-size: 0.9rem;">
+          <div>Dự án: <strong id="modalProjectName">--</strong></div>
+          <div>Điểm code: <strong style="color:var(--c-primary);" id="modalScore">--</strong></div>
+          <div>Trạng thái: <strong id="modalStatus">--</strong></div>
+        </div>
+        <label class="form-label">Toàn bộ Log thực thi &amp; Bắt lỗi TestCase (DF-04):</label>
+        <div class="console-screen" id="modalLogContent" style="max-height: 380px;"></div>
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1.5px dashed rgba(11, 15, 25, 0.12); font-size: 0.88rem;" id="modalFeedbackBox">
+          Nhận xét của Giáo viên: <em id="modalTeacherFeedback">Chưa có nhận xét</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const currentStudentId = <%= user.MaNguoiDung %>;
+
+    // 1. Tải danh sách Lộ trình học kèm Dự án
+    async function loadLoTrinhAndProjects() {
+      try {
+        const res = await fetch('/api/lotrinh', {
+          headers: { 'x-user-id': currentStudentId }
+        });
+        const data = await res.json();
+        if (!data.success) return;
+
+        const container = document.getElementById('lotrinhContainer');
+        const select = document.getElementById('selectProject');
+        container.innerHTML = '';
+        select.innerHTML = '<option value="">-- Chọn dự án cần nộp --</option>';
+
+        let totalProjects = 0;
+        let completedProjects = 0;
+
+        data.lotrinhList.forEach((lt, ltIndex) => {
+          const stage = document.createElement('div');
+          stage.className = 'pathway-stage bouncy-up visible';
+
+          stage.innerHTML = `
+            <div class="pathway-stage-header">
+              <div class="stage-title-wrap">
+                <div class="stage-number-pill">${lt.ThuTuHoc || (ltIndex + 1)}</div>
+                <div>
+                  <h3 style="font-size: 1.35rem; font-weight: 800;">${lt.TenLoTrinh}</h3>
+                </div>
+              </div>
+              <span class="badge badge-success">${lt.TrangThai}</span>
+            </div>
+            <div style="font-size: 0.92rem; color: var(--c-text-dim); margin-bottom: 20px;">
+              ${lt.MoTa || 'Lộ trình nghiên cứu và thực hành chuyên đề kỹ thuật.'} · Chủ đề: <strong>${lt.ChuDe}</strong> · Cấp độ: <strong>${lt.CapDo}</strong>
+            </div>
+          `;
+
+          const grid = document.createElement('div');
+          grid.className = 'mission-grid';
+
+          if (!lt.duAnList || lt.duAnList.length === 0) {
+            grid.innerHTML = '<p class="text-muted" style="font-size:0.9rem; grid-column:1/-1;">Chưa có dự án nào trong lộ trình này.</p>';
+          } else {
+            lt.duAnList.forEach(da => {
+              totalProjects++;
+              if (da.TrangThaiBaiNopHienTai === 'Đã chốt điểm' && da.DiemHienTai >= 5) {
+                completedProjects++;
+              }
+
+              const item = document.createElement('div');
+              item.className = 'mission-card ' + (da.isUnlocked ? 'unlocked' : 'locked');
+
+              let badgeHtml = '';
+              if (da.TrangThaiBaiNopHienTai === 'Đã chốt điểm') {
+                badgeHtml = `<span class="badge badge-success">✓ Hoàn thành (${da.DiemHienTai}/10)</span>`;
+              } else if (da.isUnlocked) {
+                badgeHtml = `<span class="badge badge-primary">Sẵn sàng nộp</span>`;
+              } else {
+                badgeHtml = `<span class="badge badge-locked">Khóa (DF-02)</span>`;
+              }
+
+              item.innerHTML = `
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-dim); text-transform: uppercase;">${da.CapDo || 'Cơ bản'}</span>
+                    ${badgeHtml}
+                  </div>
+                  <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 10px; line-height: 1.3;">${da.TenDuAn}</h4>
+                  <div class="mission-chips">
+                    <span class="tech-chip">C++ / Embedded</span>
+                    <span class="tech-chip">${lt.ChuDe || 'Robotics'}</span>
+                  </div>
+                  <p style="font-size: 0.88rem; color: var(--c-text-dim); line-height: 1.5; margin-bottom: 16px;">${da.YeuCauDuAn}</p>
+                </div>
+                <div style="border-top: 1px solid rgba(11, 15, 25, 0.06); padding-top: 14px; margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+                  <div style="font-size:0.75rem; color:var(--c-text-dim); max-width: 140px;">
+                    ${da.isUnlocked ? 'Đã sẵn sàng nhận bài' : da.unlockReason}
+                  </div>
+                  ${da.isUnlocked
+                    ? `<button type="button" class="btn btn-primary btn-sm" onclick="selectProjectForSubmission(${da.MaDuAn}, '${da.TenDuAn}')">
+                        ${da.TrangThaiBaiNopHienTai ? 'Nộp lại dự án →' : 'Nộp bài này →'}
+                       </button>`
+                    : `<button type="button" class="btn btn-secondary btn-sm" disabled style="opacity:0.6;">
+                        Chưa mở khóa
+                       </button>`
+                  }
+                </div>
+              `;
+              grid.appendChild(item);
+
+              if (da.isUnlocked) {
+                const opt = document.createElement('option');
+                opt.value = da.MaDuAn;
+                opt.textContent = `[#${da.MaDuAn}] ${da.TenDuAn} (${da.CapDo || 'Cơ bản'})`;
+                select.appendChild(opt);
+              }
+            });
+          }
+
+          stage.appendChild(grid);
+          container.appendChild(stage);
+        });
+
+        // Cập nhật thanh tiến độ học tập
+        if (totalProjects > 0) {
+          const pct = Math.round((completedProjects / totalProjects) * 100);
+          document.getElementById('studentProgressText').textContent = `Tiến độ hoàn thành: ${completedProjects}/${totalProjects} dự án (${pct}%)`;
+          document.getElementById('studentProgressBar').style.width = pct + '%';
+        }
+
+      } catch (err) {
+        console.error('Lỗi tải lộ trình:', err);
+      }
+    }
+
+    function selectProjectForSubmission(maDuAn, tenDuAn) {
+      const select = document.getElementById('selectProject');
+      select.value = maDuAn;
+      const subSec = document.getElementById('submissionSection');
+      subSec.scrollIntoView({ behavior: 'smooth' });
+      subSec.style.boxShadow = '0 0 0 4px var(--c-primary)';
+      setTimeout(() => { subSec.style.boxShadow = '4px 4px 0 var(--c-secondary)'; }, 1500);
+    }
+
+    // 2. Xử lý form nộp bài (XLBN.01 & DF-01)
+    document.getElementById('submissionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('btnSubmit');
+      const alertBox = document.getElementById('submitAlert');
+
+      const formData = new FormData(form);
+
+      btn.disabled = true;
+      btn.innerHTML = 'Đang biên dịch &amp; chấm TestCase...';
+      alertBox.style.display = 'none';
+
+      const consoleBadge = document.getElementById('consoleStatusBadge');
+      consoleBadge.className = 'badge badge-warning';
+      consoleBadge.textContent = 'Máy chấm đang chạy...';
+
+      document.getElementById('metricScore').textContent = 'Chấm...';
+      document.getElementById('metricResult').textContent = 'Đang xử lý';
+      document.getElementById('metricStatus').textContent = 'Đang chấm';
+      document.getElementById('consoleLog').textContent = 'Đang chuyển mã nguồn tới Judge Engine (cổng 5000) và đối chiếu bộ TestCase...';
+
+      try {
+        const res = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'x-user-id': currentStudentId },
+          body: formData
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+
+        if (result.success) {
+          alertBox.style.background = result.passedAll ? 'var(--c-success-bg)' : 'var(--c-warning-bg)';
+          alertBox.style.color = result.passedAll ? '#047857' : '#B45309';
+          alertBox.style.border = '1px solid ' + (result.passedAll ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255, 184, 0, 0.3)');
+          alertBox.innerHTML = `<strong>${result.message}</strong>`;
+
+          document.getElementById('metricScore').textContent = (result.diemCode !== undefined ? result.diemCode : '--') + ' / 10';
+          document.getElementById('metricResult').textContent = result.ketQuaCode || (result.passedAll ? 'Đạt' : 'Không đạt');
+          document.getElementById('metricStatus').textContent = result.trangThai || 'Đã chấm';
+
+          if (result.passedAll) {
+            consoleBadge.className = 'badge badge-success';
+            consoleBadge.textContent = 'Đạt 100% TestCase (DF-01)';
+          } else {
+            consoleBadge.className = 'badge badge-danger';
+            consoleBadge.textContent = 'Chưa đạt TestCase';
+          }
+
+          document.getElementById('consoleLog').textContent = result.logLoi || 'Biên dịch hoàn tất. Không có log lỗi cú pháp.';
+
+          loadLoTrinhAndProjects();
+          loadMySubmissions();
+
+          document.getElementById('instrumentConsole').scrollIntoView({ behavior: 'smooth' });
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi nộp bài:</strong> ${result.message}`;
+          consoleBadge.className = 'badge badge-danger';
+          consoleBadge.textContent = 'Lỗi nộp bài';
+        }
+
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Gửi Bài &amp; Kích Hoạt Máy Chấm (DF-01) <svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:middle; fill:currentColor;"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      }
+    });
+
+    // 3. Tải lịch sử bài nộp của học sinh (KQBN.02)
+    async function loadMySubmissions() {
+      try {
+        const res = await fetch('/api/submissions/my-history', {
+          headers: { 'x-user-id': currentStudentId }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('mySubmissionsBody');
+        tbody.innerHTML = '';
+
+        if (!data.success || !data.submissions || data.submissions.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" class="text-muted" style="text-align:center; padding: 20px;">Bạn chưa nộp bài thực hành nào.</td></tr>';
+          return;
+        }
+
+        data.submissions.forEach(sub => {
+          const tr = document.createElement('tr');
+          let statusBadgeClass = 'badge-locked';
+          if (sub.TrangThai === 'Đã chốt điểm') statusBadgeClass = 'badge-success';
+          if (sub.TrangThai === 'Chờ duyệt Video') statusBadgeClass = 'badge-warning';
+
+          tr.innerHTML = `
+            <td><strong>#${sub.MaBaiNop}</strong></td>
+            <td><strong>${sub.TenDuAn || 'Dự án'}</strong></td>
+            <td>${new Date(sub.ThoiGianNop).toLocaleString('vi-VN')}</td>
+            <td><strong style="color:var(--c-primary);">${sub.DiemCode !== null ? sub.DiemCode : '--'}</strong></td>
+            <td>
+              ${sub.VideoVanHanh ? `<a href="${sub.VideoVanHanh}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Xem Video ↗</a>` : '<span class="text-muted">Chưa có</span>'}
+            </td>
+            <td>${sub.KetQuaVideo || '<span class="text-muted">Chờ duyệt</span>'}</td>
+            <td><strong style="font-size:1.1rem; color:${sub.TongDiem >= 8 ? '#047857' : (sub.TongDiem >= 5 ? '#B45309' : '#DC2626')};">${sub.TongDiem !== null ? sub.TongDiem + ' / 10' : '--'}</strong></td>
+            <td><span class="badge ${statusBadgeClass}">${sub.TrangThai}</span></td>
+            <td>
+              <button class="btn btn-secondary btn-sm" onclick='openLogModal(${JSON.stringify(sub).replace(/'/g, "&#39;")})'>
+                Xem Log
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Lỗi loadMySubmissions:', err);
+      }
+    }
+
+    function openLogModal(sub) {
+      document.getElementById('modalProjectName').textContent = sub.TenDuAn || 'Dự án';
+      document.getElementById('modalScore').textContent = (sub.DiemCode !== null ? sub.DiemCode : '--') + ' / 10';
+      document.getElementById('modalStatus').textContent = sub.TrangThai;
+      document.getElementById('modalLogContent').textContent = sub.LogLoi || 'Không ghi nhận lỗi. Code biên dịch sạch 100%.';
+      document.getElementById('modalTeacherFeedback').textContent = sub.NhanXet || 'Chưa có nhận xét từ Giáo viên.';
+      document.getElementById('logModal').style.display = 'flex';
+      setTimeout(() => { document.getElementById('logModal').classList.add('active'); }, 10);
+    }
+
+    function closeLogModal() {
+      document.getElementById('logModal').classList.remove('active');
+      setTimeout(() => { document.getElementById('logModal').style.display = 'none'; }, 200);
+    }
+
+    // Khởi chạy khi vào trang
+    loadLoTrinhAndProjects();
+    loadMySubmissions();
+  </script>
+</body>
+</html>

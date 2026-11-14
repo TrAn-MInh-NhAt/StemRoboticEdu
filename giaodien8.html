@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEM Robotic | Học Viện Sáng Tạo Premium</title>
+    <!-- Phông chữ: Bricolage (Tiêu đề, độc đáo) & Be Vietnam Pro (Đọc siêu mượt) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Palette Năng Lượng & Cao Cấp */
+            --c-bg: #F4F6F8; /* Trắng ngọc trai, mịn màng */
+            --c-surface: #FFFFFF;
+            --c-text-main: #0B0F19; /* Đen sâu */
+            --c-text-dim: #505F79;
+            
+            /* Màu nhấn (Brand Colors) */
+            --c-primary: #5A52FF; /* Tím Xanh Hoàng Gia */
+            --c-secondary: #FF5E5E; /* Cam Đỏ Năng Lượng */
+            --c-accent: #FFB800; /* Vàng Ánh Kim */
+            
+            --f-heading: 'Bricolage Grotesque', sans-serif;
+            --f-body: 'Be Vietnam Pro', sans-serif;
+            
+            --space-sm: clamp(1rem, 2vw, 2rem);
+            --space-md: clamp(2rem, 4vw, 4rem);
+            --space-lg: clamp(4rem, 8vw, 8rem);
+            
+            /* Typography Scale Chuẩn Mực */
+            --text-hero: clamp(3.5rem, 7vw, 6.5rem); 
+            --text-h2: clamp(2.2rem, 4vw, 3.5rem);
+            --text-h3: clamp(1.3rem, 2vw, 1.8rem);
+            
+            /* Shadow Hệ thống */
+            --shadow-soft: 0 12px 24px -8px rgba(0,0,0,0.04);
+            --shadow-float: 0 20px 40px -12px rgba(90, 82, 255, 0.15);
+            --shadow-neo: 4px 4px 0 var(--c-primary);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--c-bg);
+            color: var(--c-text-main);
+            font-family: var(--f-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Lưới Dot Pattern tùy chỉnh cực mịn */
+            background-image: radial-gradient(rgba(11, 15, 25, 0.05) 2px, transparent 2px);
+            background-size: 32px 32px;
+            background-position: -1px -1px;
+        }
+
+        h1, h2, h3 { font-family: var(--f-heading); line-height: 1.1; letter-spacing: -0.02em; }
+        
+        /* Nhãn Eyebrow Custom Vector */
+        .eyebrow { 
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(90, 82, 255, 0.08); color: var(--c-primary);
+            padding: 8px 16px; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Hiệu ứng Nảy tinh tế */
+        .bouncy-up { opacity: 0; transform: translateY(40px) scale(0.98); transition: all 0.8s cubic-bezier(0.25, 1.2, 0.5, 1); }
+        .bouncy-up.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+        /* Khối màu Nền lơ lửng */
+        .blob { position: absolute; filter: blur(90px); z-index: -1; opacity: 0.5; animation: float 12s ease-in-out infinite; pointer-events: none;}
+        .blob-1 { top: -5%; left: -5%; width: 40vw; height: 40vw; background: rgba(90, 82, 255, 0.3); border-radius: 50%; }
+        .blob-2 { top: 20%; right: -5%; width: 30vw; height: 30vw; background: rgba(255, 94, 94, 0.2); border-radius: 50%; animation-delay: -6s; }
+        
+        @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(3%, 5%) scale(1.05); } }
+
+        /* ================== HERO ================== */
+        .hero { position: relative; padding: 18vh 0 10vh; display: flex; align-items: center; }
+        .hero-grid { display: grid; grid-template-columns: 10fr 8fr; gap: 40px; align-items: center; }
+        @media(max-width: 900px) { .hero-grid { grid-template-columns: 1fr; text-align: center; } }
+
+        .hero-title { font-size: var(--text-hero); font-weight: 800; margin-bottom: 24px; }
+        .hero-title span { color: var(--c-primary); position: relative; display: inline-block; z-index: 1;}
+        /* Nét gạch chân nghệ thuật */
+        .hero-title span::after { content: ''; position: absolute; bottom: 10%; left: -2%; width: 104%; height: 14px; background: var(--c-accent); z-index: -1; border-radius: 10px; transform: rotate(-1deg); }
+        
+        .hero-desc { font-size: 1.2rem; color: var(--c-text-dim); margin-bottom: 40px; max-width: 500px; }
+        @media(max-width: 900px) { .hero-desc { margin: 0 auto 40px; } }
+
+        /* Nút Tương tác Neo-brutalism */
+        .btn-playful {
+            display: inline-flex; align-items: center; gap: 12px; justify-content: center;
+            background: var(--c-text-main); color: #FFF;
+            padding: 16px 36px; border-radius: 50px;
+            font-family: var(--f-heading); font-size: 1.15rem; font-weight: 700; text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 1.2, 0.5, 1);
+            border: 2px solid var(--c-text-main);
+            box-shadow: var(--shadow-neo);
+            cursor: pointer;
+        }
+        .btn-playful svg { width: 20px; height: 20px; fill: currentColor; transition: transform 0.3s; }
+        .btn-playful:hover { transform: translate(-4px, -4px); box-shadow: 8px 8px 0 var(--c-primary); }
+        .btn-playful:hover svg { transform: translateX(4px); }
+
+        /* Khối minh họa Hero Tùy chỉnh */
+        .hero-graphic { position: relative; height: 450px; width: 100%; display: flex; align-items: center; justify-content: center;}
+        
+        .floating-card {
+            background: var(--c-surface); padding: 24px; border-radius: 24px;
+            box-shadow: var(--shadow-soft); position: absolute;
+            animation: float 6s ease-in-out infinite;
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .fc-1 { top: 5%; right: 5%; transform: rotate(4deg); z-index: 2;}
+        .fc-2 { bottom: 5%; left: 0; transform: rotate(-3deg); animation-delay: -3s; z-index: 1;}
+
+        /* Icon Custom bên trong thẻ (Thay thế Emoji) */
+        .custom-icon-wrap { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+
+        /* ================== MARQUEE ================== */
+        .marquee-container { background: var(--c-primary); color: #FFF; padding: 24px 0; overflow: hidden; display: flex; transform: rotate(-2deg) scale(1.05); margin: 80px 0; box-shadow: 0 10px 40px rgba(90, 82, 255, 0.2); }
+        .marquee { white-space: nowrap; font-family: var(--f-heading); font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; gap: 40px; animation: scroll 25s linear infinite; flex-shrink: 0; padding-right: 40px; text-transform: uppercase;}
+        
+        /* SVG Cục diện thay cho dấu ✦ */
+        .marquee-star { width: 24px; height: 24px; fill: var(--c-accent); animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* ================== KHÓA HỌC (ZIGZAG) ================== */
+        .courses { padding: var(--space-md) 0; position: relative; }
+        .course-item { display: grid; grid-template-columns: 5fr 7fr; gap: 80px; align-items: center; margin-bottom: 140px; }
+        .course-item:nth-child(even) { grid-template-columns: 7fr 5fr; }
+        .course-item:nth-child(even) .c-img { order: 2; }
+        .course-item:nth-child(even) .c-content { order: 1; }
+        @media(max-width: 900px) { .course-item, .course-item:nth-child(even) { grid-template-columns: 1fr; gap: 40px; margin-bottom: 80px;} .course-item:nth-child(even) .c-img { order: 1; } .course-item:nth-child(even) .c-content { order: 2; } }
+
+        /* Ảnh minh họa dùng Vector Art thuần túy */
+        .c-img {
+            aspect-ratio: 1 / 1; border-radius: 40px; position: relative;
+            background: #E0E7FF; display: flex; align-items: center; justify-content: center;
+        }
+        .c-img::before {
+            content: ''; position: absolute; top: 20px; left: -20px; width: 100%; height: 100%;
+            background: var(--c-accent); border-radius: 40px; z-index: -1; transition: 0.5s cubic-bezier(0.25, 1.2, 0.5, 1);
+        }
+        .course-item:hover .c-img::before { transform: translate(15px, -15px); }
+        .course-item:nth-child(even) .c-img { background: #FFE4E6; }
+        .course-item:nth-child(even) .c-img::before { left: 20px; background: var(--c-primary); }
+
+        .c-content h3 { font-size: var(--text-h2); margin-bottom: 20px; }
+        .c-content p { font-size: 1.15rem; color: var(--c-text-dim); margin-bottom: 28px; }
+        .tags { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tag { padding: 8px 20px; background: var(--c-surface); color: var(--c-text-main); font-weight: 600; border-radius: 50px; font-size: 0.9rem; border: 1px solid rgba(0,0,0,0.05); box-shadow: var(--shadow-soft);}
+
+        /* ================== LEADERBOARD ================== */
+        .leaderboard { padding: var(--space-md) 0; position: relative; z-index: 2; }
+        .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 50px; }
+        @media(max-width: 900px) { .bento-grid { grid-template-columns: 1fr; } }
+
+        .bento-card {
+            background: var(--c-surface); border-radius: 32px; padding: 40px;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.4s cubic-bezier(0.25, 1.2, 0.5, 1);
+            border: 1px solid rgba(0,0,0,0.02);
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .bento-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-float); border-color: rgba(90, 82, 255, 0.1); }
+        
+        .b-card-wide { grid-column: span 2; }
+        @media(max-width: 900px) { .b-card-wide { grid-column: span 1; } }
+        
+        .b-card-highlight { background: linear-gradient(145deg, var(--c-primary), #818CF8); color: #FFF; }
+        .b-card-highlight .b-label { color: rgba(255,255,255,0.8); }
+
+        .b-icon-box { width: 56px; height: 56px; border-radius: 20px; background: #F4F6F8; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+        .b-label { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--c-text-dim); margin-bottom: 8px; letter-spacing: 0.05em; }
+        .b-value { font-family: var(--f-heading); font-size: 3.5rem; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+
+        .rank-list { list-style: none; margin-top: 24px; }
+        .rank-item { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+        .rank-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .r-user { display: flex; align-items: center; gap: 16px; font-weight: 600; font-size: 1.1rem; }
+        
+        /* Rank Badge SVG */
+        .r-badge { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; position: relative;}
+        .r-badge svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        .r-badge span { position: relative; z-index: 1; font-weight: 800; font-size: 1.1rem; color: #FFF; }
+        
+        .r-score { font-family: var(--f-heading); font-size: 1.4rem; font-weight: 800; color: var(--c-primary); }
+
+        /* ================== FOOTER / CTA ================== */
+        .cta { text-align: center; padding: 120px 20px; background: var(--c-surface); margin-top: 80px; border-top-left-radius: 60px; border-top-right-radius: 60px; box-shadow: 0 -10px 40px rgba(0,0,0,0.02); }
+        .cta h2 { font-size: var(--text-h2); margin-bottom: 24px; }
+
+    </style>
+</head>
+<body>
+    <!-- Nền Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- 1. HERO -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="bouncy-up">
+                <div class="eyebrow">
+                    <!-- SVG Rocket Custom -->
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                    Dành cho lứa tuổi 10-17
+                </div>
+                <h1 class="hero-title">
+                    Sáng tạo<br>với <span>Robotic</span>
+                </h1>
+                <p class="hero-desc">Biến những dòng code khô khan thành robot cử động thực tế. Học lập trình không còn là lý thuyết, mà là cuộc chơi lắp ráp của trí tưởng tượng!</p>
+                
+                <a href="#courses" class="btn-playful magnet-btn">
+                    Khám Phá Ngay
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+            
+            <div class="hero-graphic bouncy-up" style="transition-delay: 0.2s;">
+                <!-- Thẻ nổi 1: AutoGrader Custom SVG -->
+                <div class="floating-card fc-1">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <div class="custom-icon-wrap" style="background: rgba(16, 185, 129, 0.1);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <div>
+                            <div style="font-weight: 800; font-family: var(--f-heading); line-height: 1;">AI Autograder</div>
+                            <div style="font-size: 0.8rem; color: var(--c-text-dim); margin-top: 4px;">Đã chấm: Mạch LED</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thẻ nổi 2: Rank Custom SVG -->
+                <div class="floating-card fc-2">
+                    <div style="display: flex; gap: 16px; align-items: center;">
+                        <!-- Custom Crown Vector -->
+                        <div class="custom-icon-wrap" style="background: rgba(255, 184, 0, 0.1); width: 48px; height: 48px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFB800" stroke="#FFB800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+                        </div>
+                        <div>
+                            <div style="color: var(--c-text-dim); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Top 1 Hiện Tại</div>
+                            <div style="font-weight: 800; font-family: var(--f-heading); font-size: 1.4rem;">Tuấn Kiệt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Central Abstract Graphic (Cốt lõi màn hình chính) -->
+                <svg width="280" height="280" viewBox="0 0 200 200" fill="none" style="animation: spin 30s linear infinite;">
+                    <circle cx="100" cy="100" r="80" stroke="var(--c-primary)" stroke-width="2" stroke-dasharray="10 15"/>
+                    <circle cx="100" cy="100" r="50" stroke="var(--c-secondary)" stroke-width="4" stroke-dasharray="20 10"/>
+                    <rect x="85" y="85" width="30" height="30" rx="8" fill="var(--c-accent)" transform="rotate(45 100 100)"/>
+                    <path d="M100 20 L100 0 M100 180 L100 200 M20 100 L0 100 M180 100 L200 100" stroke="var(--c-text-dim)" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. MARQUEE BĂNG CHUYỀN -->
+    <div class="marquee-container">
+        <!-- 3 khối lặp lại để không bị đứt đoạn -->
+        <div class="marquee">
+            <span>C++ CHO NGƯỜI MỚI</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg> 
+            <span>LẮP RÁP ROBOT</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>AI & OPENCV</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>THUẬT TOÁN ĐIỀU KHIỂN</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+        </div>
+        <div class="marquee" aria-hidden="true">
+            <span>C++ CHO NGƯỜI MỚI</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg> 
+            <span>LẮP RÁP ROBOT</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>AI & OPENCV</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>THUẬT TOÁN ĐIỀU KHIỂN</span> <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+        </div>
+    </div>
+
+    <!-- 3. KHÓA HỌC -->
+    <section class="courses" id="courses">
+        <div class="container">
+            <!-- Course 1 -->
+            <div class="course-item bouncy-up">
+                <div class="c-img">
+                    <!-- Custom Abstract Vector: Vi điều khiển / Mạch -->
+                    <svg width="60%" height="60%" viewBox="0 0 100 100" fill="none">
+                        <rect x="20" y="20" width="60" height="60" rx="12" fill="var(--c-primary)" opacity="0.1"/>
+                        <rect x="30" y="30" width="40" height="40" rx="8" fill="var(--c-primary)"/>
+                        <path d="M30 50 L10 50 M70 50 L90 50 M50 30 L50 10 M50 70 L50 90" stroke="var(--c-primary)" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="8" fill="#FFF"/>
+                    </svg>
+                </div>
+                <div class="c-content">
+                    <div class="eyebrow">Module 01</div>
+                    <h3>Lắp ráp & Điều khiển cơ bản</h3>
+                    <p>Học cách "nói chuyện" với bảng mạch điện tử. Từ việc làm sáng bóng đèn LED đến điều khiển động cơ chạy theo ý muốn qua ngôn ngữ C++.</p>
+                    <div class="tags">
+                        <span class="tag">Cho người mới</span>
+                        <span class="tag">C++ Arduino</span>
+                        <span class="tag">8 Bài thực hành</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="course-item bouncy-up">
+                <div class="c-img">
+                    <!-- Custom Abstract Vector: Mắt thần AI / Vision -->
+                    <svg width="60%" height="60%" viewBox="0 0 100 100" fill="none">
+                        <path d="M10 50 C30 20, 70 20, 90 50 C70 80, 30 80, 10 50 Z" fill="var(--c-secondary)" opacity="0.1" stroke="var(--c-secondary)" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="20" fill="var(--c-secondary)"/>
+                        <circle cx="55" cy="45" r="6" fill="#FFF"/>
+                        <!-- Target tracking brackets -->
+                        <path d="M30 30 L20 30 L20 40 M70 30 L80 30 L80 40 M30 70 L20 70 L20 60 M70 70 L80 70 L80 60" stroke="var(--c-text-main)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="c-content">
+                    <div class="eyebrow">Module 02</div>
+                    <h3>Mắt thần AI (Thị giác máy)</h3>
+                    <p>Lắp camera cho robot! Dùng Python để dạy robot cách nhận diện màu sắc, bám theo đường kẻ ngang và tự động né tránh chướng ngại vật.</p>
+                    <div class="tags">
+                        <span class="tag">Nâng cao</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">AI Camera</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. LEADERBOARD BENTO -->
+    <section class="leaderboard" id="leaderboard">
+        <div class="container">
+            <h2 class="bouncy-up" style="text-align: center; margin-bottom: 10px;">Bảng Xếp Hạng <span style="color: var(--c-primary);">Đỉnh Cao</span></h2>
+            <p class="bouncy-up" style="text-align: center; color: var(--c-text-dim); margin-bottom: 40px; font-size: 1.15rem;">Cập nhật điểm số tự động qua hệ thống AI Autograder.</p>
+            
+            <div class="bento-grid">
+                <!-- Thẻ Highlight 1 -->
+                <div class="bento-card b-card-highlight bouncy-up">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(255,255,255,0.15);">
+                            <!-- Star Premium SVG -->
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFF" stroke="#FFF" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <div class="b-label" style="color: rgba(255,255,255,0.7);">Siêu Lập Trình Tuần</div>
+                        <div class="b-value">Văn Nhật</div>
+                    </div>
+                    <div style="margin-top: 24px; display: inline-block; background: #FFF; color: var(--c-primary); padding: 8px 20px; border-radius: 50px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        Tuyệt đối: 100/100đ
+                    </div>
+                </div>
+                
+                <!-- Thẻ Thống kê 2 -->
+                <div class="bento-card bouncy-up" style="transition-delay: 0.1s;">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(255, 94, 94, 0.1);">
+                            <!-- Thunder Premium SVG -->
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--c-secondary)" stroke="var(--c-secondary)" stroke-width="1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <div class="b-label">Máy Chấm Tốc Độ</div>
+                        <div class="b-value" style="color: var(--c-text-main);">0.02s</div>
+                    </div>
+                    <div style="margin-top: 24px; color: var(--c-text-dim); font-weight: 500;">
+                        Tốc độ AI quét lỗi và chấm điểm mã nguồn C++.
+                    </div>
+                </div>
+                
+                <!-- Thẻ Danh sách 3 -->
+                <div class="bento-card b-card-wide bouncy-up" style="transition-delay: 0.2s;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div>
+                            <div class="b-label">Top Học Viên</div>
+                            <div class="b-value" style="font-size: 2.5rem;">Bảng Vàng</div>
+                        </div>
+                    </div>
+                    
+                    <ul class="rank-list">
+                        <li class="rank-item">
+                            <div class="r-user">
+                                <!-- Rank 1 SVG Badge -->
+                                <div class="r-badge">
+                                    <svg viewBox="0 0 32 32" fill="var(--c-accent)"><path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/></svg>
+                                    <span>1</span>
+                                </div> 
+                                Nguyễn Minh Quân
+                            </div>
+                            <div class="r-score">98.5đ</div>
+                        </li>
+                        <li class="rank-item">
+                            <div class="r-user">
+                                <!-- Rank 2/3 SVG Badge -->
+                                <div class="r-badge">
+                                    <svg viewBox="0 0 32 32" fill="#E2E8F0"><path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/></svg>
+                                    <span style="color: var(--c-text-dim);">2</span>
+                                </div> 
+                                Lê Hải Đăng
+                            </div>
+                            <div class="r-score">95.0đ</div>
+                        </li>
+                        <li class="rank-item" style="border: none;">
+                            <div class="r-user">
+                                <div class="r-badge">
+                                    <svg viewBox="0 0 32 32" fill="#E2E8F0"><path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/></svg>
+                                    <span style="color: var(--c-text-dim);">3</span>
+                                </div> 
+                                Phạm Ngọc Yến
+                            </div>
+                            <div class="r-score">92.5đ</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. CTA Tương tác -->
+    <section class="cta bouncy-up">
+        <h2 style="font-size: var(--text-hero); line-height: 1;">Bắt đầu <span style="color: var(--c-primary);">Chế tạo</span>!</h2>
+        <p style="color: var(--c-text-dim); margin: 24px auto 40px; font-size: 1.25rem; max-width: 600px;">Tham gia hệ thống, viết dòng code đầu tiên và nhìn robot của bạn chuyển động trên sa bàn thực tế.</p>
+        <a href="#" class="btn-playful magnet-btn" style="background: var(--c-secondary); border-color: var(--c-secondary);">
+            Đăng Ký Tài Khoản
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+    </section>
+
+    <script>
+        // Intersection Observer (Bouncy Reveal)
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.bouncy-up').forEach(el => observer.observe(el));
+
+        // Nút Magnetic Effect
+        document.querySelectorAll('.magnet-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0px, 0px)';
+            });
+        });
+    </script>
+</body>
+</html>

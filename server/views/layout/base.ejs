@@ -1,0 +1,19 @@
+<%#
+  base.ejs — Layout chung (dùng với EJS layouts nếu cần)
+  Hiện tại mỗi view tự include CSS trực tiếp.
+  File này là template base dự phòng cho future refactor.
+-%>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'STEM Robotic' %> — STEM Robotic</title>
+  <link rel="stylesheet" href="/public/css/global.css">
+  <%- typeof extraCss !== 'undefined' ? extraCss : '' %>
+</head>
+<body>
+  <%- body %>
+  <%- typeof extraJs !== 'undefined' ? extraJs : '' %>
+</body>
+</html>

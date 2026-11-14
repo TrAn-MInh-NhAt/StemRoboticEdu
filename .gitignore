@@ -1,0 +1,76 @@
+# ==============================================================================
+# STEM ROBOTIC EDU - GITIGNORE SPECIFICATION
+# ==============================================================================
+
+# 1. Environment & Credentials
+.env
+.env.*
+!.env.example
+
+# 2. Dependency Directories (Node.js & Python)
+node_modules/
+server/node_modules/
+judge/node_modules/
+package-lock.json.bak
+
+# 3. Python Virtual Environments & Bytecode
+venv/
+.venv/
+env/
+ENV/
+judge/venv/
+judge/.venv/
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# 4. Logs, Runtime & Diagnostics
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# 5. OS & IDE Workspace Artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+
+# 6. Temporary Scratch & Diagnostic Files
+test_*.js
+test_*.py
+temp/
+tmp/

@@ -1,0 +1,2 @@
+/* Forward to theme.css to guarantee single design system adherence */
+@import url('/css/theme.css');

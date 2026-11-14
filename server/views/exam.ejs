@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phòng Thi Trực Tuyến Chống Gian Lận (KTĐG.02) — STEM Robotic</title>
+  <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body>
+  <!-- Nền Blobs lơ lửng phong cách giaodien8.html -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="exam-shell">
+    <!-- Thanh điều hướng và giám sát phòng thi Neo-Brutalist -->
+    <header class="exam-header bouncy-up visible">
+      <div class="exam-meta-block">
+        <div class="exam-tags-row">
+          <a href="/student" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Về Dashboard
+          </a>
+          <span class="badge badge-info" style="font-size: 0.8rem; font-weight: 700;">Phòng Thi Trực Tuyến KTĐG.02</span>
+          <span class="badge badge-danger" style="font-size: 0.8rem; font-weight: 700; background: #FEE2E2; color: #991B1B; border: 1px solid #EF4444;">Giám sát DF-06</span>
+          <span id="examDurationBadge" class="tech-chip" style="background: var(--c-accent); color: var(--c-text-main); font-weight: 800; font-size: 0.8rem; padding: 4px 12px;">-- phút</span>
+        </div>
+        <h1 class="exam-title-text" id="examTitle" style="margin-top: 8px;">Đang nạp bài thi...</h1>
+        <p style="font-size: 0.9rem; color: var(--c-text-dim); margin-top: 2px;">
+          Thí sinh: <strong><%= user.HoTen %></strong> · Mã HS: <strong>#<%= user.MaNguoiDung %></strong> · Cơ chế: <em>visibilitychange &amp; window blur</em>
+        </p>
+      </div>
+
+      <div class="exam-controls-block">
+        <!-- Huy hiệu đếm số lần rời tab -->
+        <div class="cheat-counter" id="cheatCounter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Rời tab: <strong id="tabSwitchCount">0</strong> / <span id="maxAllowed">3</span> (DF-06)</span>
+        </div>
+
+        <!-- Đồng hồ đếm ngược -->
+        <div class="exam-timer-box">
+          <div style="font-size: 0.75rem; color: var(--c-text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 2px;">Thời gian còn lại</div>
+          <div class="exam-timer" id="countdownClock">--:--</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Banner cảnh báo vi phạm chuyển tab -->
+    <div id="violationBanner" class="violation-banner">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="violationMessage">CẢNH BÁO VI PHẠM: Bạn vừa chuyển tab!</span>
+      </div>
+    </div>
+
+    <!-- Khóa màn hình khi vi phạm quá 3 lần (DF-06 Fullscreen Modal) -->
+    <div id="lockedOverlay" class="locked-overlay" style="display: none; position: fixed; inset: 0; background: rgba(11, 15, 25, 0.95); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; padding: 24px;">
+      <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid #EF4444;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; color: #EF4444;">BÀI THI ĐÃ BỊ TỰ ĐỘNG KHÓA VÀ THU BÀI (DF-06)</h2>
+      <p style="max-width: 520px; font-size: 0.95rem; line-height: 1.6; color: #CBD5E1; margin-bottom: 28px; text-align: center;">
+        Hệ thống JS Tracking phát hiện bạn đã chuyển tab hoặc mất tiêu điểm cửa sổ quá 3 lần, vi phạm nghiêm trọng quy chế phòng thi trực tuyến. Bài thi đã được niêm phong và gửi lên hệ thống.
+      </p>
+      <a href="/student" class="btn-playful" style="background: #DC2626; color: #FFFFFF; border-color: var(--c-text-main); box-shadow: 4px 4px 0 #FFF;">
+        Quay lại Trang Học sinh →
+      </a>
+    </div>
+
+    <!-- Khu vực làm bài dạng Bento Grid -->
+    <div class="exam-grid">
+      <!-- Khung đề bài bên trái -->
+      <section class="exam-prompt-card bouncy-up visible">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--c-bg); padding-bottom: 16px; margin-bottom: 20px;">
+          <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--c-text-main);">Đề Bài &amp; Yêu Cầu Kỹ Thuật</h2>
+          <span class="badge badge-warning" style="font-size: 0.78rem;">Quy chế bảo mật DF-06</span>
+        </div>
+        <div id="examContent" style="white-space: pre-wrap; font-size: 0.95rem; line-height: 1.7; color: var(--c-text-main);">
+          Đang nạp dữ liệu đề thi từ CSDL...
+        </div>
+      </section>
+
+      <!-- Khung soạn thảo code & nộp bài bên phải -->
+      <section class="instrument-console bouncy-up visible" id="editorCard" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); position: relative; margin-bottom: 0;">
+        <div class="console-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="console-dots">
+              <span class="console-dot red"></span>
+              <span class="console-dot yellow"></span>
+              <span class="console-dot green"></span>
+            </div>
+            <span style="font-family: var(--f-mono); font-size: 0.84rem; color: #94A3B8; margin-left: 8px;">solution.py / solution.ino</span>
+          </div>
+          <span style="font-family: var(--f-mono); font-size: 0.75rem; color: #38BDF8; font-weight: 600;">STEM Judge Ready</span>
+        </div>
+
+        <form id="examForm" style="padding: 24px;">
+          <textarea id="codeEditor" class="exam-editor" placeholder="# Viết mã nguồn giải thuật STEM tại đây...
+def doc_cam_bien_khoang_cach():
+    # Code của bạn
+    pass
+" spellcheck="false" style="border-radius: var(--radius-sm); min-height: 380px;"></textarea>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 14px;">
+            <span style="font-size: 0.82rem; color: #94A3B8; max-width: 320px;">
+              * Nhấn <strong>Nộp bài thi kết thúc</strong> khi hoàn thành. Hệ thống sẽ khóa và lưu bài làm vào CSDL.
+            </span>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <a href="/student" class="btn btn-secondary">Hủy &amp; Thoát</a>
+              <button type="submit" id="btnSubmitExam" class="btn-playful" style="background: #047857; color: #FFFFFF; border-color: var(--c-text-main); box-shadow: 4px 4px 0 var(--c-text-main); padding: 12px 28px;">
+                Nộp bài thi kết thúc
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const studentId = <%= user.MaNguoiDung %>;
+    let maBaiNop = null;
+    let maBaiThi = null;
+    let maxAllowedSwitches = 3;
+    let currentSwitches = 0;
+    let countdownInterval = null;
+    let isExamFinished = false;
+    let lastTabSwitchTime = 0; // Chống spam event
+
+    // 1. Tải thông tin bài thi và khởi tạo BaiNop
+    async function initExam() {
+      try {
+        const res = await fetch('/api/exam/active', {
+          headers: { 'x-user-id': studentId }
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          alert('Không tìm thấy bài thi đang mở!');
+          window.location.href = '/student';
+          return;
+        }
+
+        const exam = data.exam;
+        maBaiThi = exam.MaBaiThi;
+        maxAllowedSwitches = exam.SoLanChuyenTab || 3;
+
+        document.getElementById('examTitle').textContent = exam.TenBaiThi;
+        document.getElementById('examContent').textContent = exam.NoiDungDeThi;
+        document.getElementById('examDurationBadge').textContent = `${exam.ThoiLuong} phút`;
+        document.getElementById('maxAllowed').textContent = maxAllowedSwitches;
+
+        // Bắt đầu hoặc tiếp tục bài thi
+        const startRes = await fetch('/api/exam/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ maBaiThi, maNguoiDung: studentId })
+        });
+        const startData = await startRes.json();
+
+        if (startData.success) {
+          maBaiNop = startData.submission.MaBaiNop;
+          currentSwitches = startData.submission.SoLanChuyenTabHS || 0;
+          updateSwitchDisplay(currentSwitches);
+
+          if (startData.isLocked) {
+            triggerLockScreen();
+            return;
+          }
+        }
+
+        // Bắt đầu đồng hồ đếm ngược
+        startCountdown(exam.ThoiLuong);
+
+        // Bắt đầu lắng nghe sự kiện chống gian lận
+        setupAntiCheatListeners();
+
+      } catch (err) {
+        console.error('Lỗi khởi tạo bài thi:', err);
+      }
+    }
+
+    // 2. Đồng hồ đếm ngược (Countdown Clock)
+    function startCountdown(durationMinutes) {
+      let remainingSeconds = durationMinutes * 60;
+      const clock = document.getElementById('countdownClock');
+
+      countdownInterval = setInterval(() => {
+        if (remainingSeconds <= 0) {
+          clearInterval(countdownInterval);
+          clock.textContent = '00:00';
+          autoSubmitOnTimeUp();
+          return;
+        }
+
+        remainingSeconds--;
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+        clock.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+        if (remainingSeconds <= 300) {
+          clock.style.color = '#EF4444'; // Đỏ khi còn dưới 5 phút
+        }
+      }, 1000);
+    }
+
+    function autoSubmitOnTimeUp() {
+      if (isExamFinished) return;
+      alert('Đã hết thời gian làm bài! Hệ thống đang tự động nộp bài của bạn.');
+      submitExam(true);
+    }
+
+    // 3. THỰC THI CHUẨN NGHIỆP VỤ DF-06: Chống gian lận chuyển tab
+    function setupAntiCheatListeners() {
+      // Bắt sự kiện chuyển tab (visibilitychange)
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && !isExamFinished) {
+          handleTabSwitchViolation('Chuyển sang tab khác (visibilitychange)');
+        }
+      });
+
+      // Bắt sự kiện rời cửa sổ (window blur)
+      window.addEventListener('blur', () => {
+        if (!isExamFinished) {
+          handleTabSwitchViolation('Mất tiêu điểm cửa sổ thi (window blur)');
+        }
+      });
+    }
+
+    async function handleTabSwitchViolation(reason) {
+      const now = Date.now();
+      // Debounce 1.5 giây để tránh đếm trùng blur + visibilitychange
+      if (now - lastTabSwitchTime < 1500) return;
+      lastTabSwitchTime = now;
+
+      if (!maBaiNop || isExamFinished) return;
+
+      try {
+        const res = await fetch('/api/exam/tab-switch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ maBaiNop })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          currentSwitches = result.soLanChuyenTabHS;
+          updateSwitchDisplay(currentSwitches);
+
+          const banner = document.getElementById('violationBanner');
+          const msg = document.getElementById('violationMessage');
+          banner.style.display = 'block';
+          msg.textContent = result.message;
+
+          // Nếu vượt quá 3 lần -> Khóa bài thi ngay lập tức (DF-06)
+          if (result.locked) {
+            triggerLockScreen();
+          } else {
+            // Tự tắt banner sau 5 giây
+            setTimeout(() => { banner.style.display = 'none'; }, 5000);
+          }
+        }
+      } catch (err) {
+        console.error('Lỗi ghi nhận vi phạm:', err);
+      }
+    }
+
+    function updateSwitchDisplay(count) {
+      document.getElementById('tabSwitchCount').textContent = count;
+      const counter = document.getElementById('cheatCounter');
+      if (count > 0) {
+        counter.classList.add('violation');
+      }
+      if (count >= maxAllowedSwitches) {
+        counter.style.background = '#EF4444';
+        counter.style.color = '#FFFFFF';
+        counter.style.borderColor = '#B91C1C';
+      }
+    }
+
+    function triggerLockScreen() {
+      isExamFinished = true;
+      clearInterval(countdownInterval);
+      document.getElementById('codeEditor').disabled = true;
+      document.getElementById('btnSubmitExam').disabled = true;
+      document.getElementById('lockedOverlay').style.display = 'flex';
+      document.getElementById('violationBanner').style.display = 'block';
+      document.getElementById('violationMessage').textContent = 'BÀI THI ĐÃ BỊ KHÓA VĨNH VIỄN DO VI PHẠM QUY CHẾ CHUYỂN TAB (DF-06).';
+    }
+
+    // 4. Nộp bài thi
+    document.getElementById('examForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!confirm('Bạn có chắc chắn muốn nộp bài thi? Sau khi nộp bạn sẽ không thể chỉnh sửa lại.')) {
+        return;
+      }
+      submitExam(false);
+    });
+
+    async function submitExam(isAuto) {
+      if (isExamFinished) return;
+      isExamFinished = true;
+      clearInterval(countdownInterval);
+
+      const codeContent = document.getElementById('codeEditor').value;
+      const btn = document.getElementById('btnSubmitExam');
+      btn.disabled = true;
+      btn.textContent = 'Đang nộp bài...';
+
+      try {
+        const res = await fetch('/api/exam/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ maBaiNop, codeContent })
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          alert(result.message);
+          window.location.href = '/student';
+        } else {
+          alert('Lỗi: ' + result.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối khi nộp bài: ' + err.message);
+      }
+    }
+
+    // Bắt đầu
+    initExam();
+  </script>
+</body>
+</html>

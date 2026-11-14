@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng điều khiển Quản trị — STEM Robotic</title>
+  <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body>
+  <!-- Nền Blobs lơ lửng -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="app-shell">
+    <!-- Sidebar Studio Kỹ Thuật (Neo-Brutalist Slate) -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-symbol">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="#FFF" fill="none" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">STEM Robotic</div>
+          <div class="brand-tag">Quản trị Hệ thống</div>
+        </div>
+      </div>
+
+      <!-- Thẻ người dùng -->
+      <div class="sidebar-user-card">
+        <div class="user-avatar-circle" style="background: var(--c-secondary); color: var(--c-text-main); font-weight: 800;">
+          <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'A' %>
+        </div>
+        <div class="user-meta">
+          <div class="user-name"><%= user.HoTen %></div>
+          <div class="user-role-label">Quản trị viên · #<%= user.MaNguoiDung %></div>
+        </div>
+      </div>
+
+      <!-- Menu Điều Hướng -->
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-item">
+          <a href="#overviewSection" class="sidebar-nav-link active">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+            <span>Tổng quan Hệ thống</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#accountsSection" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Quản lý Tài khoản (DF-07)</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="/community" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            <span>Cộng đồng &amp; Vinh danh</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="/api/reports/grades-csv" target="_blank" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Xuất bảng điểm (.CSV)</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item" style="margin-top: 20px;">
+          <a href="/" class="sidebar-nav-link" style="color: var(--c-accent);">
+            <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            <span>Về Trang Chủ (/)</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <a href="/logout" class="btn-sidebar-logout">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Đăng xuất tài khoản</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <!-- Breadcrumb -->
+      <div style="font-size: 0.85rem; color: var(--c-text-dim); margin-bottom: 24px; font-weight: 600;">
+        <span>Trung tâm Điều hành</span>
+        <span style="margin: 0 8px;">/</span>
+        <span style="color: var(--c-primary);">Bảng Điều Khiển Quản Trị Hệ Thống</span>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h1 style="font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.02em;">
+            Bảng Điều Khiển <span class="title-highlight">Quản Trị</span>
+          </h1>
+          <p style="font-size: 0.95rem; color: var(--c-text-dim); margin-top: 4px; text-wrap: pretty;">
+            Quản trị viên: <strong><%= user.HoTen %></strong> (<%= user.Email %>) · Toàn quyền Quản trị (DF-07 / QLTK)
+          </p>
+        </div>
+        <div style="display:flex; gap: 12px;">
+          <a href="/api/reports/grades-csv" class="btn btn-secondary">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Xuất bảng điểm (.CSV)
+          </a>
+          <button class="btn btn-primary btn-sm" onclick="loadAdminData()">
+            Làm mới dữ liệu
+          </button>
+        </div>
+      </div>
+
+      <!-- Banner thông báo DF-07 -->
+      <div id="df07Alert" class="alert alert-info" style="display:none; margin-bottom: 24px; padding: 16px 20px; border-radius: var(--radius-card); background: #EEF2FF; border: 1.5px solid #C7D2FE;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong id="df07AlertText" style="color: #3730A3;">Thông báo</strong>
+          <button class="btn btn-secondary btn-sm" onclick="this.parentElement.parentElement.style.display='none'">Đóng</button>
+        </div>
+      </div>
+
+      <!-- 1. Grid số liệu Bento Metrics -->
+      <section id="overviewSection" style="margin-bottom: 36px;">
+        <div class="bento-grid">
+          <!-- Metric 1: Học sinh -->
+          <div class="bento-card">
+            <div class="b-icon-box" style="background: rgba(90, 82, 255, 0.1); color: var(--c-primary);">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div class="b-label">Học Sinh Đang Đào Tạo</div>
+            <div class="b-value" id="statStudents" style="color: var(--c-primary);">--</div>
+            <div style="margin-top: 14px;">
+              <span class="badge badge-primary" id="statUsersMeta">Tổng: -- tài khoản</span>
+            </div>
+          </div>
+
+          <!-- Metric 2: Giáo viên -->
+          <div class="bento-card">
+            <div class="b-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #10B981;">
+              <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <div class="b-label">Giáo Viên Giảng Dạy</div>
+            <div class="b-value" id="statTeachers">--</div>
+            <div style="margin-top: 14px;">
+              <span class="badge badge-success">Đang trực tuyến</span>
+            </div>
+          </div>
+
+          <!-- Metric 3: Dự án & Bài nộp -->
+          <div class="bento-card">
+            <div class="b-icon-box" style="background: rgba(255, 184, 0, 0.15); color: #B45309;">
+              <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div class="b-label">Dự Án STEM &amp; Thực Hành</div>
+            <div class="b-value" id="statProjects">--</div>
+            <div style="margin-top: 14px;">
+              <span class="badge badge-warning" id="statSubmissions">Bài nộp: --</span>
+            </div>
+          </div>
+
+          <!-- Metric 4: Máy chấm & Bài thi (Wide Card) -->
+          <div class="bento-card b-card-wide" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-text-main);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <div class="b-icon-box" style="background: #FEE2E2; color: #DC2626;">
+                  <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <div class="b-label">Máy Chấm Judge Engine &amp; Phòng Thi</div>
+                <div class="b-value" id="statJudges" style="font-size: 2.4rem;">FastAPI :5000</div>
+              </div>
+              <div>
+                <span class="badge badge-danger" id="statExams">Bài thi: --</span>
+              </div>
+            </div>
+            <p style="margin-top: 16px; font-size: 0.95rem; color: var(--c-text-dim); text-wrap: pretty;">
+              Dịch vụ chấm code tự động chạy tại cổng 5000 (FastAPI), biên dịch đa ngôn ngữ (.ino, .cpp, .py) và tự động ghi log vào bảng KetQuaDiem (DF-04).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Quản lý Tài khoản (DF-07) -->
+      <section id="accountsSection" class="card" style="border: 1.5px solid rgba(11, 15, 25, 0.08); margin-bottom: 36px;">
+        <div class="card-header">
+          <div>
+            <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 8px; display: inline-block;">
+              Mô đun QLTK.01 &amp; Luồng Khóa Mềm DF-07
+            </span>
+            <h2 class="card-title" style="font-size: 1.6rem; font-weight: 800;">Quản Lý Người Dùng &amp; Phân Quyền</h2>
+            <p class="card-subtitle">
+              Thực hiện khóa mềm tài khoản (cập nhật trạng thái TrangThai mà không xóa cứng dữ liệu để bảo tồn toàn vẹn dữ liệu trong BaiNop và KetQuaDiem).
+            </p>
+          </div>
+          <button class="btn-playful btn-playful-primary btn-sm" onclick="openAddUserModal()">
+            + Thêm Tài Khoản
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Mã</th>
+                <th>Họ và Tên</th>
+                <th>Email Đăng nhập</th>
+                <th>Vai trò</th>
+                <th>Trạng thái (DF-07)</th>
+                <th>Thao tác Quản trị</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr>
+                <td colspan="6" class="text-muted" style="text-align:center; padding: 24px;">Đang tải danh sách tài khoản...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal Thêm Người Dùng Mới -->
+  <div class="modal-overlay" id="addUserModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800;">Khởi Tạo Tài Khoản Người Dùng Mới</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeAddUserModal()">Đóng</button>
+      </div>
+      <form id="addUserForm" style="padding: 24px;">
+        <div class="form-group">
+          <label class="form-label" for="inputHoTen">Họ và Tên đầy đủ *</label>
+          <input type="text" id="inputHoTen" class="form-control" placeholder="Ví dụ: Lê Hoàng Long" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inputEmail">Địa chỉ Email *</label>
+          <input type="email" id="inputEmail" class="form-control" placeholder="long.le@stemrobotic.edu.vn" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inputMatKhau">Mật khẩu khởi tạo *</label>
+          <input type="password" id="inputMatKhau" class="form-control" value="123456" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="selectVaiTro">Phân quyền Vai trò *</label>
+          <select id="selectVaiTro" class="form-control" required>
+            <option value="Học sinh">Học sinh</option>
+            <option value="Giáo viên">Giáo viên</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+        <div id="addUserAlert" style="display:none; padding: 12px; border-radius: var(--radius-input); margin-bottom: 16px; font-size: 0.88rem;"></div>
+        <div style="text-align: right; margin-top: 24px;">
+          <button type="submit" id="btnSaveUser" class="btn-playful btn-playful-primary magnet-btn" style="padding: 12px 28px;">
+            Lưu &amp; Kích Hoạt Tài Khoản
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    async function loadAdminData() {
+      try {
+        const statsRes = await fetch('/api/admin/stats');
+        const statsData = await statsRes.json();
+        if (statsData.success) {
+          const s = statsData.stats;
+          document.getElementById('statStudents').textContent = s.totalStudents;
+          document.getElementById('statUsersMeta').textContent = `Tổng: ${s.totalUsers} tài khoản`;
+          document.getElementById('statTeachers').textContent = s.totalTeachers;
+          document.getElementById('statProjects').textContent = s.totalProjects;
+          document.getElementById('statSubmissions').textContent = `Bài nộp: ${s.totalSubmissions}`;
+          document.getElementById('statJudges').textContent = s.totalJudges > 0 ? `${s.totalJudges} máy chấm` : 'FastAPI :5000';
+          document.getElementById('statExams').textContent = `Bài thi: ${s.totalExams}`;
+        }
+
+        const usersRes = await fetch('/api/admin/users');
+        const usersData = await usersRes.json();
+        if (!usersData.success) return;
+
+        const tbody = document.getElementById('usersTableBody');
+        tbody.innerHTML = '';
+
+        usersData.users.forEach(u => {
+          const tr = document.createElement('tr');
+          const isLocked = (u.TrangThai !== 'Đang hoạt động');
+
+          let badgeHtml = isLocked
+            ? `<span class="badge badge-danger">Bị khóa (DF-07)</span>`
+            : `<span class="badge badge-success">Đang hoạt động</span>`;
+
+          let roleBadge = 'badge-primary';
+          if (u.VaiTro === 'Admin') roleBadge = 'badge-danger';
+          if (u.VaiTro === 'Giáo viên') roleBadge = 'badge-warning';
+
+          let actionBtn = '';
+          if (u.MaNguoiDung === 1) {
+            actionBtn = `<span class="badge badge-locked">Quản trị gốc</span>`;
+          } else if (isLocked) {
+            actionBtn = `
+              <button class="btn btn-secondary btn-sm" style="color:var(--c-success); border-color:var(--c-success);" onclick="toggleLockUser(${u.MaNguoiDung}, 'unlock')">
+                Mở khóa tài khoản
+              </button>
+            `;
+          } else {
+            actionBtn = `
+              <button class="btn btn-secondary btn-sm" style="color:var(--c-error); border-color:var(--c-error);" onclick="toggleLockUser(${u.MaNguoiDung}, 'lock')">
+                Khóa tài khoản (DF-07)
+              </button>
+            `;
+          }
+
+          tr.innerHTML = `
+            <td><strong>#${u.MaNguoiDung}</strong></td>
+            <td><strong>${u.HoTen}</strong></td>
+            <td><code>${u.Email}</code></td>
+            <td><span class="badge ${roleBadge}">${u.VaiTro}</span></td>
+            <td>${badgeHtml}</td>
+            <td>${actionBtn}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (e) {
+        console.error('Lỗi loadAdminData:', e);
+      }
+    }
+
+    async function toggleLockUser(userId, action) {
+      const confirmMsg = action === 'lock'
+        ? `Bạn có chắc muốn KHÓA MỀM tài khoản #${userId}? Người dùng sẽ bị chặn đăng nhập theo luồng DF-07, dữ liệu nộp bài vẫn được giữ nguyên vẹn.`
+        : `Bạn có muốn MỞ KHÓA tài khoản #${userId} để người dùng tiếp tục hoạt động?`;
+
+      if (!confirm(confirmMsg)) return;
+
+      try {
+        const res = await fetch(`/api/admin/users/${userId}/toggle-lock`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action })
+        });
+        const result = await res.json();
+
+        const alertBox = document.getElementById('df07Alert');
+        const alertText = document.getElementById('df07AlertText');
+        alertBox.style.display = 'block';
+        alertText.textContent = result.message;
+
+        loadAdminData();
+      } catch (err) {
+        alert('Lỗi thao tác khóa mềm: ' + err.message);
+      }
+    }
+
+    function openAddUserModal() {
+      document.getElementById('addUserModal').style.display = 'flex';
+      setTimeout(() => { document.getElementById('addUserModal').classList.add('active'); }, 10);
+    }
+    function closeAddUserModal() {
+      document.getElementById('addUserModal').classList.remove('active');
+      setTimeout(() => { document.getElementById('addUserModal').style.display = 'none'; }, 200);
+    }
+
+    document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const alertBox = document.getElementById('addUserAlert');
+      const btn = document.getElementById('btnSaveUser');
+      btn.disabled = true;
+
+      const payload = {
+        hoTen: document.getElementById('inputHoTen').value.trim(),
+        email: document.getElementById('inputEmail').value.trim(),
+        matKhau: document.getElementById('inputMatKhau').value,
+        vaiTro: document.getElementById('selectVaiTro').value
+      };
+
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        if (result.success) {
+          alertBox.style.background = 'var(--c-success-bg)';
+          alertBox.style.color = '#047857';
+          alertBox.textContent = result.message;
+          setTimeout(() => {
+            closeAddUserModal();
+            loadAdminData();
+          }, 800);
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.textContent = result.message;
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    loadAdminData();
+  </script>
+</body>
+</html>

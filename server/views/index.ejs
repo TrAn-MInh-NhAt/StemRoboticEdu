@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEM Robotic | Học Viện Sáng Tạo Premium</title>
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body>
+    <!-- Nền Blobs lơ lửng -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- NAVBAR ĐỒNG BỘ TOÀN HỆ THỐNG -->
+    <header class="main-navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <div class="nav-brand-symbol">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <div>
+                    <div class="nav-brand-text">STEM Robotic</div>
+                    <div class="nav-brand-tag">Học Viện Sáng Tạo Premium</div>
+                </div>
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="#courses" class="nav-link">Lộ Trình Đào Tạo</a></li>
+                <li><a href="#leaderboard" class="nav-link">Bảng Xếp Hạng</a></li>
+                <li><a href="/community" class="nav-link">Cộng Đồng &amp; Vinh Danh</a></li>
+                <% if (user) { %>
+                    <li>
+                        <a href="<%= user.VaiTro === 'Admin' ? '/admin' : (user.VaiTro === 'Giáo viên' ? '/teacher' : '/student') %>" class="btn btn-primary btn-sm">
+                            Vào Không Gian <%= user.VaiTro %> (<%= user.HoTen %>) →
+                        </a>
+                    </li>
+                <% } else { %>
+                    <li>
+                        <a href="/login" class="btn btn-secondary btn-sm">Đăng Nhập</a>
+                    </li>
+                    <li>
+                        <a href="/login" class="btn-playful btn-sm" style="padding: 8px 20px; font-size: 0.9rem;">
+                            Tham Gia Ngay
+                            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 1. HERO -->
+    <section class="hero" style="position: relative; padding: 12vh 0 8vh; overflow: hidden;">
+        <!-- BANNER NỀN KỸ THUẬT PHÒNG LAB ROBOTICS (HERO BACKDROP BANNER) -->
+        <div class="hero-backdrop-banner">
+            <!-- Ánh sáng hào quang Hologram lơ lửng -->
+            <div class="hero-glow-aura"></div>
+            
+            <!-- SVG Mạch điện tử vi điều khiển, Lưới vi mô & Bản vẽ Blueprint Robot -->
+            <svg class="hero-backdrop-svg" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#5A52FF" stop-opacity="0.22"/>
+                        <stop offset="50%" stop-color="#FF5E5E" stop-opacity="0.14"/>
+                        <stop offset="100%" stop-color="#FFB800" stop-opacity="0.2"/>
+                    </linearGradient>
+                    <pattern id="microGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(11, 15, 25, 0.03)" stroke-width="1"/>
+                    </pattern>
+                </defs>
+
+                <!-- Lưới kỹ thuật vi mô -->
+                <rect width="100%" height="100%" fill="url(#microGrid)"/>
+
+                <!-- Đường Bus mạch PCB điện tử với góc vát 45 độ chuẩn công nghiệp -->
+                <g stroke="url(#circuitGrad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Bus nhánh trái 1 -->
+                    <path d="M-50 180 L180 180 L260 260 L420 260 L460 300 L680 300" stroke-dasharray="8 6"/>
+                    <!-- Bus nhánh trái 2 -->
+                    <path d="M-20 220 L140 220 L200 280 L350 280 L390 320 L580 320"/>
+                    <!-- Bus nhánh trái 3 -->
+                    <path d="M50 480 L240 480 L310 410 L500 410"/>
+
+                    <!-- Bus sơ đồ mạch bên phải 1 -->
+                    <path d="M820 120 L980 120 L1040 180 L1280 180 L1350 250 L1500 250" stroke-dasharray="10 8"/>
+                    <!-- Bus sơ đồ mạch bên phải 2 -->
+                    <path d="M880 240 L1020 240 L1080 300 L1240 300 L1310 370 L1500 370"/>
+                    <!-- Bus vi điều khiển MPU6050 -->
+                    <path d="M960 420 L1100 420 L1160 360 L1360 360 L1420 420 L1520 420"/>
+                </g>
+
+                <!-- Các điểm hàn cảm biến & Chân IC mạ vàng -->
+                <g fill="var(--c-primary)">
+                    <circle cx="180" cy="180" r="3.5"/>
+                    <circle cx="260" cy="260" r="5" fill="var(--c-accent)"/>
+                    <circle cx="420" cy="260" r="3.5"/>
+                    <circle cx="680" cy="300" r="4.5" fill="#047857"/>
+                    <circle cx="140" cy="220" r="3.5"/>
+                    <circle cx="350" cy="280" r="4"/>
+                    <circle cx="240" cy="480" r="4"/>
+                    <circle cx="310" cy="410" r="3.5"/>
+                    
+                    <circle cx="980" cy="120" r="5" fill="var(--c-accent)"/>
+                    <circle cx="1040" cy="180" r="3.5"/>
+                    <circle cx="1280" cy="180" r="4"/>
+                    <circle cx="1020" cy="240" r="3.5"/>
+                    <circle cx="1080" cy="300" r="5" fill="var(--c-secondary)"/>
+                    <circle cx="1240" cy="300" r="3.5"/>
+                    <circle cx="1100" cy="420" r="4"/>
+                    <circle cx="1160" cy="360" r="4.5" fill="var(--c-primary)"/>
+                    <circle cx="1360" cy="360" r="3.5"/>
+                </g>
+
+                <!-- Dấu định vị tọa độ và thước đo HUD phòng Lab -->
+                <g stroke="rgba(11, 15, 25, 0.2)" stroke-width="1.2">
+                    <!-- Dấu chữ thập góc trên trái -->
+                    <path d="M60 80 L60 100 M50 90 L70 90"/>
+                    <circle cx="60" cy="90" r="14" fill="none" stroke="rgba(11, 15, 25, 0.08)"/>
+                    <text x="85" y="94" font-family="'Bricolage Grotesque', sans-serif" font-size="10" font-weight="700" fill="var(--c-text-dim)" letter-spacing="1">STEM.SYS // LAT 21.0285° N</text>
+
+                    <!-- Dấu chữ thập góc dưới trái -->
+                    <path d="M120 540 L120 560 M110 550 L130 550"/>
+                    <text x="145" y="554" font-family="'Bricolage Grotesque', sans-serif" font-size="10" font-weight="700" fill="var(--c-text-dim)" letter-spacing="1">AUTO-JUDGE KERNEL &lt;0.05S // READY</text>
+
+                    <!-- Dấu chữ thập góc trên phải -->
+                    <path d="M1360 80 L1360 100 M1350 90 L1370 90"/>
+                    <text x="1210" y="94" font-family="'Bricolage Grotesque', sans-serif" font-size="10" font-weight="700" fill="var(--c-text-dim)" letter-spacing="1">BALANCING-ROBOT V2.4</text>
+                </g>
+
+                <!-- Bản vẽ đẳng cự Robot cân bằng 2 bánh (Isometric Silhouette) -->
+                <g transform="translate(1080, 230) scale(0.9)" opacity="0.28" stroke="var(--c-primary)" stroke-width="1.5" fill="none">
+                    <ellipse cx="-70" cy="80" rx="18" ry="46" transform="rotate(-15 -70 80)"/>
+                    <ellipse cx="-70" cy="80" rx="8" ry="24" transform="rotate(-15 -70 80)"/>
+                    <ellipse cx="70" cy="50" rx="18" ry="46" transform="rotate(-15 70 50)"/>
+                    <ellipse cx="70" cy="50" rx="8" ry="24" transform="rotate(-15 70 50)"/>
+                    <path d="M-60 80 L60 50" stroke-width="3"/>
+                    <polygon points="-50,60 50,30 65,55 -35,85" stroke-width="2" fill="rgba(90, 82, 255, 0.05)"/>
+                    <polygon points="-45,0 45,-30 58,-10 -32,20" stroke-width="2" fill="rgba(255, 184, 0, 0.06)"/>
+                    <line x1="-40" y1="65" x2="-35" y2="15" stroke-width="2"/>
+                    <line x1="45" y1="35" x2="40" y2="-15" stroke-width="2"/>
+                    <line x1="0" y1="-15" x2="0" y2="-60" stroke-width="2" stroke-dasharray="3 3"/>
+                    <circle cx="0" cy="-60" r="10" stroke="var(--c-secondary)" stroke-width="2" fill="rgba(255, 94, 94, 0.1)"/>
+                    <path d="M-25 -50 A 30 30 0 0 1 25 -50" stroke="var(--c-accent)" stroke-width="2" stroke-dasharray="4 4"/>
+                </g>
+            </svg>
+        </div>
+
+        <div class="nav-container" style="position: relative; z-index: 2; display: grid; grid-template-columns: 10fr 8fr; gap: 40px; align-items: center;">
+            <div class="bouncy-up visible">
+                <!-- HUD Pill Chỉ số kỹ thuật -->
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <div class="hero-hud-badge">
+                        <span class="telemetry-pulse"></span>
+                        <span>HỌC VIỆN STEM ROBOTIC THỰC CHIẾN</span>
+                    </div>
+                    <div class="hero-hud-badge" style="color: var(--c-primary); border-color: rgba(90, 82, 255, 0.25);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <span>LỨA TUỔI 10 - 18</span>
+                    </div>
+                </div>
+
+                <h1 style="font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 800; margin-bottom: 24px; line-height: 1.05;">
+                    Sáng tạo<br>với <span class="title-highlight">Robotic</span>
+                </h1>
+                <p style="font-size: 1.2rem; color: var(--c-text-dim); margin-bottom: 36px; max-width: 520px; text-wrap: pretty;">
+                    Biến những dòng code C++/Python thành robot cử động thực tế. Học lập trình không còn là lý thuyết, mà là cuộc chơi lắp ráp của trí tưởng tượng!
+                </p>
+                
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px;">
+                    <a href="<%= user ? '/student' : '/login' %>" class="btn-playful magnet-btn">
+                        Khám Phá Ngay
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                    <a href="#leaderboard" class="btn-playful btn-playful-outline magnet-btn">
+                        Bảng Vàng Đỉnh Cao
+                    </a>
+                </div>
+
+                <!-- Dải thông số nhanh kiểm chứng chất lượng -->
+                <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.85rem; font-weight: 600; color: var(--c-text-dim);">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Mã C++ &amp; Python trực quan</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Chấm tự động tức thì &lt; 0.05s</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Lộ trình mở khóa tự động</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SÂN KHẤU HÌNH ẢNH HERO CÔNG NGHỆ CHUYỂN ĐỘNG XOAY & LƠ LỬNG (HERO GRAPHIC STAGE) -->
+            <div class="hero-graphic-stage bouncy-up visible">
+                <!-- Đĩa sân khấu Hologram ánh sáng -->
+                <div class="hero-stage-disc"></div>
+
+                <!-- Thẻ nổi 1: AI Autograder (DF-01) -->
+                <div class="floating-card fc-1">
+                    <div class="b-icon-box" style="background: rgba(16, 185, 129, 0.12); width: 44px; height: 44px; margin-bottom: 0; color: #047857;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="telemetry-pulse"></span>
+                            <span style="font-weight: 800; font-family: var(--f-heading); font-size: 0.95rem; line-height: 1;">AI Autograder</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--c-text-dim); margin-top: 4px; font-weight: 600;">Chấm tự động &lt; 0.05s</div>
+                    </div>
+                </div>
+                
+                <!-- Thẻ nổi 2: Top 1 Bảng Vàng -->
+                <div class="floating-card fc-2">
+                    <div class="r-badge" style="width: 44px; height: 44px; flex-shrink: 0;">
+                        <svg viewBox="0 0 32 32" fill="var(--c-accent)"><path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/></svg>
+                        <span style="color: #0B0F19; font-weight: 800; font-size: 1.1rem;">1</span>
+                    </div>
+                    <div>
+                        <div style="color: #B45309; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;">Top 1 Bảng Vàng</div>
+                        <div style="font-weight: 800; font-family: var(--f-heading); font-size: 1.25rem; color: var(--c-text-main); line-height: 1.1;">
+                            <%= leaderboard && leaderboard[0] ? leaderboard[0].HoTen : 'Trần Minh Nhật' %>
+                        </div>
+                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-primary); margin-top: 2px;">Điểm tuyệt đối: 100/100đ</div>
+                    </div>
+                </div>
+
+                <!-- Thẻ nổi 3: Cảm biến Gyro MPU6050 -->
+                <div class="floating-card fc-3">
+                    <div class="b-icon-box" style="background: rgba(255, 94, 94, 0.12); width: 40px; height: 40px; margin-bottom: 0; color: #DC2626;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 800; font-family: var(--f-heading); font-size: 0.88rem; line-height: 1;">MPU6050 Gyro</div>
+                        <div style="font-size: 0.78rem; color: #DC2626; font-weight: 700; margin-top: 3px;">θ = 0.0° [Cân Bằng PID]</div>
+                    </div>
+                </div>
+
+                <!-- Cốt lõi con quay kỹ thuật đa tầng xoay liên tục (Spinning Gyro Radar) -->
+                <svg width="300" height="300" viewBox="0 0 200 200" fill="none" class="hero-tech-gyro">
+                    <defs>
+                        <linearGradient id="radarSweepGrad" x1="100" y1="100" x2="100" y2="16" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#5A52FF" stop-opacity="0.05"/>
+                            <stop offset="100%" stop-color="#5A52FF" stop-opacity="0.85"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Vòng ngoài quay cùng chiều kim đồng hồ -->
+                    <circle cx="100" cy="100" r="82" stroke="var(--c-primary)" stroke-width="2.5" stroke-dasharray="12 16" class="hero-gyro-ring-outer"/>
+                    
+                    <!-- Vòng giữa quay ngược chiều kim đồng hồ -->
+                    <circle cx="100" cy="100" r="54" stroke="var(--c-secondary)" stroke-width="3.5" stroke-dasharray="22 12" class="hero-gyro-ring-mid"/>
+                    
+                    <!-- Vòng trong quay tốc độ khác -->
+                    <circle cx="100" cy="100" r="36" stroke="rgba(11, 15, 25, 0.2)" stroke-width="1.5" stroke-dasharray="6 6" class="hero-gyro-ring-inner"/>
+                    
+                    <!-- Tia quét Radar xoay 360 độ -->
+                    <line x1="100" y1="100" x2="100" y2="16" stroke="url(#radarSweepGrad)" stroke-width="2.5" stroke-linecap="round" class="hero-gyro-radar-sweep"/>
+
+                    <!-- Trục chữ thập định vị phòng thí nghiệm -->
+                    <path d="M100 16 L100 0 M100 184 L100 200 M16 100 L0 100 M184 100 L200 100" stroke="var(--c-text-dim)" stroke-width="2"/>
+                    
+                    <!-- Lõi kim cương năng lượng vàng nhịp thở cơ học -->
+                    <rect x="85" y="85" width="30" height="30" rx="8" fill="var(--c-accent)" class="hero-gyro-core"/>
+                    <circle cx="100" cy="100" r="4.5" fill="#0B0F19"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. MARQUEE BĂNG CHUYỀN VÔ TẬN CHẠY LIÊN TỤC (TICKER RIBBON - GIAODIEN8.HTML) -->
+    <div class="marquee-container" data-impeccable-ignore="marquee">
+        <!-- Track 1: Khối chạy chính -->
+        <div class="marquee">
+            <span>C++ &amp; PYTHON THỰC CHIẾN</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg> 
+            <span>ROBOT CÂN BẰNG 2 BÁNH</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>MÁY CHẤM TỰ ĐỘNG &lt; 0.05S</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>ĐIỀU KHIỂN PID &amp; MPU6050</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>THỊ GIÁC MÁY TÍNH AI</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>HỌC LẬP TRÌNH ROBOTICS CHUẨN QUỐC TẾ</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+        </div>
+        <!-- Track 2: Khối chạy nối tiếp tạo vòng lặp vô tận không ngắt quãng -->
+        <div class="marquee" aria-hidden="true">
+            <span>C++ &amp; PYTHON THỰC CHIẾN</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg> 
+            <span>ROBOT CÂN BẰNG 2 BÁNH</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>MÁY CHẤM TỰ ĐỘNG &lt; 0.05S</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>ĐIỀU KHIỂN PID &amp; MPU6050</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>THỊ GIÁC MÁY TÍNH AI</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+            <span>HỌC LẬP TRÌNH ROBOTICS CHUẨN QUỐC TẾ</span>
+            <svg class="marquee-star" viewBox="0 0 24 24"><path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z"/></svg>
+        </div>
+    </div>
+
+    <!-- 3. CÁC LỘ TRÌNH ĐÀO TẠO KỸ THUẬT -->
+    <section id="courses" style="padding: 60px 0;">
+        <div class="nav-container">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <span class="tech-chip" style="background: rgba(90, 82, 255, 0.15); color: #3730A3; font-weight: 700; padding: 6px 16px;">Lộ Trình Chuẩn Quốc Tế</span>
+                <h2 style="font-size: clamp(2.2rem, 4vw, 3.2rem); margin-top: 14px;">
+                    Chinh phục <span class="title-highlight">Thế Giới Robot</span>
+                </h2>
+                <p style="color: var(--c-text-dim); margin-top: 12px; font-size: 1.15rem; max-width: 600px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
+                    Hệ thống bài giảng từ vi điều khiển cơ bản đến xe tự hành cân bằng và thị giác máy tính AI.
+                </p>
+            </div>
+
+            <!-- Module 1 -->
+            <div class="bento-card b-card-wide bouncy-up" style="margin-bottom: 40px; display: grid; grid-template-columns: 5fr 7fr; gap: 40px; align-items: center;">
+                <div style="background: #E0E7FF; border-radius: 24px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <svg width="60%" height="60%" viewBox="0 0 100 100" fill="none">
+                        <rect x="20" y="20" width="60" height="60" rx="12" fill="var(--c-primary)" opacity="0.1"/>
+                        <rect x="30" y="30" width="40" height="40" rx="8" fill="var(--c-primary)"/>
+                        <path d="M30 50 L10 50 M70 50 L90 50 M50 30 L50 10 M50 70 L50 90" stroke="var(--c-primary)" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="8" fill="#FFF"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="tech-chip" style="background: rgba(90, 82, 255, 0.15); color: #3730A3; font-weight: 700; margin-bottom: 12px; display: inline-block;">Lộ trình #01 · Cơ bản</div>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 14px;">Lập trình Arduino Cơ bản &amp; Tín hiệu I/O</h3>
+                    <p style="color: var(--c-text-dim); margin-bottom: 24px; font-size: 1.05rem; text-wrap: pretty;">
+                        Làm quen với lập trình vi điều khiển, các cổng xuất/nhập I/O, nhấp nháy đèn tín hiệu Morse SOS và các thuật toán điều khiển xung PWM.
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
+                        <span class="tech-chip">C++ Embedded</span>
+                        <span class="tech-chip">Arduino UNO / Nano</span>
+                        <span class="tech-chip">Máy chấm tự động 3 TestCase</span>
+                    </div>
+                    <a href="/login" class="btn btn-primary">Bắt Đầu Học Lộ Trình →</a>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="bento-card b-card-wide bouncy-up" style="display: grid; grid-template-columns: 7fr 5fr; gap: 40px; align-items: center;">
+                <div>
+                    <div class="tech-chip" style="background: #FEE2E2; color: #991B1B; font-weight: 700; margin-bottom: 12px; display: inline-block;">Lộ trình #02 · Nâng cao</div>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 14px;">Điều Khiển Robot Tránh Vật Cản &amp; Tự Hành</h3>
+                    <p style="color: var(--c-text-dim); margin-bottom: 24px; font-size: 1.05rem; text-wrap: pretty;">
+                        Xử lý cảm biến siêu âm HC-SR04, cảm biến góc nghiêng MPU6050, giải thuật cân bằng 2 bánh PID và tự động né tránh chướng ngại vật trong mê cung.
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;">
+                        <span class="tech-chip">PID Algorithm</span>
+                        <span class="tech-chip">MPU6050 I2C</span>
+                        <span class="tech-chip">Yêu cầu hoàn thành Dự án 1 (DF-02)</span>
+                    </div>
+                    <a href="/login" class="btn btn-primary" style="background: #DC2626; border-color: #B91C1C;">Bắt Đầu Học Lộ Trình →</a>
+                </div>
+                <div style="background: #FFE4E6; border-radius: 24px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <svg width="60%" height="60%" viewBox="0 0 100 100" fill="none">
+                        <path d="M10 50 C30 20, 70 20, 90 50 C70 80, 30 80, 10 50 Z" fill="#DC2626" opacity="0.1" stroke="#DC2626" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="20" fill="#DC2626"/>
+                        <circle cx="55" cy="45" r="6" fill="#FFF"/>
+                        <path d="M30 30 L20 30 L20 40 M70 30 L80 30 L80 40 M30 70 L20 70 L20 60 M70 70 L80 70 L80 60" stroke="var(--c-text-main)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. LEADERBOARD BENTO — DỮ LIỆU THẬT TỪ SQL SERVER -->
+    <section class="leaderboard" id="leaderboard" style="padding: 60px 0;">
+        <div class="nav-container">
+            <h2 class="bouncy-up" style="text-align: center; margin-bottom: 10px; font-size: clamp(2.2rem, 4vw, 3.2rem);">
+                Bảng Xếp Hạng <span style="color: var(--c-primary);">Đỉnh Cao</span>
+            </h2>
+            <p class="bouncy-up" style="text-align: center; color: var(--c-text-dim); margin-bottom: 40px; font-size: 1.15rem; max-width: 600px; margin-left: auto; margin-right: auto; text-wrap: pretty;">
+                Cập nhật tự động từ kết quả chấm điểm thật của máy chấm Python và duyệt video giáo viên (bảng KetQuaDiem).
+            </p>
+            
+            <div class="bento-grid">
+                <!-- Thẻ Highlight 1 -->
+                <div class="bento-card bouncy-up" style="background: linear-gradient(145deg, #3730A3, #1E1B4B); color: #FFFFFF;">
+                    <div>
+                        <div class="b-icon-box" style="background: rgba(255,255,255,0.18); color: #FFFFFF;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFF" stroke="#FFF" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <div class="b-label" style="color: #E0E7FF; font-weight: 700;">Quán Quân Bảng Vàng</div>
+                        <div class="b-value" style="color: #FFFFFF;">
+                            <%= leaderboard && leaderboard[0] ? leaderboard[0].HoTen : 'Trần Minh Nhật' %>
+                        </div>
+                    </div>
+                    <div style="margin-top: 24px; display: inline-block; background: #FFFFFF; color: #1E1B4B; padding: 8px 20px; border-radius: 50px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        Điểm cao nhất: <%= leaderboard && leaderboard[0] ? leaderboard[0].DiemCaoNhat : '10.0' %>/10đ
+                    </div>
+                </div>
+                
+                <!-- Thẻ Thống kê 2 -->
+                <div class="bento-card bouncy-up">
+                    <div>
+                        <div class="b-icon-box" style="background: #FEE2E2; color: #DC2626;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="#DC2626" stroke="#DC2626" stroke-width="1"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <div class="b-label">Máy Chấm Tốc Độ (Python)</div>
+                        <div class="b-value" style="color: var(--c-text-main);">
+                            <%= stats && stats.ThoiGianTrungBinh_ms ? (stats.ThoiGianTrungBinh_ms / 1000).toFixed(2) : '0.04' %>s
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; color: var(--c-text-dim); font-size: 0.9rem; text-wrap: pretty;">
+                        Tốc độ AI biên dịch và đối chiếu TestCase tự động trên cổng 5000 (DF-01 / XLBN.02).
+                    </div>
+                </div>
+                
+                <!-- Thẻ Danh sách 3: Top Học Viên -->
+                <div class="bento-card b-card-wide bouncy-up">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+                        <div>
+                            <div class="b-label">Top Học Viên Xuất Sắc</div>
+                            <div class="b-value" style="font-size: 2.2rem;">Vinh Danh Điểm Số</div>
+                        </div>
+                        <a href="/community" class="btn btn-secondary btn-sm">Xem Wall of Fame →</a>
+                    </div>
+                    
+                    <ul class="rank-list">
+                        <% if (leaderboard && leaderboard.length > 0) { %>
+                            <% leaderboard.forEach((item, idx) => { %>
+                                <li class="rank-item">
+                                    <div class="r-user">
+                                        <div class="r-badge">
+                                            <svg viewBox="0 0 32 32" fill="<%= idx === 0 ? 'var(--c-accent)' : (idx === 1 ? '#CBD5E1' : '#E2E8F0') %>">
+                                                <path d="M16 0 L32 8 L32 24 L16 32 L0 24 L0 8 Z"/>
+                                            </svg>
+                                            <span style="color: <%= idx === 0 ? '#0B0F19' : 'var(--c-text-main)' %>;"><%= idx + 1 %></span>
+                                        </div> 
+                                        <div>
+                                            <div style="font-weight: 700; color: var(--c-text-main);"><%= item.HoTen %></div>
+                                            <div style="font-size: 0.78rem; color: var(--c-text-dim);"><%= item.Email %> · <%= item.SoBaiNop %> bài nộp</div>
+                                        </div>
+                                    </div>
+                                    <div class="r-score"><%= item.DiemCaoNhat %>đ</div>
+                                </li>
+                            <% }) %>
+                        <% } else { %>
+                            <li class="rank-item">
+                                <div class="r-user">Chưa có bài thi nào được ghi nhận.</div>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. CTA TƯƠNG TÁC CUỐI TRANG -->
+    <section style="text-align: center; padding: 100px 20px 80px; background: var(--c-surface); border-top: 1px solid rgba(11, 15, 25, 0.06); margin-top: 60px;">
+        <div class="nav-container">
+            <h2 style="font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1;">
+                Bắt đầu <span class="title-highlight">Chế tạo</span>!
+            </h2>
+            <p style="color: var(--c-text-dim); margin: 24px auto 40px; font-size: 1.2rem; max-width: 620px; text-wrap: pretty;">
+                Tham gia hệ thống, nạp dòng code C++/Python đầu tiên và nhìn robot của bạn chuyển động trên sa bàn thực tế.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="<%= user ? '/student' : '/login' %>" class="btn-playful btn-playful-secondary magnet-btn">
+                    Đăng Ký Tài Khoản Ngay
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a href="/login" class="btn-playful btn-playful-outline magnet-btn">
+                    Đăng Nhập Hệ Thống
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 24px 0; background: var(--c-dark-console); color: #94A3B8; font-size: 0.85rem; text-align: center;">
+        <div class="nav-container">
+            STEM Robotic Edu — Nền tảng Giáo dục Kỹ thuật &amp; Máy chấm Tự động chuẩn Neo-Brutalist © 2026
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer cho hiệu ứng nảy (Bouncy Reveal)
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.bouncy-up').forEach(el => observer.observe(el));
+
+        // Nút Magnetic Effect từ giaodien8.html
+        document.querySelectorAll('.magnet-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0px, 0px)';
+            });
+        });
+    </script>
+</body>
+</html>
