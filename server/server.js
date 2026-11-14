@@ -11,6 +11,8 @@ const communityRoutes = require('./routes/community');
 const reportsRoutes = require('./routes/reports');
 const submissionRoutes = require('./routes/submissions');
 const examRoutes = require('./routes/exam');
+const materialsRoutes = require('./routes/materials');
+const supportRoutes = require('./routes/support');
 const pageRoutes = require('./routes/pages');
 
 const app = express();
@@ -43,6 +45,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/exam', examRoutes);
+app.use('/api/materials', materialsRoutes);
+app.use('/api/support', supportRoutes);
 app.use('/api', examRoutes);
 app.use('/api', submissionRoutes);
 app.use('/', pageRoutes);

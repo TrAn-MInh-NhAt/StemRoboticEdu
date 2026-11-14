@@ -15,7 +15,8 @@
   <div class="app-shell">
     <!-- Sidebar Studio Kỹ Thuật (Neo-Brutalist Slate) -->
     <aside class="sidebar">
-      <div class="sidebar-brand">
+      <!-- Cổng Quản trị: Bấm để về Tổng quan Quản trị -->
+      <a href="javascript:void(0)" onclick="switchAdminView('overview')" class="sidebar-brand" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;" title="Về Tổng quan Quản trị">
         <div class="brand-symbol">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="#FFF" fill="none" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
@@ -23,38 +24,77 @@
           <div class="brand-title">STEM Robotic</div>
           <div class="brand-tag">Quản trị Hệ thống</div>
         </div>
-      </div>
+      </a>
 
-      <!-- Thẻ người dùng -->
-      <div class="sidebar-user-card">
+      <!-- Thẻ người dùng: Bấm Avatar hoặc tên để vào Hồ sơ cá nhân -->
+      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân (QTHT.02)">
         <div class="user-avatar-circle" style="background: var(--c-secondary); color: var(--c-text-main); font-weight: 800;">
           <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'A' %>
         </div>
         <div class="user-meta">
-          <div class="user-name"><%= user.HoTen %></div>
-          <div class="user-role-label">Quản trị viên · #<%= user.MaNguoiDung %></div>
+          <div class="user-name" style="display: flex; align-items: center; gap: 6px;">
+            <span><%= user.HoTen %></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="user-role-label">Hồ sơ cá nhân · #<%= user.MaNguoiDung %></div>
         </div>
-      </div>
+      </a>
 
-      <!-- Menu Điều Hướng -->
+      <!-- Menu Điều Hướng Các Trang / Phân Hệ Chức Năng Riêng Biệt -->
       <ul class="sidebar-nav">
         <li class="sidebar-nav-item">
-          <a href="#overviewSection" class="sidebar-nav-link active">
+          <a href="javascript:void(0)" onclick="switchAdminView('overview')" data-view="overview" class="sidebar-nav-link active">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
             <span>Tổng quan Hệ thống</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#accountsSection" class="sidebar-nav-link">
+          <a href="javascript:void(0)" onclick="switchAdminView('accounts')" data-view="accounts" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span>Quản lý Tài khoản (DF-07)</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="/community" class="sidebar-nav-link">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-            <span>Cộng đồng &amp; Vinh danh</span>
+          <a href="javascript:void(0)" onclick="switchAdminView('tickets')" data-view="tickets" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24" style="stroke: var(--c-secondary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Phiếu Sự Cố (HTTB.01)</span>
           </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="switchAdminView('announcements')" data-view="announcements" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span>Thông Báo HT (HTTB.02)</span>
+          </a>
+        </li>
+        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con (TTCĐ.01 & TTCĐ.02) -->
+        <li class="sidebar-nav-item sidebar-dropdown" id="adminCommunityDropdown">
+          <button type="button" class="sidebar-dropdown-toggle" onclick="toggleSidebarDropdown(this)">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              <span>Cộng đồng &amp; Vinh danh</span>
+            </div>
+            <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="sidebar-submenu">
+            <li>
+              <a href="/community#wallOfFameSection" target="_blank" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Bảng Vinh Danh (Fame)</span>
+              </a>
+            </li>
+            <li>
+              <a href="/community#forumSection" target="_blank" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Diễn đàn Trao đổi</span>
+              </a>
+            </li>
+            <li>
+              <a href="/community#newPostModalBtn" target="_blank" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <span>Đăng thảo luận mới</span>
+              </a>
+            </li>
+          </ul>
         </li>
         <li class="sidebar-nav-item">
           <a href="/api/reports/grades-csv" target="_blank" class="sidebar-nav-link">
@@ -62,7 +102,7 @@
             <span>Xuất bảng điểm (.CSV)</span>
           </a>
         </li>
-        <li class="sidebar-nav-item" style="margin-top: 20px;">
+        <li class="sidebar-nav-item" style="margin-top: 14px;">
           <a href="/" class="sidebar-nav-link" style="color: var(--c-accent);">
             <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
             <span>Về Trang Chủ (/)</span>
@@ -82,9 +122,9 @@
     <main class="main-content">
       <!-- Breadcrumb -->
       <div style="font-size: 0.85rem; color: var(--c-text-dim); margin-bottom: 24px; font-weight: 600;">
-        <span>Trung tâm Điều hành</span>
+        <a href="javascript:void(0)" onclick="switchAdminView('overview')" style="color: inherit; text-decoration: none;" title="Về Bảng Điều Khiển Quản Trị"><span>Trung tâm Điều hành</span></a>
         <span style="margin: 0 8px;">/</span>
-        <span style="color: var(--c-primary);">Bảng Điều Khiển Quản Trị Hệ Thống</span>
+        <span style="color: var(--c-primary);" id="adminPageBreadcrumb">Tổng quan Hệ thống &amp; Chỉ số Vận hành</span>
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
@@ -96,10 +136,14 @@
             Quản trị viên: <strong><%= user.HoTen %></strong> (<%= user.Email %>) · Toàn quyền Quản trị (DF-07 / QLTK)
           </p>
         </div>
-        <div style="display:flex; gap: 12px;">
+        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
           <a href="/api/reports/grades-csv" class="btn btn-secondary">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Xuất bảng điểm (.CSV)
+          </a>
+          <a href="/print-report" target="_blank" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span>In Bảng Điểm (PDF)</span>
           </a>
           <button class="btn btn-primary btn-sm" onclick="loadAdminData()">
             Làm mới dữ liệu
@@ -115,8 +159,12 @@
         </div>
       </div>
 
-      <!-- 1. Grid số liệu Bento Metrics -->
-      <section id="overviewSection" style="margin-bottom: 36px;">
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 1: TỔNG QUAN HỆ THỐNG & CHỈ SỐ VẬN HÀNH (Trang Mặc Định)          -->
+      <!-- ========================================================================= -->
+      <div id="view-overview" class="dashboard-view active">
+        <!-- 1. Grid số liệu Bento Metrics -->
+        <section id="overviewSection" style="margin-bottom: 36px;">
         <div class="bento-grid">
           <!-- Metric 1: Học sinh -->
           <div class="bento-card">
@@ -174,7 +222,12 @@
           </div>
         </div>
       </section>
+    </div>
 
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ 2: QUẢN LÝ TÀI KHOẢN & PHÂN QUYỀN (DF-07)                         -->
+    <!-- ========================================================================= -->
+    <div id="view-accounts" class="dashboard-view">
       <!-- 2. Quản lý Tài khoản (DF-07) -->
       <section id="accountsSection" class="card" style="border: 1.5px solid rgba(11, 15, 25, 0.08); margin-bottom: 36px;">
         <div class="card-header">
@@ -212,8 +265,139 @@
           </table>
         </div>
       </section>
-    </main>
-  </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ 3: QUẢN LÝ PHẢN HỒI SỰ CỐ KỸ THUẬT (HTTB.01)                     -->
+    <!-- ========================================================================= -->
+    <div id="view-tickets" class="dashboard-view">
+      <!-- 3. QUẢN LÝ PHẢN HỒI SỰ CỐ KỸ THUẬT (HTTB.01 / PHÂN HỆ 6) -->
+      <section id="ticketsSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-secondary); margin-bottom: 36px;">
+        <div class="card-header" style="flex-wrap: wrap; gap: 14px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="tech-chip" style="background: rgba(255, 94, 94, 0.12); color: #DC2626; font-weight: 700; margin-bottom: 0;">
+                Phân Hệ 6 · Mô đun HTTB.01
+              </span>
+              <span class="badge badge-danger" id="unresolvedTicketsBadge">0 sự cố chờ xử lý</span>
+            </div>
+            <h2 class="card-title" style="font-size: 1.5rem; font-weight: 800;">Quản Lý Phản Hồi Sự Cố Kỹ Thuật</h2>
+            <p class="card-subtitle">
+              Tiếp nhận các báo cáo lỗi máy chấm, sự cố nộp bài hoặc đề xuất kỹ thuật từ Học sinh và Giáo viên.
+            </p>
+          </div>
+          <div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="loadTickets()">Làm mới danh sách</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Mã</th>
+                <th>Người Báo Cáo</th>
+                <th>Tiêu Đề &amp; Chi Tiết Sự Cố</th>
+                <th>Mức Độ</th>
+                <th>Thời Gian Gửi</th>
+                <th>Trạng Thái</th>
+                <th style="text-align: right; width: 150px;">Thao Tác HTTB.01</th>
+              </tr>
+            </thead>
+            <tbody id="ticketsTableBody">
+              <tr>
+                <td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Đang tải danh sách sự cố...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ 4: THÔNG BÁO HỆ THỐNG BẢO TRÌ & CẬP NHẬT (HTTB.02)              -->
+    <!-- ========================================================================= -->
+    <div id="view-announcements" class="dashboard-view">
+      <!-- 4. THÔNG BÁO HỆ THỐNG BẢO TRÌ & CẬP NHẬT (HTTB.02 / PHÂN HỆ 6) -->
+      <section id="announcementsSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-accent); margin-bottom: 36px;">
+        <div class="card-header" style="flex-wrap: wrap; gap: 14px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="tech-chip" style="background: rgba(255, 184, 0, 0.15); color: #B45309; font-weight: 700; margin-bottom: 0;">
+                Phân Hệ 6 · Mô đun HTTB.02
+              </span>
+              <span class="badge badge-success">Phát sóng thời gian thực</span>
+            </div>
+            <h2 class="card-title" style="font-size: 1.5rem; font-weight: 800;">Thông Báo Hệ Thống (Bảo Trì &amp; Cập Nhật)</h2>
+            <p class="card-subtitle">
+              Phát thông báo bảo trì, lịch thi hoặc nâng cấp hệ thống. Thông báo sẽ tự động ghim lên đầu màn hình của Học sinh và Giáo viên.
+            </p>
+          </div>
+        </div>
+
+        <!-- Form phát thông báo mới -->
+        <div style="background: rgba(255, 184, 0, 0.04); border: 1.5px dashed rgba(255, 184, 0, 0.4); border-radius: var(--radius-card); padding: 24px; margin-bottom: 28px;">
+          <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 16px; color: #B45309; display: flex; align-items: center; gap: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Tạo &amp; Phát Thông Báo Mới (HTTB.02)
+          </h3>
+          <form id="createAnnouncementForm">
+            <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="annTitle">Tiêu đề thông báo *</label>
+                <input type="text" id="annTitle" class="form-control" placeholder="Ví dụ: Lịch bảo trì máy chấm Judge Engine ngày 15/11" required>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="annPriority">Mức độ ưu tiên *</label>
+                <select id="annPriority" class="form-control" required>
+                  <option value="Bình thường">Bình thường (Lam nhạt)</option>
+                  <option value="Khẩn cấp">Khẩn cấp (Đỏ cảnh báo nổi bật)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="annContent">Nội dung chi tiết thông báo *</label>
+              <textarea id="annContent" class="form-control" rows="3" placeholder="Nhập khung thời gian bảo trì, hướng dẫn lưu bài hoặc nội dung cập nhật mới..." required></textarea>
+            </div>
+
+            <div id="annCreateAlert" style="display:none; padding: 12px 16px; border-radius: var(--radius-input); font-size: 0.88rem; margin-bottom: 16px;"></div>
+
+            <div style="text-align: right;">
+              <button type="submit" id="btnSendAnn" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
+                Phát Thông Báo Toàn Hệ Thống (HTTB.02)
+                <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Bảng danh sách thông báo đã phát -->
+        <h4 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; color: var(--c-text-main);">Lịch Sử Thông Báo Đã Phát</h4>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Mã</th>
+                <th>Tiêu Đề &amp; Nội Dung</th>
+                <th>Mức Độ</th>
+                <th>Người Phát</th>
+                <th>Thời Gian</th>
+                <th>Trạng Thái</th>
+                <th style="text-align: right; width: 130px;">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="announcementsTableBody">
+              <tr>
+                <td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Đang tải danh sách thông báo...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
 
   <!-- Modal Thêm Người Dùng Mới -->
   <div class="modal-overlay" id="addUserModal">
@@ -254,6 +438,73 @@
   </div>
 
   <script>
+    // =========================================================================
+    // HỆ THỐNG ĐIỀU HƯỚNG TÁCH TRANG ĐỘC LẬP (Mỗi view là một chức năng riêng biệt)
+    // =========================================================================
+    const adminViews = {
+      'overview': { elId: 'view-overview', title: 'Tổng quan Hệ thống & Chỉ số Vận hành' },
+      'accounts': { elId: 'view-accounts', title: 'Quản Lý Người Dùng & Phân Quyền Khóa Mềm (DF-07)' },
+      'tickets': { elId: 'view-tickets', title: 'Tiếp Nhận & Xử Lý Phiếu Sự Cố Kỹ Thuật (HTTB.01)' },
+      'announcements': { elId: 'view-announcements', title: 'Thông Báo Hệ Thống Bảo Trì & Cập Nhật (HTTB.02)' }
+    };
+
+    function switchAdminView(viewName) {
+      if (!adminViews[viewName]) viewName = 'overview';
+      const target = adminViews[viewName];
+
+      // 1. Ẩn tất cả view
+      document.querySelectorAll('.dashboard-view').forEach(v => {
+        v.classList.remove('active');
+        v.style.display = 'none';
+      });
+
+      // 2. Hiện view được chọn
+      const activeEl = document.getElementById(target.elId);
+      if (activeEl) {
+        activeEl.style.display = 'block';
+        activeEl.classList.add('active');
+      }
+
+      // 3. Cập nhật breadcrumb
+      const breadcrumb = document.getElementById('adminPageBreadcrumb');
+      if (breadcrumb) {
+        breadcrumb.textContent = target.title;
+      }
+
+      // 4. Tô sáng menu bên trái
+      document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-view') === viewName) {
+          link.classList.add('active');
+        }
+      });
+
+      // 5. Cập nhật hash URL
+      if (history.replaceState) {
+        history.replaceState(null, null, '#' + viewName);
+      }
+
+      // 6. Làm mới dữ liệu tương ứng
+      if (viewName === 'tickets' && typeof loadTickets === 'function') {
+        loadTickets();
+      }
+      if (viewName === 'announcements' && typeof loadAnnouncements === 'function') {
+        loadAnnouncements();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    function syncAdminViewFromHash() {
+      const hash = (window.location.hash || '').replace('#', '');
+      if (hash && adminViews[hash]) {
+        switchAdminView(hash);
+      } else {
+        switchAdminView('overview');
+      }
+    }
+    window.addEventListener('hashchange', syncAdminViewFromHash);
+
     async function loadAdminData() {
       try {
         const statsRes = await fetch('/api/admin/stats');
@@ -401,7 +652,224 @@
       }
     });
 
+    // ==============================================================================
+    // 2. QUẢN LÝ PHẢN HỒI SỰ CỐ KỸ THUẬT (HTTB.01)
+    // ==============================================================================
+    async function loadTickets() {
+      const tbody = document.getElementById('ticketsTableBody');
+      const badge = document.getElementById('unresolvedTicketsBadge');
+
+      try {
+        const res = await fetch('/api/support/admin/tickets');
+        const data = await res.json();
+
+        if (!data.success || !data.tickets || data.tickets.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Hiện không có báo cáo sự cố nào từ người dùng.</td></tr>';
+          if (badge) badge.textContent = '0 sự cố chờ xử lý';
+          return;
+        }
+
+        const unresolvedCount = data.tickets.filter(t => t.TrangThai === 'Chờ xử lý').length;
+        if (badge) {
+          badge.textContent = `${unresolvedCount} sự cố chờ xử lý`;
+          badge.className = unresolvedCount > 0 ? 'badge badge-danger' : 'badge badge-success';
+        }
+
+        tbody.innerHTML = '';
+        data.tickets.forEach(t => {
+          const tr = document.createElement('tr');
+          const isResolved = (t.TrangThai === 'Đã xử lý');
+
+          // Badge mức độ
+          const isUrgent = (t.MucDoUuTien === 'Khẩn cấp');
+          const priorityBadge = isUrgent
+            ? `<span class="badge badge-danger" style="animation: pulse-core 2s infinite;">Khẩn cấp</span>`
+            : `<span class="badge badge-primary">Bình thường</span>`;
+
+          // Badge trạng thái
+          const statusBadge = isResolved
+            ? `<span class="badge badge-success">✓ Đã xử lý</span>`
+            : `<span class="badge badge-warning">Chờ xử lý</span>`;
+
+          // Thao tác
+          const actionBtn = isResolved
+            ? `<span class="badge badge-locked" style="font-size:0.75rem;">Hoàn tất</span>`
+            : `<button class="btn btn-secondary btn-sm" style="color:var(--c-success); border-color:var(--c-success); font-weight:700;" onclick="resolveTicket(${t.MaHoTro})">
+                Đánh dấu Đã xử lý
+               </button>`;
+
+          tr.innerHTML = `
+            <td><strong>#${t.MaHoTro}</strong></td>
+            <td>
+              <div style="font-weight: 700; color: var(--c-text-main);">${t.NguoiBaoCao || 'Người dùng'}</div>
+              <div style="font-size: 0.78rem; color: var(--c-text-dim);"><code>${t.EmailNguoiBaoCao || '--'}</code> · <em>${t.VaiTroNguoiBaoCao || 'Học viên'}</em></div>
+            </td>
+            <td>
+              <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; color: var(--c-text-main);">${t.TieuDe}</div>
+              <div style="font-size: 0.85rem; color: var(--c-text-dim); line-height: 1.45; white-space: pre-line; background: #F8FAFC; border: 1px solid rgba(11,15,25,0.06); padding: 8px 12px; border-radius: 8px;">
+                ${t.NoiDung}
+              </div>
+            </td>
+            <td>${priorityBadge}</td>
+            <td><span style="font-size: 0.85rem; color: var(--c-text-dim);">${t.NgayTaoFmt || t.NgayTao}</span></td>
+            <td>${statusBadge}</td>
+            <td style="text-align: right;">${actionBtn}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Lỗi loadTickets:', err);
+        tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Lỗi tải dữ liệu sự cố: ' + err.message + '</td></tr>';
+      }
+    }
+
+    async function resolveTicket(id) {
+      if (!confirm(`Xác nhận đã khắc phục và xử lý xong sự cố #${id}?`)) return;
+
+      try {
+        const res = await fetch(`/api/support/admin/resolve-ticket/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          loadTickets();
+        } else {
+          alert('Không thể cập nhật sự cố: ' + result.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+      }
+    }
+
+    // ==============================================================================
+    // 3. THÔNG BÁO HỆ THỐNG BẢO TRÌ & CẬP NHẬT (HTTB.02)
+    // ==============================================================================
+    async function loadAnnouncements() {
+      const tbody = document.getElementById('announcementsTableBody');
+
+      try {
+        const res = await fetch('/api/support/admin/announcements');
+        const data = await res.json();
+
+        if (!data.success || !data.announcements || data.announcements.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Chưa có thông báo nào được phát sóng.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = '';
+        data.announcements.forEach(a => {
+          const tr = document.createElement('tr');
+          const isActive = (a.TrangThai === 'Đang hoạt động');
+
+          const isUrgent = (a.MucDoUuTien === 'Khẩn cấp');
+          const priorityBadge = isUrgent
+            ? `<span class="badge badge-danger">Khẩn cấp</span>`
+            : `<span class="badge badge-primary">Bình thường</span>`;
+
+          const statusBadge = isActive
+            ? `<span class="badge badge-success">Đang hoạt động</span>`
+            : `<span class="badge badge-locked">Đã gỡ</span>`;
+
+          tr.innerHTML = `
+            <td><strong>#${a.MaHoTro}</strong></td>
+            <td>
+              <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 2px;">${a.TieuDe}</div>
+              <div style="font-size: 0.82rem; color: var(--c-text-dim); line-height: 1.4;">${a.NoiDung}</div>
+            </td>
+            <td>${priorityBadge}</td>
+            <td><span style="font-size: 0.85rem; font-weight: 600;">${a.NguoiPhatThongBao || 'Quản trị viên'}</span></td>
+            <td><span style="font-size: 0.85rem; color: var(--c-text-dim);">${a.NgayTaoFmt || a.NgayTao}</span></td>
+            <td>${statusBadge}</td>
+            <td style="text-align: right;">
+              <button class="btn ${isActive ? 'btn-secondary' : 'btn-primary'} btn-sm" onclick="toggleAnnouncement(${a.MaHoTro})">
+                ${isActive ? 'Gỡ thông báo' : 'Kích hoạt lại'}
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Lỗi loadAnnouncements:', err);
+        tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Lỗi tải thông báo: ' + err.message + '</td></tr>';
+      }
+    }
+
+    document.getElementById('createAnnouncementForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSendAnn');
+      const alertBox = document.getElementById('annCreateAlert');
+
+      btn.disabled = true;
+      btn.textContent = 'Đang phát sóng thông báo...';
+      alertBox.style.display = 'none';
+
+      const payload = {
+        tieuDe: document.getElementById('annTitle').value.trim(),
+        mucDoUuTien: document.getElementById('annPriority').value,
+        noiDung: document.getElementById('annContent').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/support/admin/announcements', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        if (result.success) {
+          alertBox.style.background = 'var(--c-success-bg)';
+          alertBox.style.color = '#047857';
+          alertBox.style.border = '1.5px solid rgba(16, 185, 129, 0.3)';
+          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message}`;
+          document.getElementById('createAnnouncementForm').reset();
+          loadAnnouncements();
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi:</strong> ${result.message}`;
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Phát Thông Báo Toàn Hệ Thống (HTTB.02)';
+      }
+    });
+
+    async function toggleAnnouncement(id) {
+      try {
+        const res = await fetch(`/api/support/admin/announcements/${id}/toggle`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          loadAnnouncements();
+        } else {
+          alert('Không thể chuyển trạng thái: ' + result.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+      }
+    }
+
+    // Khởi chạy khi load trang
+    syncAdminViewFromHash();
     loadAdminData();
+    loadTickets();
+    loadAnnouncements();
   </script>
+  <script src="/js/theme-engine.js"></script>
 </body>
 </html>

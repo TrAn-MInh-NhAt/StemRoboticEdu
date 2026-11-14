@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bản In Bảng Điểm Đào Tạo STEM Robotic (XBC.02)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Be Vietnam Pro', 'Times New Roman', serif;
+      background: #E5E7EB;
+      color: #111827;
+      padding: 30px 10px;
+      line-height: 1.5;
+    }
+    .print-sheet {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      padding: 48px 56px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .header-left, .header-right {
+      width: 46%;
+    }
+    .inst-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .inst-sub {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .national-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .national-motto {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-top: 2px;
+      border-bottom: 1.5px solid #111;
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+    .sheet-main-title {
+      text-align: center;
+      margin: 28px 0 16px;
+    }
+    .sheet-main-title h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .sheet-main-title p {
+      font-size: 0.88rem;
+      color: #4B5563;
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .meta-box {
+      font-size: 0.88rem;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      background: #F9FAFB;
+      padding: 10px 16px;
+      border: 1px solid #E5E7EB;
+      border-radius: 6px;
+    }
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 36px;
+    }
+    table.report-table th, table.report-table td {
+      border: 1px solid #374151;
+      padding: 8px 10px;
+      text-align: left;
+    }
+    table.report-table th {
+      background: #F3F4F6;
+      font-weight: 700;
+      text-align: center;
+    }
+    .text-center { text-align: center !important; }
+    .text-right { text-align: right !important; }
+    .font-bold { font-weight: 700; }
+    
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      text-align: center;
+      margin-top: 40px;
+      page-break-inside: avoid;
+    }
+    .sig-role {
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+    .sig-sub {
+      font-size: 0.78rem;
+      font-style: italic;
+      color: #6B7280;
+      margin-top: 2px;
+    }
+    .sig-space {
+      height: 70px;
+    }
+    .sig-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .no-print-toolbar {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #111827;
+      padding: 14px 24px;
+      border-radius: 8px;
+      color: #FFFFFF;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+    }
+    .btn-print {
+      background: #2563EB;
+      color: #FFFFFF;
+    }
+    .btn-print:hover { background: #1D4ED8; }
+    .btn-back {
+      background: #374151;
+      color: #F9FAFB;
+    }
+    .btn-back:hover { background: #4B5563; }
+
+    @media print {
+      body {
+        background: #FFFFFF;
+        padding: 0;
+        margin: 0;
+      }
+      .no-print-toolbar {
+        display: none !important;
+      }
+      .print-sheet {
+        box-shadow: none;
+        padding: 20px 25px;
+        max-width: 100%;
+        border-radius: 0;
+      }
+      @page {
+        size: A4;
+        margin: 15mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Thanh công cụ điều khiển khi xem trên web -->
+  <div class="no-print-toolbar">
+    <div>
+      <span style="font-weight: 700;">Xem Trước Bản In Báo Cáo Chuẩn Biểu Mẫu Nhà Trường</span>
+      <span style="color: #9CA3AF; font-size: 0.82rem; margin-left: 10px;">(Mô đun XBC.02 · Báo cáo Thống kê)</span>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="/teacher" class="btn-action btn-back">
+        ← Quay Lại
+      </a>
+      <button onclick="window.print()" class="btn-action btn-print">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        In Bảng Điểm (Lưu PDF)
+      </button>
+    </div>
+  </div>
+
+  <!-- Nội dung biểu mẫu in ấn -->
+  <div class="print-sheet">
+    <div class="sheet-header">
+      <div class="header-left">
+        <div class="inst-title">ĐẠI HỌC ĐÀ NẴNG</div>
+        <div class="inst-sub">TRƯỜNG ĐẠI HỌC SƯ PHẠM</div>
+        <div class="inst-sub font-bold">KHOA TOÁN - TIN</div>
+      </div>
+      <div class="header-right">
+        <div class="national-title">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+        <div class="national-motto">Độc lập - Tự do - Hạnh phúc</div>
+      </div>
+    </div>
+
+    <div class="sheet-main-title">
+      <h1>BẢNG TỔNG HỢP KẾT QUẢ ĐÀO TẠO &amp; CHẤM ĐIỂM STEM ROBOTIC</h1>
+      <p>Áp dụng hệ thống Máy chấm mã nguồn tự động kết hợp Kiểm duyệt Video vận hành thực tế</p>
+    </div>
+
+    <div class="meta-box">
+      <div>
+        <span>Người lập báo cáo: <strong><%= user.HoTen %></strong> (<%= user.VaiTro %>)</span>
+      </div>
+      <div>
+        <span>Thời điểm trích xuất: <strong><%= new Date().toLocaleString('vi-VN') %></strong></span>
+      </div>
+      <div>
+        <span>Tổng số bản ghi: <strong><%= grades.length %> bài nộp</strong></span>
+      </div>
+    </div>
+
+    <!-- Bảng điểm chi tiết -->
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th class="text-center" style="width: 40px;">STT</th>
+          <th>Họ và tên Học sinh</th>
+          <th>Tên Dự án / Đề bài</th>
+          <th class="text-center" style="width: 85px;">Điểm Code (Máy chấm)</th>
+          <th class="text-center" style="width: 85px;">Video Robot (Phần cứng)</th>
+          <th class="text-center" style="width: 80px;">Tổng Điểm</th>
+          <th class="text-center" style="width: 80px;">Xếp loại</th>
+          <th class="text-center" style="width: 100px;">Trạng thái</th>
+          <th>Nhận xét của Giáo viên</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (grades && grades.length > 0) { %>
+          <% grades.forEach((row, idx) => { %>
+            <% 
+              let xepLoai = 'Chưa chấm';
+              if (row.TongDiem !== null && row.TongDiem !== undefined) {
+                if (row.TongDiem >= 9) xepLoai = 'Xuất sắc';
+                else if (row.TongDiem >= 8) xepLoai = 'Giỏi';
+                else if (row.TongDiem >= 6.5) xepLoai = 'Khá';
+                else if (row.TongDiem >= 5) xepLoai = 'Đạt';
+                else xepLoai = 'Chưa đạt';
+              }
+            %>
+            <tr>
+              <td class="text-center"><%= idx + 1 %></td>
+              <td>
+                <div class="font-bold"><%= row.TenHocSinh %></div>
+                <div style="font-size: 0.75rem; color: #4B5563;"><%= row.Email %></div>
+              </td>
+              <td><%= row.TenBaiTap %></td>
+              <td class="text-center font-bold">
+                <%= row.DiemCode !== null ? row.DiemCode : '--' %>/10
+              </td>
+              <td class="text-center">
+                <%= row.KetQuaVideo || 'Chưa duyệt' %>
+              </td>
+              <td class="text-center font-bold" style="font-size: 0.95rem;">
+                <%= row.TongDiem !== null ? row.TongDiem : '--' %>
+              </td>
+              <td class="text-center">
+                <strong><%= xepLoai %></strong>
+              </td>
+              <td class="text-center" style="font-size: 0.78rem;">
+                <%= row.TrangThai %>
+              </td>
+              <td style="font-size: 0.8rem; font-style: italic;">
+                <%= row.NhanXet || 'Chưa có nhận xét' %>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="9" class="text-center" style="padding: 24px; color: #6B7280;">
+              Không tìm thấy bản ghi bài nộp nào phù hợp với bộ lọc hiện tại.
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <!-- Khối chữ ký xác nhận chuẩn văn bản đào tạo -->
+    <div class="signature-grid">
+      <div>
+        <div class="sig-role">Người Lập Bảng</div>
+        <div class="sig-sub">(Ký và ghi rõ họ tên)</div>
+        <div class="sig-space"></div>
+        <div class="sig-name"><%= user.HoTen %></div>
+      </div>
+      <div>
+        <div class="sig-role">Giáo Viên Bộ Môn</div>
+        <div class="sig-sub">(Ký và ghi rõ họ tên)</div>
+        <div class="sig-space"></div>
+        <div class="sig-name">TS. Đặng Hùng Vĩ</div>
+      </div>
+      <div>
+        <div class="sig-role">Trưởng Khoa / BGH</div>
+        <div class="sig-sub">(Ký, đóng dấu xác nhận)</div>
+        <div class="sig-space"></div>
+        <div class="sig-name">Ban Giám Hiệu</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

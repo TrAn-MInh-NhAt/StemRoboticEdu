@@ -15,7 +15,8 @@
   <div class="app-shell">
     <!-- Sidebar Studio Kỹ Thuật (Neo-Brutalist Slate) -->
     <aside class="sidebar">
-      <div class="sidebar-brand">
+      <!-- Cổng thông tin Giảng viên: Bấm để về trang chính của Giáo viên -->
+      <a href="javascript:void(0)" onclick="switchTeacherView('pending')" class="sidebar-brand" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;" title="Về Không gian làm việc Giảng viên">
         <div class="brand-symbol">
           <svg viewBox="0 0 24 24" width="22" height="22" stroke="#FFF" fill="none" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
@@ -23,44 +24,77 @@
           <div class="brand-title">STEM Robotic</div>
           <div class="brand-tag">Cổng thông tin Giảng viên</div>
         </div>
-      </div>
+      </a>
 
-      <!-- Thẻ người dùng -->
-      <div class="sidebar-user-card">
+      <!-- Thẻ người dùng: Bấm Avatar hoặc tên để vào Hồ sơ cá nhân -->
+      <a href="/profile" class="sidebar-user-card" title="Xem & Cập nhật Hồ sơ cá nhân (QTHT.02)">
         <div class="user-avatar-circle" style="background: var(--c-accent); color: var(--c-text-main);">
           <%= user.HoTen.charAt(user.HoTen.lastIndexOf(' ') + 1) || 'G' %>
         </div>
         <div class="user-meta">
-          <div class="user-name"><%= user.HoTen %></div>
-          <div class="user-role-label">Giáo viên · Mã #<%= user.MaNguoiDung %></div>
+          <div class="user-name" style="display: flex; align-items: center; gap: 6px;">
+            <span><%= user.HoTen %></span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="user-role-label">Hồ sơ cá nhân · Mã #<%= user.MaNguoiDung %></div>
         </div>
-      </div>
+      </a>
 
-      <!-- Menu Điều Hướng -->
+      <!-- Menu Điều Hướng Các Trang / Phân Hệ Chức Năng Riêng Biệt -->
       <ul class="sidebar-nav">
         <li class="sidebar-nav-item">
-          <a href="#pendingSection" class="sidebar-nav-link active">
+          <a href="javascript:void(0)" onclick="switchTeacherView('pending')" data-view="pending" class="sidebar-nav-link active">
             <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
             <span>Duyệt Video (DF-01)</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#createProjectSection" class="sidebar-nav-link">
+          <a href="javascript:void(0)" onclick="switchTeacherView('createProject')" data-view="createProject" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
             <span>Giao dự án &amp; TestCase</span>
           </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#allSubsCard" class="sidebar-nav-link">
+          <a href="javascript:void(0)" onclick="switchTeacherView('materials')" data-view="materials" class="sidebar-nav-link">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span>Học liệu &amp; Bài giảng</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="switchTeacherView('allSubs')" data-view="allSubs" class="sidebar-nav-link">
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             <span>Tất cả bài nộp</span>
           </a>
         </li>
-        <li class="sidebar-nav-item">
-          <a href="/community" class="sidebar-nav-link">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-            <span>Cộng đồng &amp; Vinh danh</span>
-          </a>
+        <!-- Cộng đồng & Vinh danh: Menu thả xuống phân hệ con (TTCĐ.01 & TTCĐ.02) -->
+        <li class="sidebar-nav-item sidebar-dropdown" id="teacherCommunityDropdown">
+          <button type="button" class="sidebar-dropdown-toggle" onclick="toggleSidebarDropdown(this)">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              <span>Cộng đồng &amp; Vinh danh</span>
+            </div>
+            <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="sidebar-submenu">
+            <li>
+              <a href="/community#wallOfFameSection" target="_blank" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Bảng Vinh Danh (Fame)</span>
+              </a>
+            </li>
+            <li>
+              <a href="/community#forumSection" target="_blank" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>Diễn đàn Trao đổi</span>
+              </a>
+            </li>
+            <li>
+              <a href="/community#newPostModalBtn" target="_blank" class="sidebar-sub-link">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <span>Đăng thảo luận mới</span>
+              </a>
+            </li>
+          </ul>
         </li>
         <li class="sidebar-nav-item">
           <a href="/api/reports/grades-csv" target="_blank" class="sidebar-nav-link">
@@ -74,7 +108,13 @@
             <span>Giám sát kỳ thi</span>
           </a>
         </li>
-        <li class="sidebar-nav-item" style="margin-top: 20px;">
+        <li class="sidebar-nav-item">
+          <a href="javascript:void(0)" onclick="openTeacherIssueModal()" class="sidebar-nav-link" style="color: var(--c-secondary); font-weight: 700;">
+            <svg viewBox="0 0 24 24" style="stroke: var(--c-secondary);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Báo cáo sự cố (HTTB.01)</span>
+          </a>
+        </li>
+        <li class="sidebar-nav-item" style="margin-top: 14px;">
           <a href="/" class="sidebar-nav-link" style="color: var(--c-accent);">
             <svg viewBox="0 0 24 24" style="stroke: var(--c-accent);"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
             <span>Về Trang Chủ (/)</span>
@@ -92,11 +132,14 @@
 
     <!-- Main content -->
     <main class="main-content">
+      <!-- Vùng hiển thị Thông báo Hệ thống tự động (HTTB.02) -->
+      <div id="systemBroadcastContainer" style="margin-bottom: 24px;"></div>
+
       <!-- Breadcrumb -->
       <div style="font-size: 0.85rem; color: var(--c-text-dim); margin-bottom: 24px; font-weight: 600;">
-        <span>Bàn làm việc Giảng viên</span>
+        <a href="javascript:void(0)" onclick="switchTeacherView('pending')" style="color: inherit; text-decoration: none;" title="Về Bàn làm việc Giảng viên"><span>Bàn làm việc Giảng viên</span></a>
         <span style="margin: 0 8px;">/</span>
-        <span style="color: var(--c-primary);">Quản trị Giảng dạy, Giao Dự Án &amp; Chốt Điểm</span>
+        <span style="color: var(--c-primary);" id="teacherPageBreadcrumb">Duyệt Video Thẩm Định Phần Cứng (DF-01)</span>
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 28px; flex-wrap: wrap; gap: 16px;">
@@ -108,10 +151,18 @@
             Giáo viên: <strong><%= user.HoTen %></strong> (<%= user.Email %>) · Mã GV: #<%= user.MaNguoiDung %>
           </p>
         </div>
-        <div style="display:flex; gap: 12px;">
+        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary" onclick="openTeacherIssueModal()" style="display: inline-flex; align-items: center; gap: 6px; color: var(--c-secondary); border-color: rgba(255, 94, 94, 0.4); font-weight: 700;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Báo cáo sự cố (HTTB.01)</span>
+          </button>
           <a href="/api/reports/grades-csv" class="btn btn-secondary">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Xuất bảng điểm (.CSV)
+          </a>
+          <a href="/print-report" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span>Xuất Báo Cáo PDF (In Bảng Điểm)</span>
           </a>
         </div>
       </div>
@@ -141,8 +192,12 @@
         <p id="df02AlertText" style="margin-top: 4px; font-size: 0.9rem; color: #065F46;"></p>
       </div>
 
-      <!-- 1. Danh sách bài nộp đang ở trạng thái N'Chờ duyệt Video' (DF-01) -->
-      <section id="pendingSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); margin-bottom: 36px;">
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 1: DUYỆT VIDEO & THẨM ĐỊNH PHẦN CỨNG (Trang Mặc Định DF-01)       -->
+      <!-- ========================================================================= -->
+      <div id="view-pending" class="dashboard-view active">
+        <!-- 1. Danh sách bài nộp đang ở trạng thái N'Chờ duyệt Video' (DF-01) -->
+        <section id="pendingSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); margin-bottom: 36px;">
         <div class="card-header">
           <div>
             <span class="tech-chip" style="background: rgba(90, 82, 255, 0.12); color: #3730A3; font-weight: 700; margin-bottom: 8px; display: inline-block;">Trigger Nghiệp Vụ DF-01</span>
@@ -200,7 +255,7 @@
                 Kết quả Máy chấm: <strong style="color:var(--c-primary);" id="gradeCodeScore">10 / 10 (100% TestCase Pass)</strong>
               </p>
               <p style="margin-bottom: 0;">
-                Liên kết gốc: <a id="gradeVideoLink" href="#" target="_blank" rel="noopener" style="word-break: break-all;">--</a>
+                Liên kết gốc: <a id="gradeVideoLink" href="javascript:void(0)" target="_blank" rel="noopener" style="word-break: break-all;">--</a>
               </p>
             </div>
           </div>
@@ -243,11 +298,15 @@
               </button>
             </form>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <!-- 3. Form Giao Dự Án Mới + Thêm TestCase (QLDA.01) -->
-      <section id="createProjectSection" class="card" style="border: 1.5px solid rgba(11, 15, 25, 0.08); margin-bottom: 36px;">
+      <!-- ========================================================================= -->
+      <!-- PHÂN HỆ 2: GIAO DỰ ÁN THỰC HÀNH & TESTCASE (QLDA.01)                     -->
+      <!-- ========================================================================= -->
+      <div id="view-createProject" class="dashboard-view">
+        <!-- 2. Form Giao Dự Án Mới + Thêm TestCase (QLDA.01) -->
+        <section id="createProjectSection" class="card" style="border: 1.5px solid rgba(11, 15, 25, 0.08); margin-bottom: 36px;">
         <div class="card-header">
           <div>
             <span class="tech-chip" style="background: #FEF3C7; color: #92400E; font-weight: 700; margin-bottom: 8px; display: inline-block;">
@@ -359,22 +418,162 @@
           </div>
         </form>
       </section>
+    </div>
 
-      <!-- 4. Toàn bộ lịch sử bài nộp -->
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ 3: QUẢN LÝ HỌC LIỆU & BÀI GIẢNG (QTHL.01 & QTHL.02)              -->
+    <!-- ========================================================================= -->
+    <div id="view-materials" class="dashboard-view">
+      <!-- 3. QUẢN LÝ HỌC LIỆU & BÀI GIẢNG (QTHL.01 & QTHL.02 / PHÂN HỆ 2) -->
+      <section id="materialsSection" class="card" style="border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-accent); margin-bottom: 36px;">
+        <div class="card-header" style="flex-wrap: wrap; gap: 14px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span class="tech-chip" style="background: rgba(255, 184, 0, 0.15); color: #B45309; font-weight: 700; margin-bottom: 0;">
+                Phân Hệ 2 · QTHL.01 &amp; QTHL.02
+              </span>
+              <span class="badge badge-success">Kho Học Liệu &amp; Linh Kiện Robotic</span>
+            </div>
+            <h2 class="card-title" style="font-size: 1.35rem;">Quản Lý Học Liệu, Bài Giảng &amp; Linh Kiện</h2>
+            <p class="card-subtitle">
+              Soạn thảo bài giảng, cung cấp code mẫu, thông số kỹ thuật linh kiện vi điều khiển. Cập nhật học liệu sẽ tự động giải tỏa cờ cảnh báo DF-05.
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="loadMaterials()">Làm mới</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="toggleMaterialForm()" id="btnToggleMatForm">+ Thêm học liệu mới</button>
+          </div>
+        </div>
+
+        <!-- Form Thêm mới học liệu (QTHL.01) -->
+        <div id="addMaterialBox" style="display: none; background: rgba(90, 82, 255, 0.03); border: 1.5px dashed rgba(90, 82, 255, 0.25); border-radius: var(--radius-card); padding: 24px; margin-bottom: 28px;">
+          <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 16px; color: var(--c-primary); display: flex; align-items: center; gap: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Tạo Học Liệu / Bài Giảng Mới (QTHL.01)
+          </h3>
+          <form id="createMaterialForm">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="matTenHocLieu">Tên học liệu / Bài giảng / Linh kiện *</label>
+                <input type="text" id="matTenHocLieu" class="form-control" placeholder="VD: Mạch cầu H L298N &amp; Điều khiển động cơ DC" required>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="matLoaiHocLieu">Loại học liệu *</label>
+                <select id="matLoaiHocLieu" class="form-control" required>
+                  <option value="Bài giảng">Bài giảng lý thuyết</option>
+                  <option value="Linh kiện">Linh kiện phần cứng</option>
+                  <option value="Code mẫu">Code mẫu (.ino, .py)</option>
+                  <option value="Tài liệu kỹ thuật">Datasheet / Tài liệu</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="matMaLoTrinh">Gắn với Lộ trình</label>
+                <select id="matMaLoTrinh" class="form-control">
+                  <option value="">-- Dùng chung toàn hệ thống --</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="matDuongDanTep">Đường dẫn tệp đính kèm / Datasheet (URL hoặc File Path)</label>
+                <input type="text" id="matDuongDanTep" class="form-control" placeholder="https://docs.arduino.cc/... hoặc /files/l298n.pdf">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="matTrangThai">Trạng thái công bố *</label>
+                <select id="matTrangThai" class="form-control">
+                  <option value="Xuất bản">Xuất bản ngay</option>
+                  <option value="Bản nháp">Lưu bản nháp</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="matNoiDung">Nội dung chi tiết, thông số kỹ thuật hoặc code mẫu *</label>
+              <textarea id="matNoiDung" class="form-control" rows="4" placeholder="Nhập tóm tắt bài giảng, thông số điện áp hoạt động, sơ đồ chân I/O hoặc mã nguồn C++/Python minh họa..." required></textarea>
+            </div>
+
+            <div id="materialCreateAlert" style="display:none; padding: 12px 16px; border-radius: var(--radius-input); font-size: 0.88rem; margin-bottom: 16px;"></div>
+
+            <div style="text-align: right;">
+              <button type="submit" id="btnCreateMaterial" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
+                Thêm Học Liệu Vào Hệ Thống (QTHL.01)
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Bảng danh sách học liệu hiện có -->
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Mã HL</th>
+                <th>Tên Học Liệu &amp; Tóm Tắt</th>
+                <th>Loại</th>
+                <th>Lộ trình liên kết</th>
+                <th>Cảnh báo DF-05</th>
+                <th>Trạng thái</th>
+                <th style="text-align: right; width: 170px;">Thao tác QTHL.02</th>
+              </tr>
+            </thead>
+            <tbody id="materialsTableBody">
+              <tr>
+                <td colspan="7" class="text-muted" style="text-align: center; padding: 24px;">Đang tải danh sách học liệu...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PHÂN HỆ 4: TẤT CẢ BÀI NỘP CỦA HỌC SINH (XBC.02)                          -->
+    <!-- ========================================================================= -->
+    <div id="view-allSubs" class="dashboard-view">
+      <!-- 4. Toàn bộ lịch sử bài nộp & Bộ lọc XBC.02 -->
       <section class="card" id="allSubsCard">
         <div class="card-header">
           <div>
             <h2 class="card-title">Tất cả Bài nộp của Học sinh</h2>
-            <p class="card-subtitle">Theo dõi tiến độ, điểm số và xuất báo cáo kết quả học tập chi tiết.</p>
+            <p class="card-subtitle">Theo dõi tiến độ, điểm số, áp dụng bộ lọc nâng cao và xuất báo cáo kết quả đào tạo.</p>
           </div>
-          <div style="display:flex; align-items:center; gap: 12px;">
-            <a href="/api/reports/grades-csv" class="btn btn-secondary btn-sm">
+          <div style="display:flex; align-items:center; gap: 10px; flex-wrap: wrap;">
+            <a href="/api/reports/grades-csv" id="linkDynamicCsv" class="btn btn-secondary btn-sm" target="_blank">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Xuất CSV (TKDL.01)
+              Xuất CSV (Theo lọc)
+            </a>
+            <a href="/print-report" id="linkDynamicPrint" class="btn btn-primary btn-sm" target="_blank" style="display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              In Bảng Điểm (PDF)
             </a>
             <span class="badge badge-primary" id="totalSubsCount">0 bài</span>
           </div>
         </div>
+
+        <!-- BỘ LỌC DỰ ÁN & TRẠNG THÁI (XBC.02) -->
+        <div style="padding: 14px 24px; background: #F8FAFC; border-bottom: 1px solid rgba(11, 15, 25, 0.08); display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="filterTeacherProject" style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main); white-space: nowrap;">Dự án:</label>
+            <select id="filterTeacherProject" class="form-control" style="font-size: 0.85rem; padding: 6px 12px; min-width: 220px;" onchange="applyTeacherFilter()">
+              <option value="all">Tất cả dự án thực hành</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="filterTeacherStatus" style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main); white-space: nowrap;">Kết quả đánh giá:</label>
+            <select id="filterTeacherStatus" class="form-control" style="font-size: 0.85rem; padding: 6px 12px; min-width: 180px;" onchange="applyTeacherFilter()">
+              <option value="all">Tất cả kết quả</option>
+              <option value="excellent">Xuất sắc (>= 9đ)</option>
+              <option value="pass">Đạt yêu cầu (>= 5đ)</option>
+              <option value="fail">Chưa đạt (< 5đ)</option>
+              <option value="pending">Chờ duyệt Video (DF-01)</option>
+            </select>
+          </div>
+          <div id="filterResultNotice" style="font-size: 0.82rem; color: var(--c-text-dim); margin-left: auto;">
+            Hiển thị: <strong id="filterMatchCount">0</strong> bài nộp
+          </div>
+        </div>
+
         <div class="table-responsive">
           <table class="data-table">
             <thead>
@@ -398,10 +597,221 @@
           </table>
         </div>
       </section>
-    </main>
+    </div>
+  </main>
+</div>
+
+  <!-- Modal Chỉnh sửa Học liệu (QTHL.02) -->
+  <div class="modal-overlay" id="editMaterialModal" style="display: none;">
+    <div class="modal-box" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 800; display:flex; align-items:center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Chỉnh Sửa Học Liệu &amp; Giải Tỏa Cờ DF-05 (QTHL.02)
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeEditMaterialModal()">&times;</button>
+      </div>
+      <div style="padding: 24px;">
+        <div class="alert alert-info" style="margin-bottom: 20px; font-size: 0.88rem; background: rgba(90, 82, 255, 0.08); border: 1.5px solid rgba(90, 82, 255, 0.2); padding: 12px 16px; border-radius: var(--radius-input); color: #3730A3;">
+          <strong>Cơ chế tự động hóa DF-05:</strong> Khi bạn lưu cập nhật nội dung học liệu, hệ thống sẽ <strong>tự động xóa cờ cảnh báo (CoCanCapNhat = 0)</strong>, ghi nhận rằng giáo viên đã bổ sung hướng dẫn giải tỏa khó khăn cho học sinh.
+        </div>
+
+        <form id="editMaterialForm">
+          <input type="hidden" id="editMatId">
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" for="editMatTenHocLieu">Tên học liệu / Linh kiện *</label>
+              <input type="text" id="editMatTenHocLieu" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" for="editMatLoaiHocLieu">Loại học liệu *</label>
+              <select id="editMatLoaiHocLieu" class="form-control" required>
+                <option value="Bài giảng">Bài giảng lý thuyết</option>
+                <option value="Linh kiện">Linh kiện phần cứng</option>
+                <option value="Code mẫu">Code mẫu (.ino, .py)</option>
+                <option value="Tài liệu kỹ thuật">Datasheet / Tài liệu</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" for="editMatMaLoTrinh">Gắn với Lộ trình đào tạo</label>
+              <select id="editMatMaLoTrinh" class="form-control">
+                <option value="">-- Dùng chung toàn hệ thống --</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" for="editMatTrangThai">Trạng thái *</label>
+              <select id="editMatTrangThai" class="form-control">
+                <option value="Xuất bản">Xuất bản</option>
+                <option value="Bản nháp">Bản nháp</option>
+                <option value="Đã ẩn">Đã ẩn</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" for="editMatDuongDanTep">Đường dẫn tệp đính kèm / Datasheet / Video URL</label>
+            <input type="text" id="editMatDuongDanTep" class="form-control">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label" for="editMatNoiDung">Nội dung chi tiết, thông số kỹ thuật hoặc mã nguồn *</label>
+            <textarea id="editMatNoiDung" class="form-control" rows="5" required></textarea>
+          </div>
+
+          <div id="editMaterialAlert" style="display:none; padding: 12px 16px; border-radius: var(--radius-input); font-size: 0.88rem; margin-bottom: 16px;"></div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 12px;">
+            <button type="button" class="btn btn-secondary" onclick="closeEditMaterialModal()">Hủy</button>
+            <button type="submit" id="btnSaveEditMaterial" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
+              Lưu Cập Nhật &amp; Tắt Cờ DF-05
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Cảnh báo An toàn khi Ẩn Học liệu có Dự án mở (QTHL.02) -->
+  <div class="modal-overlay" id="confirmHideModal" style="display: none;">
+    <div class="modal-box" style="max-width: 520px; border: 2px solid var(--c-secondary); box-shadow: 6px 6px 0 var(--c-text-main);">
+      <div class="modal-header" style="background: #FFF5F5;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #991B1B; display: flex; align-items: center; gap: 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Cảnh Báo An Toàn Học Vụ (QTHL.02)
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeConfirmHideModal()">&times;</button>
+      </div>
+      <div style="padding: 24px;">
+        <p id="confirmHideMessage" style="font-size: 0.95rem; line-height: 1.6; color: var(--c-text-main); margin-bottom: 24px;">
+          Lộ trình này hiện đang có dự án mở cho học sinh nộp bài. Bạn có chắc chắn muốn ẩn học liệu không?
+        </p>
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="button" class="btn btn-secondary" onclick="closeConfirmHideModal()">Hủy thao tác</button>
+          <button type="button" id="btnForceHideMaterial" class="btn-playful btn-playful-danger magnet-btn" style="padding: 10px 20px;">
+            Vẫn tiếp tục Ẩn học liệu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Báo Cáo Sự Cố Kỹ Thuật Dành Cho Giảng Viên (HTTB.01) -->
+  <div class="modal-overlay" id="teacherReportIssueModal" style="display: none;">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.15rem; font-weight: 800; display:flex; align-items:center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-secondary)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Báo Cáo Sự Cố / Yêu Cầu Hỗ Trợ Kỹ Thuật (HTTB.01)
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeTeacherIssueModal()">&times;</button>
+      </div>
+      <form id="teacherReportIssueForm" style="padding: 24px;">
+        <p style="font-size: 0.88rem; color: var(--c-text-dim); margin-bottom: 20px; line-height: 1.5;">
+          Gặp trục trặc khi chấm bài, video học sinh không tải được hoặc cần cập nhật máy chấm Judge Engine? Hãy gửi phiếu sự cố để Quản trị viên xử lý ngay.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="teacherIssueTitle">Tiêu đề sự cố / Kiến nghị kỹ thuật *</label>
+          <input type="text" id="teacherIssueTitle" class="form-control" placeholder="Ví dụ: Máy chấm cổng 5000 phản hồi chậm khi kiểm thử nhiều TestCase" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="teacherIssuePriority">Mức độ ưu tiên *</label>
+          <select id="teacherIssuePriority" class="form-control" required>
+            <option value="Bình thường">Bình thường (Đề xuất tính năng, hỗ trợ bài học)</option>
+            <option value="Khẩn cấp">Khẩn cấp (Máy chấm lỗi, nghẽn duyệt bài kỳ thi)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="teacherIssueContent">Mô tả chi tiết nội dung sự cố *</label>
+          <textarea id="teacherIssueContent" class="form-control" rows="4" placeholder="Nhập chi tiết lỗi, mã bài nộp hoặc tình trạng hệ thống..." required></textarea>
+        </div>
+
+        <div id="teacherReportAlert" style="display:none; padding: 12px 16px; border-radius: var(--radius-input); font-size: 0.88rem; margin-bottom: 16px;"></div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="button" class="btn btn-secondary" onclick="closeTeacherIssueModal()">Hủy</button>
+          <button type="submit" id="btnSubmitTeacherIssue" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 24px;">
+            Gửi Báo Cáo Sự Cố (HTTB.01)
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script>
+    // =========================================================================
+    // HỆ THỐNG ĐIỀU HƯỚNG TÁCH TRANG ĐỘC LẬP (Mỗi view là một chức năng riêng biệt)
+    // =========================================================================
+    const teacherViews = {
+      'pending': { elId: 'view-pending', title: 'Duyệt Video Thẩm Định Phần Cứng (DF-01)' },
+      'createProject': { elId: 'view-createProject', title: 'Giao Dự Án Thực Hành Mới & Thiết Lập TestCase (QLDA.01)' },
+      'materials': { elId: 'view-materials', title: 'Quản Lý Học Liệu, Bài Giảng & Linh Kiện Robotic (QTHL.01/02)' },
+      'allSubs': { elId: 'view-allSubs', title: 'Tất Cả Bài Nộp Của Học Sinh & Báo Cáo Đào Tạo (XBC.02)' }
+    };
+
+    function switchTeacherView(viewName) {
+      if (!teacherViews[viewName]) viewName = 'pending';
+      const target = teacherViews[viewName];
+
+      // 1. Ẩn tất cả view
+      document.querySelectorAll('.dashboard-view').forEach(v => {
+        v.classList.remove('active');
+        v.style.display = 'none';
+      });
+
+      // 2. Hiện view được chọn
+      const activeEl = document.getElementById(target.elId);
+      if (activeEl) {
+        activeEl.style.display = 'block';
+        activeEl.classList.add('active');
+      }
+
+      // 3. Cập nhật breadcrumb
+      const breadcrumb = document.getElementById('teacherPageBreadcrumb');
+      if (breadcrumb) {
+        breadcrumb.textContent = target.title;
+      }
+
+      // 4. Tô sáng menu bên trái
+      document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-view') === viewName) {
+          link.classList.add('active');
+        }
+      });
+
+      // 5. Cập nhật hash URL
+      if (history.replaceState) {
+        history.replaceState(null, null, '#' + viewName);
+      }
+
+      // 6. Làm mới dữ liệu nếu cần
+      if (viewName === 'materials' && typeof loadMaterials === 'function') {
+        loadMaterials();
+      }
+      if (viewName === 'allSubs' && typeof loadSubmissions === 'function') {
+        loadSubmissions();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    function syncTeacherViewFromHash() {
+      const hash = (window.location.hash || '').replace('#', '');
+      if (hash && teacherViews[hash]) {
+        switchTeacherView(hash);
+      } else {
+        switchTeacherView('pending');
+      }
+    }
+    window.addEventListener('hashchange', syncTeacherViewFromHash);
+
     let currentSubmissions = [];
 
     // 1. Tải danh sách bài nộp
@@ -415,9 +825,7 @@
         document.getElementById('totalSubsCount').textContent = `${currentSubmissions.length} bài`;
 
         const pendingBody = document.getElementById('pendingSubmissionsBody');
-        const allBody = document.getElementById('allSubmissionsBody');
         pendingBody.innerHTML = '';
-        allBody.innerHTML = '';
 
         const pendingSubs = currentSubmissions.filter(s => s.TrangThai === 'Chờ duyệt Video');
 
@@ -444,30 +852,94 @@
           });
         }
 
-        // Bảng 2: Tất cả bài
-        if (currentSubmissions.length === 0) {
-          allBody.innerHTML = '<tr><td colspan="9" class="text-muted" style="text-align:center; padding: 20px;">Chưa có dữ liệu bài nộp.</td></tr>';
-        } else {
-          currentSubmissions.forEach(s => {
-            const tr = document.createElement('tr');
-            let badgeClass = 'badge-locked';
-            if (s.TrangThai === 'Chờ duyệt Video') badgeClass = 'badge-warning';
-            if (s.TrangThai === 'Đã chốt điểm') badgeClass = 'badge-success';
+        // Khởi tạo bộ lọc dự án
+        populateProjectFilter();
+        // Áp dụng bộ lọc cho bảng tất cả bài
+        applyTeacherFilter();
 
-            tr.innerHTML = `
-              <td><strong>#${s.MaBaiNop}</strong></td>
-              <td><strong>${s.TenHocSinh}</strong></td>
-              <td>${s.TenDuAn}</td>
-              <td>${new Date(s.ThoiGianNop).toLocaleDateString('vi-VN')}</td>
-              <td>${s.DiemCode !== null ? s.DiemCode : '--'}</td>
-              <td>${s.KetQuaVideo || '<span class="text-muted">Chưa duyệt</span>'}</td>
-              <td><strong style="font-size:1.05rem; color:${s.TongDiem >= 8 ? '#047857' : (s.TongDiem >= 5 ? '#B45309' : '#DC2626')};">${s.TongDiem !== null ? s.TongDiem : '--'}</strong></td>
-              <td><span class="badge ${badgeClass}">${s.TrangThai}</span></td>
-              <td style="max-width: 220px; font-size:0.85rem; color:var(--c-text-dim);">${s.NhanXet || '--'}</td>
-            `;
-            allBody.appendChild(tr);
-          });
+      } catch (e) {
+        console.error('Lỗi loadSubmissions:', e);
+      }
+    }
+
+    // Điền danh sách dự án vào dropdown lọc
+    function populateProjectFilter() {
+      const select = document.getElementById('filterTeacherProject');
+      const uniqueProjects = new Map();
+      currentSubmissions.forEach(s => {
+        if (s.MaDuAn && s.TenDuAn) {
+          uniqueProjects.set(s.MaDuAn, s.TenDuAn);
         }
+      });
+      select.innerHTML = '<option value="all">Tất cả dự án thực hành</option>';
+      uniqueProjects.forEach((ten, ma) => {
+        const opt = document.createElement('option');
+        opt.value = ma;
+        opt.textContent = ten;
+        select.appendChild(opt);
+      });
+    }
+
+    // Áp dụng bộ lọc và render bảng bài nộp (XBC.02)
+    function applyTeacherFilter() {
+      const projVal = document.getElementById('filterTeacherProject').value;
+      const statusVal = document.getElementById('filterTeacherStatus').value;
+
+      let filtered = currentSubmissions.filter(s => {
+        // Lọc theo dự án
+        if (projVal !== 'all' && String(s.MaDuAn) !== String(projVal)) {
+          return false;
+        }
+        // Lọc theo trạng thái điểm
+        if (statusVal === 'excellent' && !(s.TongDiem >= 9)) return false;
+        if (statusVal === 'pass' && !(s.TongDiem >= 5)) return false;
+        if (statusVal === 'fail' && !(s.TongDiem !== null && s.TongDiem < 5)) return false;
+        if (statusVal === 'pending' && s.TrangThai !== 'Chờ duyệt Video') return false;
+
+        return true;
+      });
+
+      document.getElementById('filterMatchCount').textContent = filtered.length;
+
+      // Cập nhật đường link xuất CSV & Print theo bộ lọc
+      const csvLink = document.getElementById('linkDynamicCsv');
+      const printLink = document.getElementById('linkDynamicPrint');
+      const queryParams = `?maDuAn=${encodeURIComponent(projVal)}&trangThai=${encodeURIComponent(statusVal)}`;
+      csvLink.href = `/api/reports/grades-csv${queryParams}`;
+      printLink.href = `/print-report${queryParams}`;
+
+      renderSubmissionsTable(filtered);
+    }
+
+    function renderSubmissionsTable(subs) {
+      const allBody = document.getElementById('allSubmissionsBody');
+      allBody.innerHTML = '';
+
+      if (subs.length === 0) {
+        allBody.innerHTML = '<tr><td colspan="9" class="text-muted" style="text-align:center; padding: 24px;">Không tìm thấy bài nộp nào phù hợp với bộ lọc hiện tại.</td></tr>';
+        return;
+      }
+
+      subs.forEach(s => {
+        const tr = document.createElement('tr');
+        let badgeClass = 'badge-locked';
+        if (s.TrangThai === 'Chờ duyệt Video') badgeClass = 'badge-warning';
+        if (s.TrangThai === 'Đã chốt điểm') badgeClass = 'badge-success';
+
+        tr.innerHTML = `
+          <td><strong>#${s.MaBaiNop}</strong></td>
+          <td><strong>${s.TenHocSinh}</strong></td>
+          <td>${s.TenDuAn}</td>
+          <td>${new Date(s.ThoiGianNop).toLocaleDateString('vi-VN')}</td>
+          <td>${s.DiemCode !== null ? s.DiemCode : '--'}</td>
+          <td>${s.KetQuaVideo || '<span class="text-muted">Chưa duyệt</span>'}</td>
+          <td><strong style="font-size:1.05rem; color:${s.TongDiem >= 8 ? '#047857' : (s.TongDiem >= 5 ? '#B45309' : '#DC2626')};">${s.TongDiem !== null ? s.TongDiem : '--'}</strong></td>
+          <td><span class="badge ${badgeClass}">${s.TrangThai}</span></td>
+          <td style="max-width: 220px; font-size:0.85rem; color:var(--c-text-dim);">${s.NhanXet || '--'}</td>
+        `;
+        allBody.appendChild(tr);
+      });
+    }
       } catch (e) {
         console.error('Lỗi loadSubmissions:', e);
       }
@@ -577,12 +1049,31 @@
         const ltData = await ltRes.json();
         if (ltData.success) {
           const ltSelect = document.getElementById('maLoTrinh');
+          const matLtSelect = document.getElementById('matMaLoTrinh');
+          const editMatLtSelect = document.getElementById('editMatMaLoTrinh');
+
           ltSelect.innerHTML = '<option value="">-- Chọn lộ trình học --</option>';
+          if (matLtSelect) matLtSelect.innerHTML = '<option value="">-- Dùng chung toàn hệ thống --</option>';
+          if (editMatLtSelect) editMatLtSelect.innerHTML = '<option value="">-- Dùng chung toàn hệ thống --</option>';
+
           ltData.lotrinhList.forEach(lt => {
             const opt = document.createElement('option');
             opt.value = lt.MaLoTrinh;
             opt.textContent = `${lt.TenLoTrinh} (${lt.CapDo})`;
             ltSelect.appendChild(opt);
+
+            if (matLtSelect) {
+              const opt2 = document.createElement('option');
+              opt2.value = lt.MaLoTrinh;
+              opt2.textContent = `${lt.TenLoTrinh} (${lt.CapDo})`;
+              matLtSelect.appendChild(opt2);
+            }
+            if (editMatLtSelect) {
+              const opt3 = document.createElement('option');
+              opt3.value = lt.MaLoTrinh;
+              opt3.textContent = `${lt.TenLoTrinh} (${lt.CapDo})`;
+              editMatLtSelect.appendChild(opt3);
+            }
           });
         }
 
@@ -696,7 +1187,293 @@
       }
     });
 
-    // 7. Kiểm tra Luồng tự động DF-05 (Cảnh báo cập nhật học liệu)
+    // ==============================================================================
+    // 7. QUẢN LÝ HỌC LIỆU & BÀI GIẢNG (QTHL.01 & QTHL.02 / PHÂN HỆ 2)
+    // ==============================================================================
+    let currentMaterialsList = [];
+    let pendingHideMaterialId = null;
+
+    function toggleMaterialForm() {
+      const box = document.getElementById('addMaterialBox');
+      const btn = document.getElementById('btnToggleMatForm');
+      if (box.style.display === 'none' || !box.style.display) {
+        box.style.display = 'block';
+        btn.textContent = '✕ Đóng form';
+        box.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        box.style.display = 'none';
+        btn.textContent = '+ Thêm học liệu mới';
+      }
+    }
+
+    async function loadMaterials() {
+      const tbody = document.getElementById('materialsTableBody');
+      try {
+        const res = await fetch('/api/materials');
+        const data = await res.json();
+
+        if (!data.success || !data.materials || data.materials.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Chưa có học liệu nào trong hệ thống.</td></tr>';
+          return;
+        }
+
+        currentMaterialsList = data.materials;
+        tbody.innerHTML = '';
+
+        data.materials.forEach(m => {
+          const tr = document.createElement('tr');
+
+          // Loại học liệu badge
+          let loaiBadge = 'badge-primary';
+          if (m.LoaiHocLieu === 'Linh kiện') loaiBadge = 'badge-warning';
+          if (m.LoaiHocLieu === 'Code mẫu') loaiBadge = 'badge-success';
+
+          // Cờ DF-05 badge
+          let df05Badge = '<span class="badge badge-success" style="font-size:0.75rem;">Chuẩn hoá</span>';
+          if (m.CoCanCapNhat) {
+            df05Badge = '<span class="badge badge-danger" style="animation: pulse-core 2s infinite; font-size:0.75rem;">Cần cập nhật (DF-05)</span>';
+          }
+
+          // Trạng thái badge
+          const isHidden = (m.TrangThai === 'Đã ẩn');
+          const statusBadge = isHidden 
+            ? '<span class="badge badge-locked">Đã ẩn</span>' 
+            : '<span class="badge badge-success">Xuất bản</span>';
+
+          const noiDungRutGon = m.NoiDung ? (m.NoiDung.length > 90 ? m.NoiDung.substring(0, 90) + '...' : m.NoiDung) : 'Chưa có mô tả';
+
+          tr.innerHTML = `
+            <td><strong>#${m.MaHocLieu}</strong></td>
+            <td>
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--c-text-main); margin-bottom: 2px;">
+                ${m.TenHocLieu}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--c-text-dim); line-height: 1.4;">
+                ${noiDungRutGon}
+              </div>
+              ${m.DuongDanTep ? `<div style="margin-top: 4px;"><a href="${m.DuongDanTep}" target="_blank" rel="noopener" style="font-size:0.75rem; color:var(--c-primary); font-weight:600;">Xem tệp đính kèm ↗</a></div>` : ''}
+            </td>
+            <td><span class="badge ${loaiBadge}">${m.LoaiHocLieu}</span></td>
+            <td><span style="font-size: 0.85rem; font-weight: 600;">${m.TenLoTrinh || '<em class="text-muted">Chung hệ thống</em>'}</span></td>
+            <td>${df05Badge}</td>
+            <td>${statusBadge}</td>
+            <td style="text-align: right;">
+              <div style="display: inline-flex; gap: 6px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openEditMaterialModal(${m.MaHocLieu})" title="Chỉnh sửa & Giải tỏa cờ DF-05">
+                  Sửa
+                </button>
+                <button type="button" class="btn ${isHidden ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="toggleMaterialStatus(${m.MaHocLieu})" style="${isHidden ? '' : 'color: #DC2626;'}">
+                  ${isHidden ? 'Hiện' : 'Ẩn'}
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Lỗi tải danh sách học liệu:', err);
+        tbody.innerHTML = '<tr><td colspan="7" class="text-muted" style="text-align:center; padding: 24px;">Lỗi tải học liệu: ' + err.message + '</td></tr>';
+      }
+    }
+
+    // Submit form thêm mới học liệu (QTHL.01)
+    document.getElementById('createMaterialForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnCreateMaterial');
+      const alertBox = document.getElementById('materialCreateAlert');
+
+      btn.disabled = true;
+      btn.textContent = 'Đang lưu học liệu...';
+      alertBox.style.display = 'none';
+
+      const payload = {
+        tenHocLieu: document.getElementById('matTenHocLieu').value.trim(),
+        loaiHocLieu: document.getElementById('matLoaiHocLieu').value,
+        maLoTrinh: document.getElementById('matMaLoTrinh').value || null,
+        duongDanTep: document.getElementById('matDuongDanTep').value.trim() || null,
+        trangThai: document.getElementById('matTrangThai').value,
+        noiDung: document.getElementById('matNoiDung').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/materials', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        if (result.success) {
+          alertBox.style.background = 'var(--c-success-bg)';
+          alertBox.style.color = '#047857';
+          alertBox.style.border = '1.5px solid rgba(16, 185, 129, 0.3)';
+          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message}`;
+          document.getElementById('createMaterialForm').reset();
+          loadMaterials();
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi:</strong> ${result.message}`;
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Thêm Học Liệu Vào Hệ Thống (QTHL.01)';
+      }
+    });
+
+    // Mở Modal Chỉnh sửa Học liệu (QTHL.02)
+    async function openEditMaterialModal(id) {
+      try {
+        const res = await fetch(`/api/materials/${id}`);
+        const data = await res.json();
+        if (!data.success) {
+          alert('Không tìm thấy học liệu: ' + data.message);
+          return;
+        }
+
+        const m = data.material;
+        document.getElementById('editMatId').value = m.MaHocLieu;
+        document.getElementById('editMatTenHocLieu').value = m.TenHocLieu || '';
+        document.getElementById('editMatLoaiHocLieu').value = m.LoaiHocLieu || 'Bài giảng';
+        document.getElementById('editMatMaLoTrinh').value = m.MaLoTrinh || '';
+        document.getElementById('editMatTrangThai').value = m.TrangThai || 'Xuất bản';
+        document.getElementById('editMatDuongDanTep').value = m.DuongDanTep || '';
+        document.getElementById('editMatNoiDung').value = m.NoiDung || '';
+
+        const alertBox = document.getElementById('editMaterialAlert');
+        alertBox.style.display = 'none';
+
+        const modal = document.getElementById('editMaterialModal');
+        modal.style.display = 'flex';
+        setTimeout(() => { modal.classList.add('active'); }, 10);
+      } catch (err) {
+        alert('Lỗi khi tải chi tiết học liệu: ' + err.message);
+      }
+    }
+
+    function closeEditMaterialModal() {
+      const modal = document.getElementById('editMaterialModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+    }
+
+    // Submit form sửa học liệu & giải tỏa cờ DF-05
+    document.getElementById('editMaterialForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editMatId').value;
+      const btn = document.getElementById('btnSaveEditMaterial');
+      const alertBox = document.getElementById('editMaterialAlert');
+
+      btn.disabled = true;
+      btn.textContent = 'Đang lưu & giải tỏa DF-05...';
+      alertBox.style.display = 'none';
+
+      const payload = {
+        tenHocLieu: document.getElementById('editMatTenHocLieu').value.trim(),
+        loaiHocLieu: document.getElementById('editMatLoaiHocLieu').value,
+        maLoTrinh: document.getElementById('editMatMaLoTrinh').value || null,
+        duongDanTep: document.getElementById('editMatDuongDanTep').value.trim() || null,
+        trangThai: document.getElementById('editMatTrangThai').value,
+        noiDung: document.getElementById('editMatNoiDung').value.trim()
+      };
+
+      try {
+        const res = await fetch(`/api/materials/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        if (result.success) {
+          alertBox.style.background = 'var(--c-success-bg)';
+          alertBox.style.color = '#047857';
+          alertBox.style.border = '1.5px solid rgba(16, 185, 129, 0.3)';
+          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message}`;
+
+          loadMaterials();
+          checkDF05QualityAlert(); // Cập nhật lại cảnh báo DF-05 ngay tức thì!
+
+          setTimeout(() => {
+            closeEditMaterialModal();
+          }, 1500);
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi:</strong> ${result.message}`;
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Lưu Cập Nhật & Tắt Cờ DF-05';
+      }
+    });
+
+    // Ẩn / Hiện học liệu (QTHL.02)
+    async function toggleMaterialStatus(id, force = false) {
+      try {
+        const res = await fetch(`/api/materials/${id}/toggle-status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ force })
+        });
+        const result = await res.json();
+
+        if (result.requireConfirmation) {
+          // Lộ trình có bài thi/dự án đang mở -> Hiển thị Modal xác nhận cảnh báo
+          pendingHideMaterialId = id;
+          document.getElementById('confirmHideMessage').innerHTML = `
+            <strong>Cảnh báo học vụ quan trọng:</strong> Lộ trình của học liệu này hiện đang có 
+            <strong style="color:#DC2626;">${result.activeProjectsCount} dự án đang mở</strong> cho học sinh làm bài.<br><br>
+            Việc ẩn tài liệu hướng dẫn/linh kiện này có thể khiến học sinh gặp khó khăn hoặc thiếu thông tin khi nộp bài thực hành.<br><br>
+            Bạn có chắc chắn muốn tiếp tục <strong>Ẩn học liệu</strong> này không?
+          `;
+          const modal = document.getElementById('confirmHideModal');
+          modal.style.display = 'flex';
+          setTimeout(() => { modal.classList.add('active'); }, 10);
+          return;
+        }
+
+        if (result.success) {
+          loadMaterials();
+        } else {
+          alert('Không thể đổi trạng thái học liệu: ' + result.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+      }
+    }
+
+    function closeConfirmHideModal() {
+      pendingHideMaterialId = null;
+      const modal = document.getElementById('confirmHideModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+    }
+
+    document.getElementById('btnForceHideMaterial').addEventListener('click', async () => {
+      if (pendingHideMaterialId) {
+        const id = pendingHideMaterialId;
+        closeConfirmHideModal();
+        await toggleMaterialStatus(id, true);
+      }
+    });
+
+    // 8. Kiểm tra Luồng tự động DF-05 (Cảnh báo cập nhật học liệu)
     async function checkDF05QualityAlert() {
       try {
         const res = await fetch('/api/exam/analytics/check-df05');
@@ -724,10 +1501,147 @@
       }
     }
 
+    // ==============================================================================
+    // 9. BÁO CÁO SỰ CỐ (HTTB.01) & THÔNG BÁO HỆ THỐNG (HTTB.02)
+    // ==============================================================================
+    function openTeacherIssueModal() {
+      const modal = document.getElementById('teacherReportIssueModal');
+      modal.style.display = 'flex';
+      setTimeout(() => { modal.classList.add('active'); }, 10);
+    }
+
+    function closeTeacherIssueModal() {
+      const modal = document.getElementById('teacherReportIssueModal');
+      modal.classList.remove('active');
+      setTimeout(() => { modal.style.display = 'none'; }, 200);
+    }
+
+    document.getElementById('teacherReportIssueForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitTeacherIssue');
+      const alertBox = document.getElementById('teacherReportAlert');
+
+      btn.disabled = true;
+      btn.textContent = 'Đang gửi sự cố...';
+      alertBox.style.display = 'none';
+
+      const payload = {
+        tieuDe: document.getElementById('teacherIssueTitle').value.trim(),
+        mucDoUuTien: document.getElementById('teacherIssuePriority').value,
+        noiDung: document.getElementById('teacherIssueContent').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/support/report-issue', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        alertBox.style.display = 'block';
+        if (result.success) {
+          alertBox.style.background = 'var(--c-success-bg)';
+          alertBox.style.color = '#047857';
+          alertBox.style.border = '1.5px solid rgba(16, 185, 129, 0.3)';
+          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message}`;
+          document.getElementById('teacherReportIssueForm').reset();
+          setTimeout(() => {
+            closeTeacherIssueModal();
+          }, 2000);
+        } else {
+          alertBox.style.background = 'var(--c-error-bg)';
+          alertBox.style.color = 'var(--c-error)';
+          alertBox.style.border = '1.5px solid rgba(239, 68, 68, 0.3)';
+          alertBox.innerHTML = `<strong>Lỗi:</strong> ${result.message}`;
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'var(--c-error-bg)';
+        alertBox.style.color = 'var(--c-error)';
+        alertBox.textContent = 'Lỗi kết nối: ' + err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Gửi Báo Cáo Sự Cố (HTTB.01)';
+      }
+    });
+
+    async function loadSystemBroadcasts() {
+      const container = document.getElementById('systemBroadcastContainer');
+      if (!container) return;
+
+      try {
+        const res = await fetch('/api/support/active-notifications');
+        const data = await res.json();
+
+        if (!data.success || !data.notifications || data.notifications.length === 0) {
+          container.innerHTML = '';
+          return;
+        }
+
+        let html = '';
+        data.notifications.forEach(n => {
+          const isUrgent = (n.MucDoUuTien === 'Khẩn cấp');
+
+          if (isUrgent) {
+            html += `
+              <div class="bento-card" style="background: #FFF5F5; border: 2px solid var(--c-secondary); box-shadow: 4px 4px 0 var(--c-secondary); padding: 18px 24px; position: relative; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+                  <div style="display: flex; gap: 14px; align-items: flex-start;">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: #FEE2E2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #DC2626;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <div>
+                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+                        <span class="badge badge-danger" style="animation: pulse-core 2s infinite;">THÔNG BÁO KHẨN CẤP (HTTB.02)</span>
+                        <span style="font-size: 0.78rem; color: #991B1B; font-weight: 600;">Phát lúc: ${n.NgayTaoFmt || n.NgayTao} · Bởi: ${n.NguoiGui || 'Ban Quản Trị'}</span>
+                      </div>
+                      <h3 style="font-size: 1.15rem; font-weight: 800; color: #991B1B; margin-bottom: 6px;">${n.TieuDe}</h3>
+                      <p style="font-size: 0.92rem; color: #7F1D1D; line-height: 1.55; margin-bottom: 0;">${n.NoiDung}</p>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.bento-card').remove()" style="color: #991B1B; border-color: rgba(220, 38, 38, 0.3);">Đã hiểu &times;</button>
+                </div>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="bento-card" style="background: #F0FDF4; border: 1.5px solid rgba(16, 185, 129, 0.4); box-shadow: 3px 3px 0 rgba(16, 185, 129, 0.3); padding: 16px 20px; position: relative; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+                  <div style="display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #DCFCE7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #047857;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </div>
+                    <div>
+                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+                        <span class="badge badge-success">THÔNG BÁO HỆ THỐNG</span>
+                        <span style="font-size: 0.78rem; color: #065F46;">${n.NgayTaoFmt || n.NgayTao}</span>
+                      </div>
+                      <h4 style="font-size: 1.05rem; font-weight: 800; color: #065F46; margin-bottom: 4px;">${n.TieuDe}</h4>
+                      <p style="font-size: 0.88rem; color: #064E3B; line-height: 1.5; margin-bottom: 0;">${n.NoiDung}</p>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('.bento-card').remove()" style="color: #065F46; border-color: rgba(16, 185, 129, 0.3);">Đóng</button>
+                </div>
+              </div>
+            `;
+          }
+        });
+
+        container.innerHTML = html;
+      } catch (e) {
+        console.error('Lỗi loadSystemBroadcasts:', e);
+      }
+    }
+
     // Khởi chạy khi load trang
+    syncTeacherViewFromHash();
     loadSubmissions();
     loadFormDropdowns();
+    loadMaterials();
     checkDF05QualityAlert();
+    loadSystemBroadcasts();
   </script>
+  <script src="/js/theme-engine.js"></script>
 </body>
 </html>

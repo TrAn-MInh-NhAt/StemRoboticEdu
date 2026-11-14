@@ -155,6 +155,9 @@ router.get('/student', isLoggedIn, (req, res) => {
 
 // GET /community - Phân hệ Cộng đồng & Wall of Fame (TTCĐ.01, TTCĐ.02, DF-03)
 router.get('/community', isLoggedIn, (req, res) => {
+  if (req.session.user && req.session.user.VaiTro === 'Học sinh') {
+    return res.redirect('/student?view=community-fame');
+  }
   res.render('community', { user: req.session.user });
 });
 
@@ -164,6 +167,144 @@ router.get('/exam', isLoggedIn, (req, res) => {
     return res.redirect('/login');
   }
   res.render('exam', { user: req.session.user });
+});
+
+// ==============================================================================
+// MÔ ĐUN QTHT.02: TRA CỨU & CẬP NHẬT HỒ SƠ CÁ NHÂN (/profile)
+// ==============================================================================
+router.get('/profile', isLoggedIn, async (req, res) => {
+  try {
+    const pool = getPool();
+    const userId = req.session.user.MaNguoiDung;
+
+    // Lấy thông tin chi tiết người dùng
+    const userRes = await pool.request()
+      .input('id', sql.Int, userId)
+      .query(`
+        SELECT MaNguoiDung, HoTen, Email, VaiTro, SoDienThoai, AnhDaiDien, TrangThai, NgayTao
+        FROM NguoiDung
+        WHERE MaNguoiDung = @id
+      `);
+
+    const profileData = userRes.recordset[0] || req.session.user;
+
+    // Lấy thống kê hoạt động thực hành
+    const statsRes = await pool.request()
+      .input('id', sql.Int, userId)
+      .query(`
+        SELECT 
+          COUNT(bn.MaBaiNop) as TongBaiNop,
+          ISNULL(MAX(kq.TongDiem), 0) as DiemCaoNhat,
+          ISNULL(AVG(kq.TongDiem), 0) as DiemTrungBinh,
+          COUNT(CASE WHEN kq.TongDiem >= 5 THEN 1 END) as SoBaiDat
+        FROM BaiNop bn
+        LEFT JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+        WHERE bn.MaNguoiDung = @id
+      `);
+
+    res.render('profile', {
+      user: req.session.user,
+      profile: profileData,
+      stats: statsRes.recordset[0] || { TongBaiNop: 0, DiemCaoNhat: 0, DiemTrungBinh: 0, SoBaiDat: 0 }
+    });
+  } catch (err) {
+    console.error('Lỗi tải trang hồ sơ cá nhân:', err.message);
+    res.render('profile', {
+      user: req.session.user,
+      profile: req.session.user,
+      stats: { TongBaiNop: 0, DiemCaoNhat: 0, DiemTrungBinh: 0, SoBaiDat: 0 }
+    });
+  }
+});
+
+// ==============================================================================
+// MÔ ĐUN XBC.02: TRANG XEM TRƯỚC BẢN IN BẢNG ĐIỂM (PRINT PREVIEW / PDF)
+// ==============================================================================
+router.get('/print-report', isLoggedIn, async (req, res) => {
+  if (req.session.user.VaiTro !== 'Giáo viên' && req.session.user.VaiTro !== 'Admin') {
+    return res.redirect('/');
+  }
+
+  const { maDuAn, trangThai } = req.query;
+
+  try {
+    const pool = getPool();
+    let queryStr = `
+      SELECT 
+        bn.MaBaiNop,
+        nd.HoTen AS TenHocSinh,
+        nd.Email,
+        ISNULL(da.TenDuAn, bt.TenBaiThi) AS TenBaiTap,
+        da.MaDuAn,
+        kq.DiemCode,
+        ISNULL(kq.KetQuaCode, N'Chưa chấm') AS KetQuaCode,
+        ISNULL(kq.KetQuaVideo, N'Chưa duyệt') AS KetQuaVideo,
+        kq.TongDiem,
+        bn.TrangThai,
+        FORMAT(bn.ThoiGianNop, 'dd/MM/yyyy HH:mm') AS ThoiGianNop,
+        ISNULL(kq.NhanXet, N'') AS NhanXet
+      FROM BaiNop bn
+      JOIN NguoiDung nd ON bn.MaNguoiDung = nd.MaNguoiDung
+      LEFT JOIN DuAnBaiTap da ON bn.MaDuAn = da.MaDuAn
+      LEFT JOIN BaiThi bt ON bn.MaBaiThi = bt.MaBaiThi
+      LEFT JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+      WHERE 1=1
+    `;
+
+    const request = pool.request();
+
+    if (maDuAn && maDuAn !== 'all') {
+      queryStr += ` AND bn.MaDuAn = @maDuAn`;
+      request.input('maDuAn', sql.Int, parseInt(maDuAn));
+    }
+
+    if (trangThai && trangThai !== 'all') {
+      if (trangThai === 'pass') {
+        queryStr += ` AND kq.TongDiem >= 5`;
+      } else if (trangThai === 'fail') {
+        queryStr += ` AND (kq.TongDiem < 5 OR kq.TongDiem IS NULL)`;
+      } else if (trangThai === 'excellent') {
+        queryStr += ` AND kq.TongDiem >= 9`;
+      } else if (trangThai === 'pending') {
+        queryStr += ` AND bn.TrangThai LIKE N'%Chờ duyệt%'`;
+      }
+    }
+
+    queryStr += ` ORDER BY bn.MaBaiNop DESC`;
+
+    const result = await request.query(queryStr);
+
+    // Ghi log tự động vào bảng BaoCaoThongKe (XBC.02)
+    try {
+      const logReq = pool.request();
+      logReq.input('userId', sql.Int, req.session.user.MaNguoiDung);
+      logReq.input('tenBaoCao', sql.NVarChar, `Bản in Bảng điểm Đào tạo STEM Robotic (Tổng số: ${result.recordset.length} bản ghi)`);
+      logReq.input('loaiBaoCao', sql.NVarChar, 'Điểm');
+      logReq.input('duLieuThongKe', sql.NVarChar, JSON.stringify({
+        soLuong: result.recordset.length,
+        filterDuAn: maDuAn || 'all',
+        filterTrangThai: trangThai || 'all',
+        thoiDiemIn: new Date().toISOString()
+      }));
+      logReq.input('dinhDangTep', sql.VarChar, 'PDF');
+      await logReq.query(`
+        INSERT INTO BaoCaoThongKe (MaNguoiDung, TenBaoCao, LoaiBaoCao, DuLieuThongKe, DinhDangTep, TrangThai)
+        VALUES (@userId, @tenBaoCao, @loaiBaoCao, @duLieuThongKe, @dinhDangTep, N'Hoàn thành')
+      `);
+    } catch (logErr) {
+      console.warn('Lỗi ghi log BaoCaoThongKe:', logErr.message);
+    }
+
+    res.render('print_report', {
+      user: req.session.user,
+      grades: result.recordset,
+      filters: { maDuAn: maDuAn || 'all', trangThai: trangThai || 'all' }
+    });
+
+  } catch (err) {
+    console.error('Lỗi mở bản in bảng điểm:', err.message);
+    res.status(500).send('Lỗi khi tải bảng in báo cáo: ' + err.message);
+  }
 });
 
 // GET /logout

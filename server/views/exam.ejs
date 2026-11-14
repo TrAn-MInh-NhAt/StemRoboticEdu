@@ -21,6 +21,10 @@
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
             Về Dashboard
           </a>
+          <a href="/profile" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Hồ sơ cá nhân
+          </a>
           <span class="badge badge-info" style="font-size: 0.8rem; font-weight: 700;">Phòng Thi Trực Tuyến KTĐG.02</span>
           <span class="badge badge-danger" style="font-size: 0.8rem; font-weight: 700; background: #FEE2E2; color: #991B1B; border: 1px solid #EF4444;">Giám sát DF-06</span>
           <span id="examDurationBadge" class="tech-chip" style="background: var(--c-accent); color: var(--c-text-main); font-weight: 800; font-size: 0.8rem; padding: 4px 12px;">-- phút</span>
@@ -35,7 +39,7 @@
         <!-- Huy hiệu đếm số lần rời tab -->
         <div class="cheat-counter" id="cheatCounter">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>Rời tab: <strong id="tabSwitchCount">0</strong> / <span id="maxAllowed">3</span> (DF-06)</span>
+          <span>Rời tab: <strong id="tabSwitchCount">0</strong> / <span id="maxAllowed">3</span> <span id="remainingText" style="font-weight:800; color:#B45309;">(Còn 3 lần)</span> (DF-06)</span>
         </div>
 
         <!-- Đồng hồ đếm ngược -->
@@ -269,6 +273,13 @@ def doc_cam_bien_khoang_cach():
 
     function updateSwitchDisplay(count) {
       document.getElementById('tabSwitchCount').textContent = count;
+      const remaining = Math.max(0, maxAllowedSwitches - count);
+      const remEl = document.getElementById('remainingText');
+      if (remEl) {
+        remEl.textContent = `(Còn ${remaining} lần)`;
+        remEl.style.color = (remaining <= 1) ? '#DC2626' : '#B45309';
+      }
+
       const counter = document.getElementById('cheatCounter');
       if (count > 0) {
         counter.classList.add('violation');
@@ -331,5 +342,6 @@ def doc_cam_bien_khoang_cach():
     // Bắt đầu
     initExam();
   </script>
+  <script src="/js/theme-engine.js"></script>
 </body>
 </html>

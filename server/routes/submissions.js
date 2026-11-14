@@ -39,7 +39,7 @@ const upload = multer({
 
 // Helper lấy MaNguoiDung từ session hoặc request body/headers
 function getStudentId(req) {
-  if (req.session && req.session.user && req.session.user.VaiTro === 'Học sinh') {
+  if (req.session && req.session.user) {
     return req.session.user.MaNguoiDung;
   }
   return req.body.maNguoiDung || req.headers['x-user-id'] || null;
@@ -303,6 +303,39 @@ router.post('/submissions', upload.single('codeFile'), async (req, res) => {
 });
 
 // =========================================================================
+// 2.1 GET /api/submissions/my-history - Học sinh xem lịch sử bài nộp của mình (XLBN.01, KQBN.02)
+// =========================================================================
+router.get('/submissions/my-history', async (req, res) => {
+  try {
+    const pool = getPool();
+    const studentId = parseInt(getStudentId(req));
+    if (!studentId) {
+      return res.status(401).json({ success: false, message: 'Vui lòng đăng nhập để xem lịch sử nộp bài' });
+    }
+
+    const result = await pool.request()
+      .input('studentId', sql.Int, studentId)
+      .query(`
+        SELECT 
+          bn.MaBaiNop, bn.MaNguoiDung,
+          da.MaDuAn, da.TenDuAn, da.CapDo,
+          bn.MaNguon, bn.VideoVanHanh, bn.ThoiGianNop, bn.TrangThai,
+          kq.DiemCode, kq.KetQuaCode, kq.LogLoi, kq.KetQuaVideo, kq.TongDiem, kq.NhanXet, kq.NgayChotDiem
+        FROM BaiNop bn
+        LEFT JOIN DuAnBaiTap da ON bn.MaDuAn = da.MaDuAn
+        LEFT JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+        WHERE bn.MaNguoiDung = @studentId
+        ORDER BY bn.MaBaiNop DESC
+      `);
+
+    return res.json({ success: true, submissions: result.recordset });
+  } catch (err) {
+    console.error('Lỗi lấy lịch sử bài nộp:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi server khi lấy lịch sử bài nộp' });
+  }
+});
+
+// =========================================================================
 // 3. GET /api/teacher/submissions - Giáo viên xem danh sách bài nộp (KQBN.01)
 // =========================================================================
 router.get('/teacher/submissions', async (req, res) => {
@@ -501,11 +534,20 @@ router.get('/lotrinh', async (req, res) => {
       projectsWithLock.push({ ...project, isUnlocked, unlockReason });
     }
 
-    // Ghép dự án vào từng lộ trình
+    // Lấy học liệu đã xuất bản liên kết lộ trình (TCPP.01)
+    const hlRes = await pool.request().query(`
+      SELECT MaHocLieu, MaLoTrinh, TenHocLieu, LoaiHocLieu, NoiDung, DuongDanTep, CoCanCapNhat, TrangThai
+      FROM HocLieu
+      WHERE TrangThai = N'Xuất bản'
+      ORDER BY MaHocLieu ASC
+    `);
+
+    // Ghép dự án và học liệu vào từng lộ trình
     const lotrinhList = ltRes.recordset.map(lt => {
       return {
         ...lt,
-        duAnList: projectsWithLock.filter(da => da.MaLoTrinh === lt.MaLoTrinh)
+        duAnList: projectsWithLock.filter(da => da.MaLoTrinh === lt.MaLoTrinh),
+        hocLieuList: hlRes.recordset.filter(hl => hl.MaLoTrinh === lt.MaLoTrinh)
       };
     });
 
