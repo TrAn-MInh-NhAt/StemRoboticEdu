@@ -97,7 +97,7 @@ async function main() {
         TenHocLieu: 'Giới thiệu Arduino Uno R3 – Pinout 14 chân số & 6 chân Analog',
         LoaiHocLieu: 'Bài giảng',
         NoiDung: 'Arduino Uno R3 là bo mạch vi điều khiển phổ biến nhất trong giáo dục STEM. Bo có 14 chân số (D0–D13), trong đó D3/D5/D6/D9/D10/D11 hỗ trợ PWM (~), 6 chân Analog (A0–A5), nguồn 5V/3.3V và GND. Chip ATmega328P hoạt động ở 16MHz, flash 32KB. Kết nối qua USB Type-B để nạp code.',
-        DuongDanTep: null,
+        DuongDanTep: 'https://www.youtube.com/watch?v=fJWR7dBuc18',
       },
       {
         id: 'HL02',
@@ -105,7 +105,7 @@ async function main() {
         TenHocLieu: 'Sơ đồ đấu nối HC-SR04 – Cảm biến siêu âm',
         LoaiHocLieu: 'Bài giảng',
         NoiDung: 'Cảm biến siêu âm HC-SR04 đo khoảng cách 2–400cm. Đấu nối: VCC → 5V, GND → GND, Trig → D9 (phát xung 10µs), Echo → D10 (nhận tín hiệu phản hồi). Công thức: Khoảng cách (cm) = thời gian_echo(µs) / 58. Dải đo chính xác: 20–300cm, góc phát ±15°.',
-        DuongDanTep: null,
+        DuongDanTep: 'https://www.youtube.com/watch?v=ZejQOX69K5M',
       },
       {
         id: 'HL03',
@@ -113,7 +113,7 @@ async function main() {
         TenHocLieu: 'Mạch cầu H L298N – Điều khiển động cơ DC',
         LoaiHocLieu: 'Linh kiện',
         NoiDung: 'L298N là IC cầu H điều khiển 2 động cơ DC độc lập. 4 chân điều khiển: IN1/IN2 (Motor A) và IN3/IN4 (Motor B). ENA/ENB nối PWM để điều chỉnh tốc độ. IN1=HIGH, IN2=LOW → quay xuôi; IN1=LOW, IN2=HIGH → quay ngược; IN1=IN2=LOW → dừng. Nguồn motor: 6–46V, dòng tối đa 2A/kênh.',
-        DuongDanTep: null,
+        DuongDanTep: 'https://www.youtube.com/watch?v=dyjo_9KaUEc',
       },
       {
         id: 'HL04',
@@ -137,7 +137,7 @@ async function main() {
         TenHocLieu: 'Giải thuật PID – Điều khiển cân bằng Robot 2 bánh',
         LoaiHocLieu: 'Bài giảng',
         NoiDung: 'PID (Proportional–Integral–Derivative) là giải thuật điều khiển vòng kín. Công thức: Output = Kp×e + Ki×∫e×dt + Kd×(de/dt). Trong đó: e = Setpoint − Giá_trị_hiện_tại. Kp điều chỉnh độ nhanh phản hồi, Ki loại bỏ sai số tĩnh, Kd giảm dao động. Áp dụng cho robot 2 bánh cân bằng dùng MPU-6050.',
-        DuongDanTep: null,
+        DuongDanTep: 'https://www.youtube.com/watch?v=0v7M3b0u0sM',
       },
       {
         id: 'HL07',
@@ -145,7 +145,7 @@ async function main() {
         TenHocLieu: 'ESP32 & IoT – Kết nối MQTT Broker',
         LoaiHocLieu: 'Bài giảng',
         NoiDung: 'ESP32 là vi điều khiển WiFi/Bluetooth dual-core 240MHz. Kết nối WiFi: WiFi.begin("SSID", "password"); while(WiFi.status()!=WL_CONNECTED) delay(500). Kết nối MQTT Broker (HiveMQ/Mosquitto): client.setServer(broker, 1883); client.connect("ESP32Client"); client.publish("topic", payload); client.subscribe("topic"). Dùng thư viện PubSubClient.',
-        DuongDanTep: null,
+        DuongDanTep: 'https://www.youtube.com/watch?v=kUHmYKWwuWs',
       },
       {
         id: 'HL08',

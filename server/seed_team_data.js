@@ -17,13 +17,13 @@ async function seed() {
 
   // 2. Chuẩn hóa tên và thông tin 5 thành viên nhóm
   await pool.request().query(`
-    UPDATE NguoiDung SET HoTen = N'Trần Minh Nhật (23SPT)', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.minhnhat@stemrobotic.edu.vn';
-    UPDATE NguoiDung SET HoTen = N'Phạm Kỳ Hải (23SPT)', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.kyhai@stemrobotic.edu.vn';
-    UPDATE NguoiDung SET HoTen = N'Phạm Thị Hà Vy (24SPT)', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.havy@stemrobotic.edu.vn';
-    UPDATE NguoiDung SET HoTen = N'Trần Thế Quân (24CNTT1)', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.thequan@stemrobotic.edu.vn';
-    UPDATE NguoiDung SET HoTen = N'Nguyễn Thị Thanh Thảo (24CNTT1)', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.thanhthao@stemrobotic.edu.vn';
+    UPDATE NguoiDung SET HoTen = N'Trần Minh Nhật', Lop = N'10/1', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.minhnhat@stemrobotic.edu.vn';
+    UPDATE NguoiDung SET HoTen = N'Phạm Kỳ Hải', Lop = N'10/1', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.kyhai@stemrobotic.edu.vn';
+    UPDATE NguoiDung SET HoTen = N'Phạm Thị Hà Vy', Lop = N'10/1', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.havy@stemrobotic.edu.vn';
+    UPDATE NguoiDung SET HoTen = N'Trần Thế Quân', Lop = N'10/1', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.thequan@stemrobotic.edu.vn';
+    UPDATE NguoiDung SET HoTen = N'Nguyễn Thị Thanh Thảo', Lop = N'10/1', MatKhau = '123456', TrangThai = N'Đang hoạt động' WHERE Email = 'hs.thanhthao@stemrobotic.edu.vn';
   `);
-  console.log('✓ Đã chuẩn hóa danh sách 5 thành viên nhóm đồ án.');
+  console.log('✓ Đã chuẩn hóa danh sách 5 thành viên nhóm đồ án (Lớp 10/1).');
 
   // 3. Chuẩn hóa 3 Lộ Trình Đào Tạo
   await pool.request().query(`
@@ -77,7 +77,7 @@ async function seed() {
       email: 'hs.minhnhat@stemrobotic.edu.vn',
       maDuAn: 1,
       source: 'uploads/submissions/minhnhat_blink_sos.py',
-      video: 'https://youtube.com/watch?v=robot_demo_minhnhat_01',
+      video: 'https://www.youtube.com/watch?v=fJWR7dBuc18',
       diemCode: 10.0,
       ketQuaCode: 'Đạt',
       tongDiem: 10.0,
@@ -89,9 +89,9 @@ async function seed() {
     },
     {
       email: 'hs.kyhai@stemrobotic.edu.vn',
-      maDuAn: 1,
+      maDuAn: 11,
       source: 'uploads/submissions/kyhai_blink_sos.py',
-      video: 'https://youtube.com/watch?v=robot_demo_kyhai_01',
+      video: 'https://www.youtube.com/watch?v=ZejQOX69K5M',
       diemCode: 10.0,
       ketQuaCode: 'Đạt',
       tongDiem: 9.5,
@@ -103,9 +103,9 @@ async function seed() {
     },
     {
       email: 'hs.havy@stemrobotic.edu.vn',
-      maDuAn: 1,
+      maDuAn: 13,
       source: 'uploads/submissions/havy_blink_sos.py',
-      video: 'https://youtube.com/watch?v=robot_demo_havy_01',
+      video: 'https://www.youtube.com/watch?v=dyjo_9KaUEc',
       diemCode: 10.0,
       ketQuaCode: 'Đạt',
       tongDiem: 9.0,
@@ -117,9 +117,9 @@ async function seed() {
     },
     {
       email: 'hs.thequan@stemrobotic.edu.vn',
-      maDuAn: 1,
+      maDuAn: 12,
       source: 'uploads/submissions/thequan_blink_sos.py',
-      video: 'https://youtube.com/watch?v=robot_demo_thequan_01',
+      video: 'https://www.youtube.com/watch?v=0v7M3b0u0sM',
       diemCode: 9.0,
       ketQuaCode: 'Đạt',
       tongDiem: 8.5,
@@ -131,9 +131,9 @@ async function seed() {
     },
     {
       email: 'hs.thanhthao@stemrobotic.edu.vn',
-      maDuAn: 1,
+      maDuAn: 3,
       source: 'uploads/submissions/thanhthao_blink_sos.py',
-      video: 'https://youtube.com/watch?v=robot_demo_thanhthao_01',
+      video: 'https://www.youtube.com/watch?v=kUHmYKWwuWs',
       diemCode: 9.0,
       ketQuaCode: 'Đạt',
       tongDiem: 8.0,

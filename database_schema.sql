@@ -18,9 +18,25 @@ CREATE TABLE NguoiDung (
     Email VARCHAR(150) NOT NULL UNIQUE,
     MatKhau VARCHAR(255) NOT NULL,
     VaiTro NVARCHAR(20) NOT NULL DEFAULT N'Học sinh', -- Học sinh, Giáo viên, Admin
+    Lop NVARCHAR(50) NULL DEFAULT N'10/1',
+    TruongHoc NVARCHAR(200) NULL DEFAULT N'THPT Chuyên STEM',
+    AnhTheHocSinh VARCHAR(255) NULL,
+    TrangThaiXacThucThe NVARCHAR(50) NULL DEFAULT N'Đã duyệt',
+    MaDinhDanhHS VARCHAR(50) NULL,
     SoDienThoai VARCHAR(15) NULL,
     AnhDaiDien VARCHAR(255) NULL,
     TrangThai NVARCHAR(30) NOT NULL DEFAULT N'Đang hoạt động', -- Phục vụ Soft Delete (DF-07)
+    NgayTao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 1b. Bảng Lớp học (Quản lý Lớp 10/1)
+CREATE TABLE LopHoc (
+    MaLop INT IDENTITY(1,1) PRIMARY KEY,
+    TenLop NVARCHAR(50) NOT NULL UNIQUE,
+    KhoiLop INT NOT NULL DEFAULT 10,
+    NienKhoa NVARCHAR(50) NOT NULL DEFAULT '2025-2026',
+    MaGiaoVienCN INT NULL FOREIGN KEY REFERENCES NguoiDung(MaNguoiDung),
+    MoTa NVARCHAR(255) NULL,
     NgayTao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -149,8 +165,18 @@ CREATE TABLE NoiDungCongDong (
     NoiDung NVARCHAR(MAX) NOT NULL,
     LoaiNoiDung NVARCHAR(50) NOT NULL DEFAULT N'Thảo luận', -- Thảo luận, Chia sẻ lỗi, Vinh danh
     SoLuotBinhChon INT NOT NULL DEFAULT 0,
+    LuotThich INT NOT NULL DEFAULT 0,
     TrangThai NVARCHAR(30) NOT NULL DEFAULT N'Đã duyệt',
     NgayDang DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 11.1. Bảng Bình luận Thảo luận (TTCĐ.02)
+CREATE TABLE BinhLuanThaoLuan (
+    MaBinhLuan INT IDENTITY(1,1) PRIMARY KEY,
+    MaThaoLuan INT NOT NULL FOREIGN KEY REFERENCES NoiDungCongDong(MaNoiDung) ON DELETE CASCADE,
+    MaNguoiDung INT NOT NULL FOREIGN KEY REFERENCES NguoiDung(MaNguoiDung),
+    NoiDung NVARCHAR(MAX) NOT NULL,
+    NgayTao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 12. Bảng Hỗ trợ / Thông báo & Sự cố (ENT-11)
@@ -169,10 +195,17 @@ GO
 -- ==========================================================
 -- DỮ LIỆU MẪU BAN ĐẦU (SEED DATA ĐỂ TEST HỆ THỐNG)
 -- ==========================================================
-INSERT INTO NguoiDung (HoTen, Email, MatKhau, VaiTro) VALUES
-(N'Quản Trị Viên Hệ Thống', 'admin@stemrobotic.edu.vn', '123456', N'Admin'),
-(N'TS. Đặng Hùng Vĩ', 'gv.hungvi@stemrobotic.edu.vn', '123456', N'Giáo viên'),
-(N'Trần Minh Nhật', 'hs.minhnhat@stemrobotic.edu.vn', '123456', N'Học sinh');
+INSERT INTO NguoiDung (HoTen, Email, MatKhau, VaiTro, Lop) VALUES
+(N'Quản Trị Viên Hệ Thống', 'admin@stemrobotic.edu.vn', '123456', N'Admin', NULL),
+(N'TS. Đặng Hùng Vĩ', 'gv.hungvi@stemrobotic.edu.vn', '123456', N'Giáo viên', NULL),
+(N'Trần Minh Nhật', 'hs.minhnhat@stemrobotic.edu.vn', '123456', N'Học sinh', N'10/1'),
+(N'Phạm Kỳ Hải', 'hs.kyhai@stemrobotic.edu.vn', '123456', N'Học sinh', N'10/1'),
+(N'Phạm Thị Hà Vy', 'hs.havy@stemrobotic.edu.vn', '123456', N'Học sinh', N'10/1'),
+(N'Trần Thế Quân', 'hs.thequan@stemrobotic.edu.vn', '123456', N'Học sinh', N'10/1'),
+(N'Nguyễn Thị Thanh Thảo', 'hs.thanhthao@stemrobotic.edu.vn', '123456', N'Học sinh', N'10/1');
+
+INSERT INTO LopHoc (TenLop, KhoiLop, NienKhoa, MaGiaoVienCN, MoTa) VALUES
+(N'10/1', 10, '2025-2026', 2, N'Lớp Chuyên Kỹ Thuật Robotics & Tự Động Hóa 10/1');
 
 INSERT INTO MayCham (TenMayCham, DiaChiAPI, NgonNguHoTro) VALUES
 (N'STEM Arduino & Python Judge', 'http://localhost:5000/api/judge', '.ino,.cpp,.py');

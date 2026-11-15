@@ -304,6 +304,17 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--c-text-main);
 }
 
+.hero-bento-cta .btn-playful-outline {
+  background: #FFFFFF !important;
+  color: #1E293B !important;
+  font-weight: 700 !important;
+  border: 2px solid #0B0F19 !important;
+}
+.hero-bento-cta .btn-playful-outline:hover {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
 /* Nút thông thường cho Toolbar */
 .btn {
   display: inline-flex;

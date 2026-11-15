@@ -390,7 +390,8 @@ router.post('/submissions', requireRole('Học sinh'), upload.single('codeFile')
     const totalTimeMs = judgeResult.total_time_ms || 0;
 
     // THỰC THI CHUẨN NGHIỆP VỤ DF-01:
-    let trangThaiBaiNop = passedAll ? 'Chờ duyệt Video' : 'Đang chấm';
+    // Nếu đạt 100% Test Case -> 'Chờ duyệt Video', nếu chưa đạt -> 'Chưa đạt — Cần sửa code'
+    let trangThaiBaiNop = passedAll ? 'Chờ duyệt Video' : 'Chưa đạt — Cần sửa code';
 
     // 4. Lưu bài nộp vào bảng BaiNop (ENT-06)
     const insertBaiNop = await pool.request()
@@ -732,21 +733,24 @@ router.post('/teacher/projects', isTeacherOrAdmin, async (req, res) => {
       `);
 
     const newMaDuAn = insertProject.recordset[0].MaDuAn;
+    let addedCount = 0;
 
     // 2. Thêm danh sách TestCase nếu có
     if (Array.isArray(testCases) && testCases.length > 0) {
       for (const tc of testCases) {
-        if (tc.expectedOutput) {
+        const out = tc.expectedOutput || tc.output || tc.KetQuaDauRa;
+        if (out) {
           await pool.request()
             .input('maDuAn', sql.Int, newMaDuAn)
-            .input('input', sql.NVarChar(sql.MAX), tc.input || '')
-            .input('output', sql.NVarChar(sql.MAX), tc.expectedOutput)
-            .input('weight', sql.Decimal(5, 2), tc.weight || 1.0)
-            .input('hint', sql.NVarChar(sql.MAX), tc.hint || '')
+            .input('input', sql.NVarChar(sql.MAX), tc.input || tc.DuLieuDauVao || '')
+            .input('output', sql.NVarChar(sql.MAX), out)
+            .input('weight', sql.Decimal(5, 2), tc.weight || tc.TrongSoDiem || 1.0)
+            .input('hint', sql.NVarChar(sql.MAX), tc.hint || tc.GoiYSuaLoi || '')
             .query(`
               INSERT INTO TestCase (MaDuAn, DuLieuDauVao, KetQuaDauRa, TrongSoDiem, GoiYSuaLoi)
               VALUES (@maDuAn, @input, @output, @weight, @hint)
             `);
+          addedCount++;
         }
       }
     }
@@ -755,12 +759,116 @@ router.post('/teacher/projects', isTeacherOrAdmin, async (req, res) => {
       success: true,
       message: '✅ Đã giao dự án thực hành và khởi tạo bộ TestCase thành công (QLDA.01)!',
       maDuAn: newMaDuAn,
-      tenDuAn
+      tenDuAn,
+      testCasesCount: addedCount
     });
 
   } catch (err) {
     console.error('Lỗi giao dự án:', err);
     return res.status(500).json({ success: false, message: 'Lỗi server khi giao dự án: ' + err.message });
+  }
+});
+
+// GET /api/teacher/projects/:id/testcases - Lấy chi tiết dự án & danh sách TestCase để chỉnh sửa (QLDA.01)
+router.get('/teacher/projects/:id/testcases', isTeacherOrAdmin, async (req, res) => {
+  const pool = getPool();
+  try {
+    const projectId = parseInt(req.params.id);
+    const projRes = await pool.request()
+      .input('id', sql.Int, projectId)
+      .query(`SELECT MaDuAn, TenDuAn, MaLoTrinh, MaDuAnTienQuyet, YeuCauDuAn, HanNop, CapDo, TrangThai FROM DuAnBaiTap WHERE MaDuAn = @id`);
+    
+    if (projRes.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy dự án' });
+    }
+
+    const tcRes = await pool.request()
+      .input('id', sql.Int, projectId)
+      .query(`SELECT MaTestCase, DuLieuDauVao, KetQuaDauRa, TrongSoDiem, GoiYSuaLoi FROM TestCase WHERE MaDuAn = @id ORDER BY MaTestCase ASC`);
+
+    return res.json({
+      success: true,
+      project: projRes.recordset[0],
+      testCases: tcRes.recordset
+    });
+  } catch (err) {
+    console.error('Lỗi lấy TestCase của dự án:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi server: ' + err.message });
+  }
+});
+
+// PUT /api/teacher/projects/:id - Cập nhật dự án & cập nhật bộ TestCase (QLDA.01)
+router.put('/teacher/projects/:id', isTeacherOrAdmin, async (req, res) => {
+  const pool = getPool();
+  try {
+    const projectId = parseInt(req.params.id);
+    const { tenDuAn, maLoTrinh, maDuAnTienQuyet, yeuCauDuAn, hanNop, capDo, testCases } = req.body;
+
+    if (!tenDuAn || !yeuCauDuAn) {
+      return res.status(400).json({ success: false, message: 'Vui lòng nhập đầy đủ Tên dự án và Yêu cầu dự án.' });
+    }
+
+    const hanNopVal = hanNop ? new Date(hanNop) : null;
+    const capDoVal = capDo || 'Cơ bản';
+    const maLoTrinhVal = maLoTrinh ? parseInt(maLoTrinh) : null;
+    const maDuAnTienQuyetVal = maDuAnTienQuyet ? parseInt(maDuAnTienQuyet) : null;
+
+    // 1. Cập nhật thông tin dự án
+    await pool.request()
+      .input('id', sql.Int, projectId)
+      .input('maLoTrinh', sql.Int, maLoTrinhVal)
+      .input('maDuAnTienQuyet', sql.Int, maDuAnTienQuyetVal)
+      .input('tenDuAn', sql.NVarChar(200), tenDuAn)
+      .input('yeuCauDuAn', sql.NVarChar(sql.MAX), yeuCauDuAn)
+      .input('hanNop', sql.DateTime, hanNopVal)
+      .input('capDo', sql.NVarChar(50), capDoVal)
+      .query(`
+        UPDATE DuAnBaiTap
+        SET MaLoTrinh = @maLoTrinh,
+            MaDuAnTienQuyet = @maDuAnTienQuyet,
+            TenDuAn = @tenDuAn,
+            YeuCauDuAn = @yeuCauDuAn,
+            HanNop = ISNULL(@hanNop, HanNop),
+            CapDo = @capDo
+        WHERE MaDuAn = @id
+      `);
+
+    // 2. Cập nhật bộ TestCase: Xóa cũ và thêm mới
+    let addedCount = 0;
+    if (Array.isArray(testCases)) {
+      await pool.request()
+        .input('maDuAn', sql.Int, projectId)
+        .query(`DELETE FROM TestCase WHERE MaDuAn = @maDuAn`);
+
+      for (const tc of testCases) {
+        const out = tc.expectedOutput || tc.output || tc.KetQuaDauRa;
+        if (out) {
+          await pool.request()
+            .input('maDuAn', sql.Int, projectId)
+            .input('input', sql.NVarChar(sql.MAX), tc.input || tc.DuLieuDauVao || '')
+            .input('output', sql.NVarChar(sql.MAX), out)
+            .input('weight', sql.Decimal(5, 2), tc.weight || tc.TrongSoDiem || 1.0)
+            .input('hint', sql.NVarChar(sql.MAX), tc.hint || tc.GoiYSuaLoi || '')
+            .query(`
+              INSERT INTO TestCase (MaDuAn, DuLieuDauVao, KetQuaDauRa, TrongSoDiem, GoiYSuaLoi)
+              VALUES (@maDuAn, @input, @output, @weight, @hint)
+            `);
+          addedCount++;
+        }
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: '✅ Đã cập nhật dự án và đồng bộ bộ TestCase mới thành công (QLDA.01)!',
+      maDuAn: projectId,
+      tenDuAn,
+      testCasesCount: addedCount
+    });
+
+  } catch (err) {
+    console.error('Lỗi cập nhật dự án:', err);
+    return res.status(500).json({ success: false, message: 'Lỗi server khi cập nhật: ' + err.message });
   }
 });
 

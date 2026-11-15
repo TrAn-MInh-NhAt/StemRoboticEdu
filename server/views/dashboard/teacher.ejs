@@ -318,7 +318,23 @@
           <span class="badge badge-primary">Thiết Lập Đề Bài</span>
         </div>
 
+        <!-- Thanh chọn chế độ Giao mới / Chỉnh sửa dự án -->
+        <div style="background: rgba(90, 82, 255, 0.05); border: 1.5px dashed rgba(90, 82, 255, 0.25); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 800; font-size: 0.88rem; color: var(--c-primary);">Chế độ thao tác:</span>
+            <button type="button" class="btn btn-primary btn-sm" id="btnModeNewProject" onclick="switchProjectMode('new')">Giao Dự Án Mới</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnModeEditProject" onclick="switchProjectMode('edit')">Chỉnh Sửa Dự Án &amp; TestCase Đã Có</button>
+          </div>
+          <div id="selectExistingProjectWrap" style="display: none; align-items: center; gap: 8px;">
+            <label for="selectEditProject" style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 0;">Chọn Dự án:</label>
+            <select id="selectEditProject" class="form-control" style="min-width: 280px; font-size: 0.85rem;" onchange="loadProjectForEdit(this.value)">
+              <option value="">-- Chọn dự án cần sửa TestCase --</option>
+            </select>
+          </div>
+        </div>
+
         <form id="createProjectForm">
+          <input type="hidden" id="editingProjectId" value="">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
             <div>
               <div class="form-group">
@@ -1061,7 +1077,18 @@
       const ytMatch = sub.VideoVanHanh ? sub.VideoVanHanh.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i) : null;
       
       if (ytMatch && ytMatch[1]) {
-        vContainer.innerHTML = `<iframe width="100%" height="240" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;"></iframe>`;
+        const vidId = ytMatch[1];
+        vContainer.innerHTML = `
+          <div style="position: relative; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 8px;">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${vidId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none; position: absolute; top:0; left:0; width:100%; height:100%;"></iframe>
+          </div>
+          <div style="text-align: right;">
+            <a href="https://www.youtube.com/watch?v=${vidId}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Mở trực tiếp trên YouTube ↗</span>
+            </a>
+          </div>
+        `;
       } else {
         vContainer.innerHTML = `
           <div style="text-align:center; padding: 24px;">
@@ -1174,12 +1201,25 @@
         const daData = await daRes.json();
         if (daData.success) {
           const tqSelect = document.getElementById('maDuAnTienQuyet');
+          const editProjSelect = document.getElementById('selectEditProject');
+
           tqSelect.innerHTML = '<option value="">-- Không có (Mở khóa mặc định) --</option>';
+          if (editProjSelect) {
+            editProjSelect.innerHTML = '<option value="">-- Chọn dự án cần sửa TestCase --</option>';
+          }
+
           daData.projects.forEach(da => {
             const opt = document.createElement('option');
             opt.value = da.MaDuAn;
             opt.textContent = `${da.TenDuAn} (${da.CapDo})`;
             tqSelect.appendChild(opt);
+
+            if (editProjSelect) {
+              const opt2 = document.createElement('option');
+              opt2.value = da.MaDuAn;
+              opt2.textContent = `${da.TenDuAn} (${da.CapDo})`;
+              editProjSelect.appendChild(opt2);
+            }
           });
         }
       } catch (e) {
@@ -1187,7 +1227,109 @@
       }
     }
 
-    // 5. Thao tác Thêm / Xóa dòng TestCase
+    // 5. Thao tác Chế độ Giao mới / Chỉnh sửa dự án & TestCase (QLDA.01)
+    function switchProjectMode(mode) {
+      const btnNew = document.getElementById('btnModeNewProject');
+      const btnEdit = document.getElementById('btnModeEditProject');
+      const editWrap = document.getElementById('selectExistingProjectWrap');
+      const form = document.getElementById('createProjectForm');
+      const hiddenId = document.getElementById('editingProjectId');
+      const submitBtn = document.getElementById('btnCreateProject');
+      const alertBox = document.getElementById('projectCreateAlert');
+      if (alertBox) alertBox.style.display = 'none';
+
+      if (mode === 'edit') {
+        btnEdit.className = 'btn btn-primary btn-sm';
+        btnNew.className = 'btn btn-secondary btn-sm';
+        editWrap.style.display = 'inline-flex';
+        submitBtn.innerHTML = `Lưu Thay Đổi Dự Án &amp; Cập Nhật TestCase <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      } else {
+        btnNew.className = 'btn btn-primary btn-sm';
+        btnEdit.className = 'btn btn-secondary btn-sm';
+        editWrap.style.display = 'none';
+        hiddenId.value = '';
+        form.reset();
+        document.getElementById('selectEditProject').value = '';
+        submitBtn.innerHTML = `Khởi tạo &amp; Giao Dự án Thực hành <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        
+        // Reset 2 dòng TestCase mẫu
+        const tbody = document.getElementById('testCaseBody');
+        tbody.innerHTML = `
+          <tr>
+            <td><input type="text" class="form-control tc-input" placeholder="Ví dụ: 1"></td>
+            <td><input type="text" class="form-control tc-output" placeholder="Ví dụ: LED_ON" required></td>
+            <td><input type="number" class="form-control tc-weight" value="3.0" step="0.5" min="0.5"></td>
+            <td><input type="text" class="form-control tc-hint" placeholder="Gợi ý kiểm tra chân Digital"></td>
+            <td><button type="button" class="btn btn-secondary btn-sm" onclick="removeTestCaseRow(this)" style="color:#DC2626; font-weight:700;">&times;</button></td>
+          </tr>
+          <tr>
+            <td><input type="text" class="form-control tc-input" placeholder="Ví dụ: 0"></td>
+            <td><input type="text" class="form-control tc-output" placeholder="Ví dụ: LED_OFF" required></td>
+            <td><input type="number" class="form-control tc-weight" value="3.0" step="0.5" min="0.5"></td>
+            <td><input type="text" class="form-control tc-hint" placeholder="Gợi ý kiểm tra lệnh LOW"></td>
+            <td><button type="button" class="btn btn-secondary btn-sm" onclick="removeTestCaseRow(this)" style="color:#DC2626; font-weight:700;">&times;</button></td>
+          </tr>
+        `;
+      }
+    }
+
+    async function loadProjectForEdit(projectId) {
+      if (!projectId) {
+        switchProjectMode('new');
+        return;
+      }
+      try {
+        const res = await fetch(`/api/teacher/projects/${projectId}/testcases`);
+        const data = await res.json();
+        if (!data.success) {
+          alert('Không thể tải thông tin dự án: ' + data.message);
+          return;
+        }
+
+        document.getElementById('editingProjectId').value = projectId;
+        document.getElementById('tenDuAn').value = data.project.TenDuAn || '';
+        document.getElementById('maLoTrinh').value = data.project.MaLoTrinh || '';
+        document.getElementById('maDuAnTienQuyet').value = data.project.MaDuAnTienQuyet || '';
+        document.getElementById('capDo').value = data.project.CapDo || 'Cơ bản';
+        if (data.project.HanNop) {
+          const d = new Date(data.project.HanNop);
+          document.getElementById('hanNop').value = d.toISOString().split('T')[0];
+        } else {
+          document.getElementById('hanNop').value = '';
+        }
+        document.getElementById('yeuCauDuAn').value = data.project.YeuCauDuAn || '';
+
+        // Nạp danh sách TestCase vào bảng
+        const tbody = document.getElementById('testCaseBody');
+        tbody.innerHTML = '';
+        if (Array.isArray(data.testCases) && data.testCases.length > 0) {
+          data.testCases.forEach(tc => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><input type="text" class="form-control tc-input" value="${(tc.DuLieuDauVao || '').replace(/"/g, '&quot;')}" placeholder="Dữ liệu đầu vào"></td>
+              <td><input type="text" class="form-control tc-output" value="${(tc.KetQuaDauRa || '').replace(/"/g, '&quot;')}" placeholder="Kết quả chuẩn" required></td>
+              <td><input type="number" class="form-control tc-weight" value="${tc.TrongSoDiem || 3.0}" step="0.5" min="0.5"></td>
+              <td><input type="text" class="form-control tc-hint" value="${(tc.GoiYSuaLoi || '').replace(/"/g, '&quot;')}" placeholder="Gợi ý sửa lỗi"></td>
+              <td><button type="button" class="btn btn-secondary btn-sm" onclick="removeTestCaseRow(this)" style="color:#DC2626; font-weight:700;">&times;</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          addTestCaseRow();
+        }
+
+        const alertBox = document.getElementById('projectCreateAlert');
+        alertBox.style.display = 'block';
+        alertBox.style.background = 'rgba(90, 82, 255, 0.08)';
+        alertBox.style.color = 'var(--c-primary)';
+        alertBox.style.border = '1px solid rgba(90, 82, 255, 0.25)';
+        alertBox.innerHTML = `<strong>Chế độ chỉnh sửa:</strong> Đang chỉnh sửa <em>"${data.project.TenDuAn}"</em> với ${data.testCases.length} TestCase. Bạn có thể thêm/xóa/sửa từng dòng kiểm thử rồi nhấn Lưu.`;
+      } catch (err) {
+        console.error('Lỗi loadProjectForEdit:', err);
+        alert('Lỗi tải dữ liệu dự án: ' + err.message);
+      }
+    }
+
     function addTestCaseRow() {
       const tbody = document.getElementById('testCaseBody');
       const tr = document.createElement('tr');
@@ -1210,15 +1352,17 @@
       }
     }
 
-    // 6. Submit Form Giao Dự Án Mới
+    // 6. Submit Form Giao Dự Án Mới hoặc Cập Nhật Dự Án Đã Có (QLDA.01)
     document.getElementById('createProjectForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
       const btn = document.getElementById('btnCreateProject');
       const alertBox = document.getElementById('projectCreateAlert');
+      const editingId = document.getElementById('editingProjectId').value;
+      const isEditing = Boolean(editingId);
 
       btn.disabled = true;
-      btn.textContent = 'Đang khởi tạo dự án và bộ TestCase...';
+      btn.textContent = isEditing ? 'Đang cập nhật dự án và bộ TestCase...' : 'Đang khởi tạo dự án và bộ TestCase...';
       alertBox.style.display = 'none';
 
       // Thu thập TestCase
@@ -1245,8 +1389,11 @@
       };
 
       try {
-        const res = await fetch('/api/teacher/projects', {
-          method: 'POST',
+        const url = isEditing ? `/api/teacher/projects/${editingId}` : '/api/teacher/projects';
+        const method = isEditing ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
@@ -1258,9 +1405,11 @@
           alertBox.style.background = 'var(--c-success-bg)';
           alertBox.style.color = '#047857';
           alertBox.style.border = '1.5px solid rgba(16, 185, 129, 0.3)';
-          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message} (Đã thêm ${result.testCasesCount} TestCase vào cơ sở dữ liệu)`;
+          alertBox.innerHTML = `<strong>Thành công:</strong> ${result.message} (Đã lưu ${result.testCasesCount} TestCase vào cơ sở dữ liệu)`;
 
-          form.reset();
+          if (!isEditing) {
+            form.reset();
+          }
           loadFormDropdowns();
           alertBox.scrollIntoView({ behavior: 'smooth' });
         } else {
@@ -1276,7 +1425,7 @@
         alertBox.textContent = 'Lỗi kết nối máy chủ: ' + err.message;
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Khởi tạo & Giao Dự án Thực hành (QLDA.01)';
+        btn.textContent = isEditing ? 'Lưu Thay Đổi Dự Án & Cập Nhật TestCase' : 'Khởi tạo & Giao Dự án Thực hành (QLDA.01)';
       }
     });
 

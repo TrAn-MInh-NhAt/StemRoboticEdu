@@ -15,17 +15,45 @@ router.get('/', async (req, res) => {
   try {
     const pool = getPool();
     const result = await pool.request().query(`
+      WITH BestProjectScore AS (
+        SELECT 
+          bn.MaNguoiDung,
+          bn.MaDuAn,
+          MAX(kq.TongDiem) AS DiemCaoNhatDuAn,
+          MAX(CASE 
+            WHEN bn.TrangThai IN (N'Đã duyệt', N'Đã chốt điểm') OR kq.TongDiem >= 10.0 OR kq.KetQuaVideo = N'Đạt' 
+            THEN 1 ELSE 0 
+          END) AS DaHoanThanh
+        FROM BaiNop bn
+        JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+        WHERE bn.MaDuAn IS NOT NULL AND kq.TongDiem IS NOT NULL
+        GROUP BY bn.MaNguoiDung, bn.MaDuAn
+      ),
+      StudentRank AS (
+        SELECT 
+          nd.MaNguoiDung,
+          nd.HoTen,
+          nd.Email,
+          nd.Lop,
+          ISNULL(SUM(bps.DiemCaoNhatDuAn), 0) AS TongDiemXepHang,
+          ISNULL(MAX(bps.DiemCaoNhatDuAn), 0) AS DiemCaoNhat,
+          ISNULL(COUNT(DISTINCT CASE WHEN bps.DaHoanThanh = 1 THEN bps.MaDuAn END), 0) AS SoBaiNop,
+          ISNULL(COUNT(DISTINCT CASE WHEN bps.DaHoanThanh = 1 THEN bps.MaDuAn END), 0) AS SoDuAnHoanThanh,
+          ISNULL(AVG(bps.DiemCaoNhatDuAn), 0) AS DiemTrungBinh
+        FROM NguoiDung nd
+        JOIN BestProjectScore bps ON nd.MaNguoiDung = bps.MaNguoiDung
+        WHERE nd.VaiTro = N'Học sinh' AND nd.TrangThai = N'Đang hoạt động'
+        GROUP BY nd.MaNguoiDung, nd.HoTen, nd.Email, nd.Lop
+      )
       SELECT TOP 5 
-        nd.MaNguoiDung, nd.HoTen, nd.Email,
-        MAX(kq.TongDiem) as DiemCaoNhat,
-        COUNT(bn.MaBaiNop) as SoBaiNop,
-        AVG(kq.TongDiem) as DiemTrungBinh
-      FROM NguoiDung nd
-      JOIN BaiNop bn ON nd.MaNguoiDung = bn.MaNguoiDung
-      JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
-      WHERE kq.TongDiem IS NOT NULL
-      GROUP BY nd.MaNguoiDung, nd.HoTen, nd.Email
-      ORDER BY DiemCaoNhat DESC, DiemTrungBinh DESC
+        MaNguoiDung, HoTen, Email, Lop,
+        TongDiemXepHang,
+        DiemCaoNhat,
+        SoBaiNop,
+        SoDuAnHoanThanh,
+        DiemTrungBinh
+      FROM StudentRank
+      ORDER BY TongDiemXepHang DESC, DiemCaoNhat DESC, SoDuAnHoanThanh DESC, DiemTrungBinh DESC
     `);
 
     const statsRes = await pool.request().query(`
@@ -55,17 +83,45 @@ router.get('/api/leaderboard', async (req, res) => {
   try {
     const pool = getPool();
     const result = await pool.request().query(`
+      WITH BestProjectScore AS (
+        SELECT 
+          bn.MaNguoiDung,
+          bn.MaDuAn,
+          MAX(kq.TongDiem) AS DiemCaoNhatDuAn,
+          MAX(CASE 
+            WHEN bn.TrangThai IN (N'Đã duyệt', N'Đã chốt điểm') OR kq.TongDiem >= 10.0 OR kq.KetQuaVideo = N'Đạt' 
+            THEN 1 ELSE 0 
+          END) AS DaHoanThanh
+        FROM BaiNop bn
+        JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
+        WHERE bn.MaDuAn IS NOT NULL AND kq.TongDiem IS NOT NULL
+        GROUP BY bn.MaNguoiDung, bn.MaDuAn
+      ),
+      StudentRank AS (
+        SELECT 
+          nd.MaNguoiDung,
+          nd.HoTen,
+          nd.Email,
+          nd.Lop,
+          ISNULL(SUM(bps.DiemCaoNhatDuAn), 0) AS TongDiemXepHang,
+          ISNULL(MAX(bps.DiemCaoNhatDuAn), 0) AS DiemCaoNhat,
+          ISNULL(COUNT(DISTINCT CASE WHEN bps.DaHoanThanh = 1 THEN bps.MaDuAn END), 0) AS SoBaiNop,
+          ISNULL(COUNT(DISTINCT CASE WHEN bps.DaHoanThanh = 1 THEN bps.MaDuAn END), 0) AS SoDuAnHoanThanh,
+          ISNULL(AVG(bps.DiemCaoNhatDuAn), 0) AS DiemTrungBinh
+        FROM NguoiDung nd
+        JOIN BestProjectScore bps ON nd.MaNguoiDung = bps.MaNguoiDung
+        WHERE nd.VaiTro = N'Học sinh' AND nd.TrangThai = N'Đang hoạt động'
+        GROUP BY nd.MaNguoiDung, nd.HoTen, nd.Email, nd.Lop
+      )
       SELECT TOP 5 
-        nd.MaNguoiDung, nd.HoTen, nd.Email,
-        MAX(kq.TongDiem) as DiemCaoNhat,
-        COUNT(bn.MaBaiNop) as SoBaiNop,
-        AVG(kq.TongDiem) as DiemTrungBinh
-      FROM NguoiDung nd
-      JOIN BaiNop bn ON nd.MaNguoiDung = bn.MaNguoiDung
-      JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
-      WHERE kq.TongDiem IS NOT NULL
-      GROUP BY nd.MaNguoiDung, nd.HoTen, nd.Email
-      ORDER BY DiemCaoNhat DESC, DiemTrungBinh DESC
+        MaNguoiDung, HoTen, Email, Lop,
+        TongDiemXepHang,
+        DiemCaoNhat,
+        SoBaiNop,
+        SoDuAnHoanThanh,
+        DiemTrungBinh
+      FROM StudentRank
+      ORDER BY TongDiemXepHang DESC, DiemCaoNhat DESC, SoDuAnHoanThanh DESC, DiemTrungBinh DESC
     `);
     return res.json({ success: true, leaderboard: result.recordset });
   } catch (err) {

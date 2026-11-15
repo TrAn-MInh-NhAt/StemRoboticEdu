@@ -44,6 +44,7 @@ app.use('/js', express.static(path.join(__dirname, '../public/js')));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/thaoluan', communityRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/exam', examRoutes);
 app.use('/api/materials', materialsRoutes);

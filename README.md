@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/FastAPI-Python%203.11-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/SQL%20Server-2019%20%7C%202022-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white" alt="SQL Server" />
   <img src="https://img.shields.io/badge/IPO%20Modules-27%2F27%20(100%25)-5A52FF?style=for-the-badge" alt="IPO Modules" />
-  <img src="https://img.shields.io/badge/Release-v2.2.0-047857?style=for-the-badge&logo=git&logoColor=white" alt="Version" />
+  <img src="https://img.shields.io/badge/Release-v2.3.0-047857?style=for-the-badge&logo=git&logoColor=white" alt="Version" />
 </p>
 
 > **ĐẠI HỌC ĐÀ NẴNG — TRƯỜNG ĐẠI HỌC SƯ PHẠM — KHOA TOÁN - TIN**  
@@ -25,7 +25,7 @@
 
 | STT | Thành Viên | Tài Khoản GitHub | Vai Trò Chính | Số Lượng & Mã Mô Đun IPO | Luồng Tự Động | Nhánh Tính Năng (PR) & Sản Phẩm Đóng Góp |
 |:---:|:---|:---|:---|:---:|:---:|:---|
-| **1** | **Trần Minh Nhật** | `TrAn-MInh-NhAt` | **Trưởng nhóm & Kiến trúc sư trưởng** | **9 mô đun:**<br>`QLTK.01-03`, `QTHT.01`, `XLBN.01-03`, `KQBN.01-02` | `DF-01`<br>`DF-03`<br>`DF-04` | Quản trị nhánh `main`, Release `v2.0.0`–`v2.2.0`, Watchdog `STEM_Robotic_App.ps1`, CI/CD, Review & Merge toàn bộ PR |
+| **1** | **Trần Minh Nhật** | `TrAn-MInh-NhAt` | **Trưởng nhóm & Kiến trúc sư trưởng** | **9 mô đun:**<br>`QLTK.01-03`, `QTHT.01`, `XLBN.01-03`, `KQBN.01-02` | `DF-01`<br>`DF-03`<br>`DF-04` | Quản trị nhánh `main`, Release `v2.0.0`–`v2.3.0`, Watchdog `STEM_Robotic_App.ps1`, CI/CD, Review & Merge toàn bộ PR |
 | **2** | **Trần Thế Quân** | `tranquan6211-dot` | **Thiết kế Hệ thống & CSDL** | **5 mô đun:**<br>`QTHT.02-03`, `QLDA.02`, `HTTB.01-02` | `DF-02`<br>`DF-07` | `feature/quan-csdl-hethong`<br>• `docs/DAC_TA_CSDL.md`<br>• `server/seed_quan_thongbao.js` |
 | **3** | **Phạm Thị Hà Vy** | `phamthihavy032-dev` | **Phân tích Nghiệp vụ & Phát triển Học liệu** | **4 mô đun:**<br>`QTHL.01-02`, `TCPP.01-02` | `DF-05` | `feature/vy-hoclieu-morong`<br>• `docs/NGHIEP_VU_HOC_LIEU.md`<br>• `server/seed_vy_hoclieu_morong.js` |
 | **4** | **Nguyễn Thị Thanh Thảo** | `thanhthao-21` | **Phân tích Chức năng, Báo cáo & UI/UX** | **5 mô đun:**<br>`TKDL.01-02`, `XBC.01-02`, `TTCĐ.01` | `DF-05` | `feature/thao-ui-baocao`<br>• `docs/THIET_KE_UI_UX.md`<br>• `public/css/responsive-mobile.css` |
@@ -48,7 +48,8 @@
 
 | Phiên bản | Mốc Thời Gian | Trạng Thái 27/27 IPO | Luồng DF-01..07 | Vận Hành & Khởi Động | Tài Liệu Chi Tiết |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| **v2.2.0** | **15/11/2026** | **27/27 Hoàn Thành (100%)** | **7/7 Kích Hoạt (100%)** | **Sửa UI Giáo Viên & Bổ sung Ảnh Docs** | [Xem CHANGELOG.md](CHANGELOG.md) · [Ảnh Giao Diện](#-7-giao-diện-thực-tế-hệ-thống) |
+| **v2.3.0** | **15/11/2026** | **27/27 Hoàn Thành (100%)** | **7/7 Kích Hoạt (100%)** | **Code Mẫu 10/10đ, Chuẩn Lớp 10/1, Like & Comment Realtime** | [Xem CHANGELOG.md](CHANGELOG.md) · [Báo Cáo Tiến Độ](docs/BAO_CAO_TIEN_DO_NHOM.md) |
+| **v2.2.0** | 15/11/2026 | 27/27 Hoàn Thành (100%) | 7/7 Kích Hoạt (100%) | Sửa UI Giáo Viên & Bổ sung Ảnh Docs | [Xem CHANGELOG.md](CHANGELOG.md) · [Ảnh Giao Diện](#-7-giao-diện-thực-tế-hệ-thống) |
 | **v2.1.0 (Milestone 3)** | 15/11/2026 | 27/27 Hoàn Thành (100%) | 7/7 Kích Hoạt (100%) | 1-Click (.bat & Watchdog) | [Xem CHANGELOG.md](CHANGELOG.md) · [Khởi Chạy 1-Click](#-cách-1-khởi-chạy-nhanh-1-click-khuyên-dùng-cho-thành-viên--giảng-viên) |
 | **v2.0.0 (Milestone 2)** | 14/11/2026 (Chiều) | 27/27 Hoàn Thành (100%) | 7/7 Kích Hoạt (100%) | 37/37 PASS (100%) | [Xem CHANGELOG.md](CHANGELOG.md) · [Judge Engine Guide](judge_engine/README.md) |
 | **v1.0.0 (Milestone 1)** | 14/11/2026 (Sáng) | 19/27 Khởi Tạo | 7/7 Kiến Trúc Cốt Lõi | Sơ bộ | [Xem CHANGELOG.md](CHANGELOG.md) |

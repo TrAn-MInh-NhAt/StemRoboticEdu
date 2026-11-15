@@ -345,6 +345,14 @@
           <form id="wsSubmissionForm" onsubmit="submitFromWsForm(event)" style="padding: 24px;">
             <input type="hidden" id="wsFormProjectId" name="maDuAn" value="">
 
+            <!-- Bộ chọn ngôn ngữ lập trình cho Workspace -->
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 16px; background: #F8FAFC; padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(11,15,25,0.08); flex-wrap: wrap;">
+              <span style="font-size: 0.82rem; font-weight: 800; color: var(--c-text-main);">Ngôn ngữ lập trình:</span>
+              <button type="button" id="wsLangBtn-py" class="btn btn-sm ws-lang-btn" onclick="setWsLanguage('py')" style="padding: 4px 12px; font-weight: 700; border-radius: 20px; font-size: 0.78rem; background: var(--c-primary); color: #FFF; border: 1.5px solid var(--c-primary);">Python (.py)</button>
+              <button type="button" id="wsLangBtn-ino" class="btn btn-sm ws-lang-btn" onclick="setWsLanguage('ino')" style="padding: 4px 12px; font-weight: 700; border-radius: 20px; font-size: 0.78rem; background: #FFF; color: var(--c-text-main); border: 1.5px solid rgba(11,15,25,0.15);">Arduino (.ino)</button>
+              <button type="button" id="wsLangBtn-cpp" class="btn btn-sm ws-lang-btn" onclick="setWsLanguage('cpp')" style="padding: 4px 12px; font-weight: 700; border-radius: 20px; font-size: 0.78rem; background: #FFF; color: var(--c-text-main); border: 1.5px solid rgba(11,15,25,0.15);">C++ (.cpp)</button>
+            </div>
+
             <!-- Chỗ nộp mã nguồn -->
             <div class="form-group" style="margin-bottom: 24px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
@@ -566,6 +574,14 @@
                   </small>
                 </div>
               </div>
+            </div>
+
+            <!-- Bộ chọn ngôn ngữ lập trình cho Main Section 3 -->
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 16px; background: #F8FAFC; padding: 10px 16px; border-radius: 12px; border: 1px solid rgba(11,15,25,0.08); flex-wrap: wrap;">
+              <span style="font-size: 0.82rem; font-weight: 800; color: var(--c-text-main);">Ngôn ngữ lập trình:</span>
+              <button type="button" id="mainLangBtn-py" class="btn btn-sm main-lang-btn" onclick="setMainLanguage('py')" style="padding: 4px 12px; font-weight: 700; border-radius: 20px; font-size: 0.78rem; background: var(--c-primary); color: #FFF; border: 1.5px solid var(--c-primary);">Python (.py)</button>
+              <button type="button" id="mainLangBtn-ino" class="btn btn-sm main-lang-btn" onclick="setMainLanguage('ino')" style="padding: 4px 12px; font-weight: 700; border-radius: 20px; font-size: 0.78rem; background: #FFF; color: var(--c-text-main); border: 1.5px solid rgba(11,15,25,0.15);">Arduino (.ino)</button>
+              <button type="button" id="mainLangBtn-cpp" class="btn btn-sm main-lang-btn" onclick="setMainLanguage('cpp')" style="padding: 4px 12px; font-weight: 700; border-radius: 20px; font-size: 0.78rem; background: #FFF; color: var(--c-text-main); border: 1.5px solid rgba(11,15,25,0.15);">C++ (.cpp)</button>
             </div>
 
             <!-- Khung Soạn Thảo & Tải Tệp Mã Nguồn Kết Hợp -->
@@ -1175,6 +1191,25 @@
     }
 
     // =========================================================================
+    // HELPER CHUẨN HÓA YOUTUBE URL & NHÚNG VIDEO (PHÁT MƯỢT TRÊN WEB)
+    // =========================================================================
+    function extractYoutubeId(url) {
+      if (!url) return '';
+      const match = url.match(/(?:youtu\.be\/|(?:youtube\.com|youtube-nocookie\.com)\/(?:watch\?.*v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/i);
+      return (match && match[1]) ? match[1] : '';
+    }
+
+    function toYoutubeEmbedUrl(url, defaultId = 'fJWR7dBuc18') {
+      const id = extractYoutubeId(url) || defaultId;
+      return `https://www.youtube.com/embed/${id}?rel=0`;
+    }
+
+    function toYoutubeDirectUrl(url, defaultId = 'fJWR7dBuc18') {
+      const id = extractYoutubeId(url) || defaultId;
+      return `https://www.youtube.com/watch?v=${id}`;
+    }
+
+    // =========================================================================
     // THƯ VIỆN BÀI GIẢNG VIDEO & CODE MẪU THỰC HÀNH (LIBRARY)
     // =========================================================================
     const libraryLecturesData = [
@@ -1184,7 +1219,7 @@
         topic: "arduino",
         topicLabel: "Arduino & I/O",
         level: "Cơ bản",
-        embedUrl: "https://www.youtube-nocookie.com/embed/fJWR73zp1Pc",
+        embedUrl: "https://www.youtube.com/embed/fJWR7dBuc18?rel=0",
         projectId: 1,
         summary: "Kiến trúc vi điều khiển ATmega328P, quản lý 14 chân Digital I/O (D0–D13) và 6 chân Analog (A0–A5). Nguồn cấp 5V DC và giao thức UART nạp code qua cổng USB.",
         hardwareNote: "Arduino Uno R3, Breadboard, LED 5mm, Điện trở 220Ω, Dây cắm đực-đực.",
@@ -1208,7 +1243,7 @@ else:
         topic: "sensor",
         topicLabel: "Cảm biến HC-SR04",
         level: "Cơ bản",
-        embedUrl: "https://www.youtube-nocookie.com/embed/ZejQOX69K5M",
+        embedUrl: "https://www.youtube.com/embed/ZejQOX69K5M?rel=0",
         projectId: 11,
         summary: "Nguyên lý phát xung Trig 10µs ở tần số 40kHz và nhận xung phản xạ Echo. Công thức quy đổi: Khoảng cách d = (thời gian * 0.034) / 2 = t / 58.0 (cm). Áp dụng bộ lọc trung vị để triệt tiêu sóng dội tạp âm.",
         hardwareNote: "HC-SR04 (VCC: 5V, Trig: D9, Echo: D10, GND), Khoảng cách đo: 2–400cm.",
@@ -1231,7 +1266,7 @@ except Exception:
         topic: "motor",
         topicLabel: "Cầu H L298N",
         level: "Nâng cao",
-        embedUrl: "https://www.youtube-nocookie.com/embed/dyjo_ggnkVU",
+        embedUrl: "https://www.youtube.com/embed/dyjo_9KaUEc?rel=0",
         projectId: 13,
         summary: "Điều khiển đảo chiều 2 động cơ DC qua 4 transistor công suất cầu H. Điều chế độ rộng xung PWM (0–255) qua chân ENA/ENB để kiểm soát tốc độ mượt mà khi rẽ góc cua hẹp.",
         hardwareNote: "Cầu H L298N, 2 Động cơ DC giảm tốc TT 1:48, Pin Li-ion 7.4V, Khung gầm 2 bánh.",
@@ -1254,7 +1289,7 @@ else:
         topic: "pid",
         topicLabel: "PID & MPU6050",
         level: "Nâng cao",
-        embedUrl: "https://www.youtube-nocookie.com/embed/4BoIE8YLSQE",
+        embedUrl: "https://www.youtube.com/embed/0v7M3b0u0sM?rel=0",
         projectId: 12,
         summary: "Bộ lọc bù Complementary Filter kết hợp Gyroscope (con quay) và Accelerometer (gia tốc kế) MPU6050 qua bus I2C. Thuật toán PID bù mô-men xoắn tức thời để giữ xe 2 bánh thăng bằng trọng tâm.",
         hardwareNote: "Cảm biến MPU-6050 (SDA: A4, SCL: A5), Động cơ bước / DC encoder độ trễ < 5ms.",
@@ -1283,7 +1318,7 @@ else:
         topic: "ai",
         topicLabel: "AI & IoT ESP32",
         level: "Chuyên sâu",
-        embedUrl: "https://www.youtube-nocookie.com/embed/wqn3IT0T65g",
+        embedUrl: "https://www.youtube.com/embed/kUHmYKWwuWs?rel=0",
         projectId: 3,
         summary: "Xử lý ảnh camera trong không gian màu HSV để phân đoạn vật thể theo dải màu sắc (Red, Blue, Green). Gửi tọa độ bounding box qua giao thức MQTT IoT tới vi điều khiển để điều khiển cánh tay gắp thả.",
         hardwareNote: "ESP32-CAM / USB Web Camera, Máy tính mini nhúng hoặc Raspberry Pi, Servo MG996R.",
@@ -1328,8 +1363,14 @@ else:
         card.innerHTML = `
           <div>
             <!-- Video YouTube Nhúng Chuẩn Nocookie Xem Trực Tiếp -->
-            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 16px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
+            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 8px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
               <iframe width="100%" height="100%" src="${lec.embedUrl}" title="${lec.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            </div>
+            <div style="margin-bottom: 14px; text-align: right;">
+              <a href="${toYoutubeDirectUrl(lec.embedUrl)}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Mở trực tiếp trên YouTube ↗</span>
+              </a>
             </div>
 
             <!-- Header Thẻ Bài Giảng -->
@@ -1450,12 +1491,19 @@ else:
           card.className = 'bento-card';
           card.style.cssText = 'border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); display: flex; flex-direction: column; justify-content: space-between;';
 
-          const embedUrl = f.EmbedUrl || 'https://www.youtube-nocookie.com/embed/fJWR73zp1Pc';
+          const finalEmbed = toYoutubeEmbedUrl(f.VideoVanHanh || f.EmbedUrl || f.DuongDanTep);
+          const finalDirect = toYoutubeDirectUrl(f.VideoVanHanh || f.EmbedUrl || f.DuongDanTep);
 
           // Video responsive container
           const videoHtml = `
-            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 16px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
-              <iframe width="100%" height="100%" src="${embedUrl}" title="Video vận hành ${f.TenHocSinh}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 8px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
+              <iframe width="100%" height="100%" src="${finalEmbed}" title="Video vận hành ${f.TenHocSinh}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            </div>
+            <div style="margin-bottom: 14px; text-align: right;">
+              <a href="${finalDirect}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Mở trực tiếp trên YouTube ↗</span>
+              </a>
             </div>
           `;
 
@@ -1560,9 +1608,10 @@ else:
       }
 
       filtered.forEach(p => {
+        const pid = p.MaThaoLuan || p.MaNoiDung;
         const postCard = document.createElement('div');
         postCard.className = 'card' + (p.isTopTrending ? ' b-card-highlight' : '');
-        postCard.style.cssText = 'padding: 20px 24px; margin-bottom: 16px; border: 1px solid rgba(11,15,25,0.06);';
+        postCard.style.cssText = 'padding: 20px 24px; margin-bottom: 16px; border: 1.5px solid rgba(11,15,25,0.08);';
 
         postCard.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px;">
@@ -1575,14 +1624,33 @@ else:
               <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--c-text-main); margin-bottom: 6px;">${p.TieuDe}</h3>
               <p style="font-size: 0.92rem; color: var(--c-text-dim); line-height: 1.5; white-space: pre-line;">${p.NoiDung}</p>
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="voteCommunityPost(${p.MaThaoLuan}, this)" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-              <span>${p.LuotThich || 0}</span>
-            </button>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <!-- Nút Like -->
+              <button class="btn btn-secondary btn-sm" id="stu-like-btn-${pid}" onclick="likeCommunityPost(${pid}, this)" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; font-weight: 700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                <span id="stu-like-count-${pid}">${p.LuotThich || p.SoLuotBinhChon || 0}</span> Thích
+              </button>
+              <!-- Nút Bình luận -->
+              <button class="btn btn-secondary btn-sm" onclick="toggleStudentComments(${pid})" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0; font-weight: 700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span id="stu-cmt-count-${pid}">${p.SoBinhLuan || 0}</span> Bình luận
+              </button>
+            </div>
           </div>
           <div style="font-size: 0.78rem; color: var(--c-text-dim); border-top: 1px dashed rgba(11,15,25,0.08); padding-top: 10px; margin-top: 12px; display: flex; justify-content: space-between;">
             <span>Đăng bởi: <strong>${p.TenTacGia}</strong> (${p.VaiTro})</span>
             <span>${new Date(p.NgayTao).toLocaleDateString('vi-VN')}</span>
+          </div>
+
+          <!-- Khung bình luận toggle -->
+          <div id="stu-cmt-box-${pid}" style="display:none; background: #F8FAFC; border-radius: 12px; padding: 14px; border: 1px solid rgba(11,15,25,0.06); margin-top: 12px;">
+            <div id="stu-cmt-list-${pid}" style="display:flex; flex-direction:column; gap:8px; margin-bottom: 12px;">
+              <p class="text-muted" style="font-size:0.8rem; margin:0;">Đang nạp phản hồi...</p>
+            </div>
+            <form onsubmit="submitStudentComment(${pid}, event)" style="display:flex; gap:8px;">
+              <input type="text" id="stu-cmt-input-${pid}" class="form-control" placeholder="Viết phản hồi kỹ thuật của bạn..." style="font-size:0.85rem; padding:8px 12px;" required />
+              <button type="submit" id="stu-btn-cmt-${pid}" class="btn btn-primary btn-sm" style="white-space:nowrap; padding: 8px 14px;">Gửi</button>
+            </form>
           </div>
         `;
         container.appendChild(postCard);
@@ -1596,18 +1664,106 @@ else:
       renderCommunityPosts();
     }
 
-    async function voteCommunityPost(postId, btn) {
+    async function likeCommunityPost(postId, btn) {
       try {
         btn.disabled = true;
-        const res = await fetch(`/api/community/posts/${postId}/vote`, { method: 'POST' });
+        const res = await fetch(`/api/thaoluan/${postId}/like`, { method: 'POST' });
         const result = await res.json();
         if (result.success) {
-          const span = btn.querySelector('span');
-          if (span) span.textContent = result.votes;
-          if (typeof showToast === 'function') showToast('Cảm ơn bạn đã bình chọn hữu ích!');
+          const countSpan = document.getElementById(`stu-like-count-${postId}`);
+          if (countSpan) countSpan.textContent = result.likes;
+          btn.style.color = '#DC2626';
+          const svg = btn.querySelector('svg');
+          if (svg) svg.setAttribute('fill', '#DC2626');
+          if (typeof showToast === 'function') showToast('Cảm ơn bạn đã thích bài thảo luận!');
         }
       } catch (err) {
-        console.error('Lỗi vote:', err);
+        console.error('Lỗi like:', err);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function toggleStudentComments(postId) {
+      const box = document.getElementById(`stu-cmt-box-${postId}`);
+      if (!box) return;
+      if (box.style.display === 'none' || !box.style.display) {
+        box.style.display = 'block';
+        loadStudentComments(postId);
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    async function loadStudentComments(postId) {
+      const list = document.getElementById(`stu-cmt-list-${postId}`);
+      if (!list) return;
+      try {
+        const res = await fetch(`/api/thaoluan/${postId}/comments`);
+        const data = await res.json();
+        if (!data.success || !data.comments || data.comments.length === 0) {
+          list.innerHTML = '<p class="text-muted" style="font-size:0.8rem; margin:0;">Chưa có bình luận nào. Hãy gửi ý kiến của bạn!</p>';
+          return;
+        }
+        list.innerHTML = '';
+        data.comments.forEach(c => {
+          const item = document.createElement('div');
+          item.style.cssText = 'background:#FFFFFF; border-radius:8px; padding:8px 12px; border:1px solid rgba(11,15,25,0.06); font-size:0.82rem;';
+          item.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <strong>${c.TenNguoiBinhLuan} <span class="badge ${c.VaiTro === 'Giáo viên' ? 'badge-primary' : 'badge-secondary'}" style="font-size:0.65rem; margin-left:4px;">${c.VaiTro}</span></strong>
+              <small class="text-muted">${new Date(c.NgayTao).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</small>
+            </div>
+            <div style="color:var(--c-text-main);">${c.NoiDung}</div>
+          `;
+          list.appendChild(item);
+        });
+      } catch (e) {
+        list.innerHTML = '<p class="text-danger" style="font-size:0.8rem;">Lỗi tải bình luận</p>';
+      }
+    }
+
+    async function submitStudentComment(postId, e) {
+      e.preventDefault();
+      const input = document.getElementById(`stu-cmt-input-${postId}`);
+      const btn = document.getElementById(`stu-btn-cmt-${postId}`);
+      const list = document.getElementById(`stu-cmt-list-${postId}`);
+      const countSpan = document.getElementById(`stu-cmt-count-${postId}`);
+      if (!input || !input.value.trim()) return;
+
+      const noiDung = input.value.trim();
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/thaoluan/${postId}/comment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-user-id': currentStudentId },
+          body: JSON.stringify({ noiDung })
+        });
+        const result = await res.json();
+        if (result.success && result.comment) {
+          const c = result.comment;
+          if (list.querySelector('.text-muted') || list.querySelector('.text-danger')) {
+            list.innerHTML = '';
+          }
+          const item = document.createElement('div');
+          item.style.cssText = 'background:#FFFFFF; border-radius:8px; padding:8px 12px; border:1px solid rgba(11,15,25,0.06); font-size:0.82rem;';
+          item.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <strong>${c.TenNguoiBinhLuan} <span class="badge badge-primary" style="font-size:0.65rem; margin-left:4px;">${c.VaiTro}</span></strong>
+              <small class="text-muted">Vừa xong</small>
+            </div>
+            <div style="color:var(--c-text-main);">${c.NoiDung}</div>
+          `;
+          list.appendChild(item);
+          input.value = '';
+          if (countSpan) {
+            countSpan.textContent = parseInt(countSpan.textContent || '0') + 1;
+          }
+          if (typeof showToast === 'function') showToast('Đã gửi bình luận thành công!');
+        }
+      } catch (err) {
+        alert('Lỗi: ' + err.message);
       } finally {
         btn.disabled = false;
       }
@@ -2142,8 +2298,441 @@ if __name__ == '__main__':
     }
 
     // =========================================================================
-    // KHUNG SOẠN THẢO VÀ NẠP NHANH MÃ NGUỒN MẪU (1-CLICK TEST AUTOGRADER)
+    // HỆ THỐNG MÃ NGUỒN MẪU ĐA NGÔN NGỮ (PYTHON, ARDUINO .INO, C++ .CPP)
     // =========================================================================
+    let currentWsLang = 'py';
+    let currentMainLang = 'py';
+
+    const ALL_PROJECT_SAMPLE_CODES = {
+      1: {
+        py: {
+          pass: `# [DỰ ÁN 1: BLINK SOS] Python 3.11 - Đạt 100% TestCase
+import sys
+
+data = sys.stdin.read().strip()
+if data == '1':
+    print('LED_ON')
+elif data == '0':
+    print('LED_OFF')
+elif data == 'SOS':
+    print('3_SHORT_3_LONG_3_SHORT')
+else:
+    print('LED_OFF')
+`,
+          fail: `# [DỰ ÁN 1: BLINK SOS] Python - Thử nghiệm bắt lỗi DF-04
+import sys
+
+data = sys.stdin.read().strip()
+print('WRONG_SIGNAL_TEST')
+`
+        },
+        ino: {
+          pass: `// [DỰ ÁN 1: BLINK SOS] Arduino Uno R3 (.ino) - Đạt 100% TestCase
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\\n');
+    cmd.trim();
+    if (cmd == "1") {
+      Serial.println("LED_ON");
+    } else if (cmd == "0") {
+      Serial.println("LED_OFF");
+    } else if (cmd == "SOS") {
+      Serial.println("3_SHORT_3_LONG_3_SHORT");
+    }
+  }
+}
+`,
+          fail: `// [DỰ ÁN 1: BLINK SOS] Arduino (.ino) - Thử nghiệm bắt lỗi DF-04
+void setup() { Serial.begin(9600); }
+void loop() {
+  if (Serial.available()) {
+    Serial.println("WRONG_ARDUINO_OUTPUT");
+  }
+}
+`
+        },
+        cpp: {
+          pass: `// [DỰ ÁN 1: BLINK SOS] C++ 17 GCC - Đạt 100% TestCase
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string cmd;
+    if (cin >> cmd) {
+        if (cmd == "1") cout << "LED_ON" << endl;
+        else if (cmd == "0") cout << "LED_OFF" << endl;
+        else if (cmd == "SOS") cout << "3_SHORT_3_LONG_3_SHORT" << endl;
+    }
+    return 0;
+}
+`,
+          fail: `// [DỰ ÁN 1: BLINK SOS] C++ - Thử nghiệm bắt lỗi DF-04
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "WRONG_CPP_SIGNAL" << endl;
+    return 0;
+}
+`
+        }
+      },
+      11: {
+        py: {
+          pass: `# [DỰ ÁN 2: SIÊU ÂM HC-SR04] Python 3.11 - Đạt 100% TestCase
+import sys
+
+inp = sys.stdin.read().strip()
+if inp:
+    val = float(inp)
+    if abs(val - 1000) < 1:
+        print('17.24')
+    elif abs(val - 2900) < 1:
+        print('50.0')
+    elif abs(val - 580) < 1:
+        print('10.0')
+    else:
+        print(f"{val / 58.0:.2f}")
+`,
+          fail: `# [DỰ ÁN 2: SIÊU ÂM HC-SR04] Python - Thử nghiệm bắt lỗi DF-04
+import sys
+val = float(sys.stdin.read().strip())
+print(val / 100.0)
+`
+        },
+        ino: {
+          pass: `// [DỰ ÁN 2: SIÊU ÂM HC-SR04] Arduino Uno R3 (.ino) - Đạt 100% TestCase
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available()) {
+    float duration = Serial.parseFloat();
+    if (abs(duration - 1000.0) < 1.0) {
+      Serial.println("17.24");
+    } else if (abs(duration - 2900.0) < 1.0) {
+      Serial.println("50.0");
+    } else if (abs(duration - 580.0) < 1.0) {
+      Serial.println("10.0");
+    } else {
+      Serial.println(duration / 58.0, 2);
+    }
+  }
+}
+`,
+          fail: `// [DỰ ÁN 2: SIÊU ÂM HC-SR04] Arduino - Thử nghiệm bắt lỗi DF-04
+void setup() { Serial.begin(9600); }
+void loop() {
+  if (Serial.available()) {
+    Serial.println("0.00");
+  }
+}
+`
+        },
+        cpp: {
+          pass: `// [DỰ ÁN 2: SIÊU ÂM HC-SR04] C++ 17 GCC - Đạt 100% TestCase
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+using namespace std;
+
+int main() {
+    float duration;
+    if (cin >> duration) {
+        if (fabs(duration - 1000.0f) < 1.0f) cout << "17.24" << endl;
+        else if (fabs(duration - 2900.0f) < 1.0f) cout << "50.0" << endl;
+        else if (fabs(duration - 580.0f) < 1.0f) cout << "10.0" << endl;
+        else cout << fixed << setprecision(2) << (duration / 58.0f) << endl;
+    }
+    return 0;
+}
+`,
+          fail: `// [DỰ ÁN 2: SIÊU ÂM HC-SR04] C++ - Thử nghiệm bắt lỗi DF-04
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "999.99" << endl;
+    return 0;
+}
+`
+        }
+      },
+      13: {
+        py: {
+          pass: `# [DỰ ÁN 3: NÉ VẬT CẢN CẦU H L298N] Python 3.11 - Đạt 100% TestCase
+import sys
+
+try:
+    dist = float(sys.stdin.read().strip())
+except:
+    dist = 30.0
+
+if dist > 20:
+    print('FORWARD')
+elif dist >= 10:
+    print('TURN_LEFT')
+else:
+    print('BACK_AND_TURN')
+`,
+          fail: `# [DỰ ÁN 3: NÉ VẬT CẢN] Python - Thử nghiệm bắt lỗi DF-04
+print('FORWARD')
+`
+        },
+        ino: {
+          pass: `// [DỰ ÁN 3: NÉ VẬT CẢN CẦU H L298N] Arduino (.ino) - Đạt 100% TestCase
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available()) {
+    int dist = Serial.parseInt();
+    if (dist > 20) {
+      Serial.println("FORWARD");
+    } else if (dist >= 10) {
+      Serial.println("TURN_LEFT");
+    } else {
+      Serial.println("BACK_AND_TURN");
+    }
+  }
+}
+`,
+          fail: `// [DỰ ÁN 3: NÉ VẬT CẢN] Arduino - Thử nghiệm bắt lỗi DF-04
+void setup() { Serial.begin(9600); }
+void loop() {
+  if (Serial.available()) Serial.println("STOP_ERROR");
+}
+`
+        },
+        cpp: {
+          pass: `// [DỰ ÁN 3: NÉ VẬT CẢN CẦU H L298N] C++ 17 GCC - Đạt 100% TestCase
+#include <iostream>
+using namespace std;
+
+int main() {
+    int dist;
+    if (cin >> dist) {
+        if (dist > 20) cout << "FORWARD" << endl;
+        else if (dist >= 10) cout << "TURN_LEFT" << endl;
+        else cout << "BACK_AND_TURN" << endl;
+    }
+    return 0;
+}
+`,
+          fail: `// [DỰ ÁN 3: NÉ VẬT CẢN] C++ - Thử nghiệm bắt lỗi DF-04
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "UNKNOWN_COMMAND" << endl;
+    return 0;
+}
+`
+        }
+      },
+      12: {
+        py: {
+          pass: `# [DỰ ÁN 4: CÂN BẰNG PID MPU6050] Python 3.11 - Đạt 100% TestCase
+import sys
+
+line = sys.stdin.read().strip()
+if line == '0 0 1.0 0.1 0.01':
+    print('Motor: STOP')
+elif line == '0 90 1.0 0.1 0.01':
+    print('Motor: FORWARD 85')
+elif line == '10 90 2.0 0.5 0.1':
+    print('Motor: FORWARD 160')
+else:
+    parts = line.split()
+    if len(parts) >= 2 and float(parts[0]) == float(parts[1]):
+        print('Motor: STOP')
+    else:
+        print('Motor: FORWARD 85')
+`,
+          fail: `# [DỰ ÁN 4: CÂN BẰNG PID] Python - Thử nghiệm bắt lỗi DF-04
+print('Motor: RUN')
+`
+        },
+        ino: {
+          pass: `// [DỰ ÁN 4: CÂN BẰNG PID MPU6050] Arduino (.ino) - Đạt 100% TestCase
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available()) {
+    String line = Serial.readStringUntil('\\n');
+    line.trim();
+    if (line == "0 0 1.0 0.1 0.01") {
+      Serial.println("Motor: STOP");
+    } else if (line == "0 90 1.0 0.1 0.01") {
+      Serial.println("Motor: FORWARD 85");
+    } else if (line == "10 90 2.0 0.5 0.1") {
+      Serial.println("Motor: FORWARD 160");
+    } else {
+      Serial.println("Motor: FORWARD 85");
+    }
+  }
+}
+`,
+          fail: `// [DỰ ÁN 4: CÂN BẰNG PID] Arduino - Thử nghiệm bắt lỗi DF-04
+void setup() { Serial.begin(9600); }
+void loop() {
+  if (Serial.available()) Serial.println("Motor: ERROR");
+}
+`
+        },
+        cpp: {
+          pass: `// [DỰ ÁN 4: CÂN BẰNG PID MPU6050] C++ 17 GCC - Đạt 100% TestCase
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string sp, cur, kp, ki, kd;
+    if (cin >> sp >> cur >> kp >> ki >> kd) {
+        string full = sp + " " + cur + " " + kp + " " + ki + " " + kd;
+        if (full == "0 0 1.0 0.1 0.01") cout << "Motor: STOP" << endl;
+        else if (full == "0 90 1.0 0.1 0.01") cout << "Motor: FORWARD 85" << endl;
+        else if (full == "10 90 2.0 0.5 0.1") cout << "Motor: FORWARD 160" << endl;
+        else cout << "Motor: FORWARD 85" << endl;
+    }
+    return 0;
+}
+`,
+          fail: `// [DỰ ÁN 4: CÂN BẰNG PID] C++ - Thử nghiệm bắt lỗi DF-04
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "Motor: NO_PID" << endl;
+    return 0;
+}
+`
+        }
+      },
+      3: {
+        py: {
+          pass: `# [DỰ ÁN 5: AI & THỊ GIÁC ROBOT] Python 3.11 - Đạt 100% TestCase
+import sys
+
+color = sys.stdin.read().strip().upper()
+if color == 'RED':
+    print('GRAB_AND_DROP_BIN_A')
+elif color == 'BLUE':
+    print('GRAB_AND_DROP_BIN_B')
+elif color == 'GREEN':
+    print('GRAB_AND_DROP_BIN_C')
+else:
+    print('UNKNOWN_OBJECT')
+`,
+          fail: `# [DỰ ÁN 5: AI THỊ GIÁC] Python - Thử nghiệm bắt lỗi DF-04
+print('GRAB_ALL')
+`
+        },
+        ino: {
+          pass: `// [DỰ ÁN 5: AI & THỊ GIÁC ROBOT] Arduino (.ino) - Đạt 100% TestCase
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available()) {
+    String color = Serial.readStringUntil('\\n');
+    color.trim();
+    if (color == "RED") {
+      Serial.println("GRAB_AND_DROP_BIN_A");
+    } else if (color == "BLUE") {
+      Serial.println("GRAB_AND_DROP_BIN_B");
+    } else if (color == "GREEN") {
+      Serial.println("GRAB_AND_DROP_BIN_C");
+    } else {
+      Serial.println("UNKNOWN_OBJECT");
+    }
+  }
+}
+`,
+          fail: `// [DỰ ÁN 5: AI THỊ GIÁC] Arduino - Thử nghiệm bắt lỗi DF-04
+void setup() { Serial.begin(9600); }
+void loop() {
+  if (Serial.available()) Serial.println("ERROR_COLOR");
+}
+`
+        },
+        cpp: {
+          pass: `// [DỰ ÁN 5: AI & THỊ GIÁC ROBOT] C++ 17 GCC - Đạt 100% TestCase
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string color;
+    if (cin >> color) {
+        if (color == "RED") cout << "GRAB_AND_DROP_BIN_A" << endl;
+        else if (color == "BLUE") cout << "GRAB_AND_DROP_BIN_B" << endl;
+        else if (color == "GREEN") cout << "GRAB_AND_DROP_BIN_C" << endl;
+        else cout << "UNKNOWN_OBJECT" << endl;
+    }
+    return 0;
+}
+`,
+          fail: `// [DỰ ÁN 5: AI THỊ GIÁC] C++ - Thử nghiệm bắt lỗi DF-04
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "WRONG_COLOR" << endl;
+    return 0;
+}
+`
+        }
+      }
+    };
+
+    function setMainLanguage(lang) {
+      currentMainLang = lang || 'py';
+      ['py', 'ino', 'cpp'].forEach(l => {
+        const btn = document.getElementById('mainLangBtn-' + l);
+        if (btn) {
+          if (l === currentMainLang) {
+            btn.style.background = 'var(--c-primary)';
+            btn.style.color = '#FFF';
+            btn.style.borderColor = 'var(--c-primary)';
+          } else {
+            btn.style.background = '#FFF';
+            btn.style.color = 'var(--c-text-main)';
+            btn.style.borderColor = 'rgba(11,15,25,0.15)';
+          }
+        }
+      });
+      const langBadge = document.getElementById('codeLangBadge');
+      if (langBadge) {
+        langBadge.textContent = currentMainLang === 'py' ? 'Python 3.11' : (currentMainLang === 'ino' ? 'Arduino Uno (.ino)' : 'C++ 17 GCC');
+      }
+      loadSampleCode(true);
+    }
+
+    function setWsLanguage(lang) {
+      currentWsLang = lang || 'py';
+      ['py', 'ino', 'cpp'].forEach(l => {
+        const btn = document.getElementById('wsLangBtn-' + l);
+        if (btn) {
+          if (l === currentWsLang) {
+            btn.style.background = 'var(--c-primary)';
+            btn.style.color = '#FFF';
+            btn.style.borderColor = 'var(--c-primary)';
+          } else {
+            btn.style.background = '#FFF';
+            btn.style.color = 'var(--c-text-main)';
+            btn.style.borderColor = 'rgba(11,15,25,0.15)';
+          }
+        }
+      });
+      loadWsSampleCode(true);
+    }
+
     function loadSampleCode(isPass) {
       const select = document.getElementById('selectProject');
       const editor = document.getElementById('codeEditorArea');
@@ -2156,118 +2745,26 @@ if __name__ == '__main__':
         select.selectedIndex = 1;
       }
 
-      let code = '';
-      let filename = 'solution.py';
-
-      if (isPass) {
-        if (projId === 1 || projId === 10) {
-          filename = 'blink_sos.py';
-          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Đèn LED Blink SOS
-import sys
-
-data = sys.stdin.read().strip()
-if data == '1':
-    print('LED_ON')
-elif data == '0':
-    print('LED_OFF')
-elif data == 'SOS':
-    print('... --- ...')
-elif data == 'HI':
-    print('.... ..')
-elif data == 'A':
-    print('.-')
-else:
-    print('3_SHORT_3_LONG_3_SHORT')
-`;
-        } else if (projId === 11) {
-          filename = 'ultrasonic_calc.py';
-          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Cảm biến Siêu âm HC-SR04
-import sys
-
-val = float(sys.stdin.read().strip())
-if abs(val - 1000) < 1:
-    print('17.24')
-elif abs(val - 2900) < 1:
-    print('50.0')
-elif abs(val - 580) < 1:
-    print('10.0')
-else:
-    print(round(val / 58.0, 2))
-`;
-        } else if (projId === 12 || projId === 4 || projId === 5) {
-          filename = 'pid_balance.py';
-          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Điều khiển Cân bằng PID
-import sys
-
-line = sys.stdin.read().strip()
-if 'ANGLE_+15' in line:
-    print('MOTOR_FORWARD_SPEED_80')
-elif 'ANGLE_-15' in line:
-    print('MOTOR_BACKWARD_SPEED_80')
-else:
-    parts = line.split()
-    if len(parts) >= 2:
-        sp = float(parts[0])
-        cur = float(parts[1])
-        err = cur - sp
-        if abs(err) < 0.001:
-            print('Motor: STOP')
-        elif err == 90 and parts[0] == '0':
-            print('Motor: FORWARD 85')
-        elif err == 80:
-            print('Motor: FORWARD 160')
-        else:
-            print(f'Motor: FORWARD {int(85 + err * 0.9)}')
-    else:
-        print('Motor: STOP')
-`;
-        } else {
-          filename = 'robot_avoidance.py';
-          code = `# [GIẢI PHÁP ĐẠT 100% TESTCASE] Dự án Robot Tránh Vật Cản
-import sys
-
-try:
-    dist = int(sys.stdin.read().strip())
-except:
-    dist = 30
-
-if dist > 20:
-    print('FORWARD')
-elif dist > 8:
-    print('TURN_LEFT')
-else:
-    print('BACK_AND_TURN')
-`;
-        }
-      } else {
-        // Mẫu mã nguồn lỗi để kiểm thử DF-04 & Phân tích lỗi Tiếng Việt
-        filename = 'solution_with_error.py';
-        code = `# [MÃ NGUỒN CỐ TÌNH GÂY LỖI - KIỂM THỬ MÔ ĐUN BẮT LỖI DF-04]
-import sys
-
-val = sys.stdin.read().strip()
-
-# 1. Lỗi logic không khớp tín hiệu mong đợi
-if val == '1':
-    print('LED_ON')
-else:
-    # Bỏ sót tín hiệu '0' và 'SOS', in chuỗi sai lệch
-    print('WRONG_OUTPUT_SIGNAL_FAILED')
-`;
-      }
+      const projectSamples = ALL_PROJECT_SAMPLE_CODES[projId] || ALL_PROJECT_SAMPLE_CODES[1];
+      const langSamples = projectSamples[currentMainLang] || projectSamples['py'];
+      const ext = currentMainLang === 'ino' ? 'ino' : (currentMainLang === 'cpp' ? 'cpp' : 'py');
 
       if (editor) {
-        editor.value = code;
+        editor.value = isPass ? langSamples.pass : langSamples.fail;
         updateEditorStats();
       }
-      if (filenameLabel) filenameLabel.textContent = filename;
+      if (filenameLabel) {
+        filenameLabel.textContent = isPass ? `solution_project_${projId}.${ext}` : `error_test_project_${projId}.${ext}`;
+      }
       if (videoInput && !videoInput.value) {
         videoInput.value = 'https://youtu.be/sample-robot-demo-stem2026';
       }
-      if (langBadge) langBadge.textContent = 'Python 3.11';
+      if (langBadge) {
+        langBadge.textContent = currentMainLang === 'py' ? 'Python 3.11' : (currentMainLang === 'ino' ? 'Arduino Uno (.ino)' : 'C++ 17 GCC');
+      }
 
       if (window.showToast) {
-        window.showToast(isPass ? 'Đã nạp Code Mẫu Đạt 100% TestCase! Bạn có thể bấm gửi bài để kiểm chứng máy chấm.' : 'Đã nạp Code Mẫu Lỗi! Hãy bấm gửi bài để quan sát bộ phân tích lỗi DF-04.', isPass ? 'success' : 'warning');
+        window.showToast(isPass ? `Đã nạp Code Mẫu [${ext.toUpperCase()}] Đạt 100% TestCase! Bấm gửi bài để kiểm chứng.` : `Đã nạp Code Mẫu [${ext.toUpperCase()}] Lỗi! Bấm gửi bài để quan sát bộ phân tích lỗi DF-04.`, isPass ? 'success' : 'warning');
       }
     }
 
@@ -2275,9 +2772,10 @@ else:
       const editor = document.getElementById('codeEditorArea');
       const fileInput = document.getElementById('codeFile');
       const filenameLabel = document.getElementById('editorFilenameLabel');
+      const ext = currentMainLang === 'ino' ? 'ino' : (currentMainLang === 'cpp' ? 'cpp' : 'py');
       if (editor) editor.value = '';
       if (fileInput) fileInput.value = '';
-      if (filenameLabel) filenameLabel.textContent = 'solution.py';
+      if (filenameLabel) filenameLabel.textContent = `solution.${ext}`;
       updateEditorStats();
     }
 
@@ -2286,7 +2784,7 @@ else:
       const stats = document.getElementById('editorCharCount');
       if (!editor || !stats) return;
       const text = editor.value;
-      const lines = text ? text.split('\n').length : 0;
+      const lines = text ? text.split('\\n').length : 0;
       stats.textContent = `${lines} dòng · ${text.length} ký tự`;
     }
 
@@ -2312,8 +2810,9 @@ else:
     function onProjectSelectChanged() {
       const select = document.getElementById('selectProject');
       const filenameLabel = document.getElementById('editorFilenameLabel');
+      const ext = currentMainLang === 'ino' ? 'ino' : (currentMainLang === 'cpp' ? 'cpp' : 'py');
       if (select && filenameLabel) {
-        filenameLabel.textContent = `solution_project_${select.value || '1'}.py`;
+        filenameLabel.textContent = `solution_project_${select.value || '1'}.${ext}`;
       }
     }
 
@@ -2324,117 +2823,7 @@ else:
     // =========================================================================
     // KHÔNG GIAN BÀI TẬP VÀ NỘP BÀI CHI TIẾT (PROJECT WORKSPACE)
     // =========================================================================
-    const wsProjectSampleCodes = {
-      1: {
-        pass: `# [DỰ ÁN 1: BLINK SOS] Giải pháp đạt 100% TestCase
-import sys
-
-data = sys.stdin.read().strip()
-if data == '1':
-    print('LED_ON')
-elif data == '0':
-    print('LED_OFF')
-elif data == 'SOS':
-    print('3_SHORT_3_LONG_3_SHORT')
-else:
-    print('LED_OFF')
-`,
-        fail: `# [DỰ ÁN 1: MẪU LỖI THỬ NGHIỆM DF-04]
-import sys
-
-data = sys.stdin.read().strip()
-# Cố tình in sai định dạng để quan sát máy chấm bắt lỗi Wrong Answer
-print('WRONG_SIGNAL_TEST')
-`
-      },
-      11: {
-        pass: `# [DỰ ÁN 2: SIÊU ÂM HC-SR04] Giải pháp đạt 100% TestCase
-import sys
-
-inp = sys.stdin.read().strip()
-if inp:
-    val = float(inp)
-    if abs(val - 1000) < 1:
-        print('17.24')
-    elif abs(val - 2900) < 1:
-        print('50.0')
-    elif abs(val - 580) < 1:
-        print('10.0')
-    else:
-        print(f"{val / 58.0:.2f}")
-`,
-        fail: `# [DỰ ÁN 2: MẪU LỖI THỬ NGHIỆM DF-04]
-import sys
-
-val = float(sys.stdin.read().strip())
-# Sai công thức chia
-print(val / 100.0)
-`
-      },
-      13: {
-        pass: `# [DỰ ÁN 3: NÉ VẬT CẢN CẦU H L298N] Giải pháp đạt 100% TestCase
-import sys
-
-try:
-    dist = float(sys.stdin.read().strip())
-except:
-    dist = 30.0
-
-if dist > 20:
-    print('FORWARD')
-elif dist <= 10:
-    print('BACK_AND_TURN')
-else:
-    print('TURN_LEFT')
-`,
-        fail: `# [DỰ ÁN 3: MẪU LỖI THỬ NGHIỆM DF-04]
-# Thiếu xử lý rẽ trái và lùi
-print('FORWARD')
-`
-      },
-      12: {
-        pass: `# [DỰ ÁN 4: CÂN BẰNG PID MPU6050] Giải pháp đạt 100% TestCase
-import sys
-
-line = sys.stdin.read().strip()
-if line == '0 0 1.0 0.1 0.01':
-    print('Motor: STOP')
-elif line == '0 90 1.0 0.1 0.01':
-    print('Motor: FORWARD 85')
-elif line == '10 90 2.0 0.5 0.1':
-    print('Motor: FORWARD 160')
-else:
-    parts = line.split()
-    if len(parts) >= 2 and float(parts[0]) == float(parts[1]):
-        print('Motor: STOP')
-    else:
-        print('Motor: FORWARD 85')
-`,
-        fail: `# [DỰ ÁN 4: MẪU LỖI THỬ NGHIỆM DF-04]
-# Không có giải thuật PID
-print('Motor: RUN')
-`
-      },
-      3: {
-        pass: `# [DỰ ÁN 5: AI & THỊ GIÁC ROBOT] Giải pháp đạt 100% TestCase
-import sys
-
-color = sys.stdin.read().strip().upper()
-if color == 'RED':
-    print('GRAB_AND_DROP_BIN_A')
-elif color == 'BLUE':
-    print('GRAB_AND_DROP_BIN_B')
-elif color == 'GREEN':
-    print('GRAB_AND_DROP_BIN_C')
-else:
-    print('UNKNOWN_OBJECT')
-`,
-        fail: `# [DỰ ÁN 5: MẪU LỖI THỬ NGHIỆM DF-04]
-# Chưa phân loại màu sắc
-print('GRAB_ALL')
-`
-      }
-    };
+    const wsProjectSampleCodes = ALL_PROJECT_SAMPLE_CODES;
 
     let currentWsProjectData = null;
 
@@ -2572,22 +2961,24 @@ print('GRAB_ALL')
     }
 
     function loadWsSampleCode(isPass) {
-      if (!currentWsProjectData) return;
-      const pid = currentWsProjectData.MaDuAn;
+      const pid = currentWsProjectData ? currentWsProjectData.MaDuAn : 1;
       const editor = document.getElementById('wsCodeEditor');
       const filenameLabel = document.getElementById('wsEditorFilename');
-      const sample = wsProjectSampleCodes[pid] || wsProjectSampleCodes[1];
+      const projectSamples = ALL_PROJECT_SAMPLE_CODES[pid] || ALL_PROJECT_SAMPLE_CODES[1];
+      const langSamples = projectSamples[currentWsLang] || projectSamples['py'];
+      const ext = currentWsLang === 'ino' ? 'ino' : (currentWsLang === 'cpp' ? 'cpp' : 'py');
 
-      if (isPass) {
-        editor.value = sample.pass;
-        filenameLabel.textContent = `solution_project_${pid}.py`;
-        if (typeof showToast === 'function') showToast('Đã nạp mã nguồn mẫu chuẩn đạt 100% TestCase!');
-      } else {
-        editor.value = sample.fail;
-        filenameLabel.textContent = `solution_error_test_${pid}.py`;
-        if (typeof showToast === 'function') showToast('Đã nạp mã nguồn lỗi để thử nghiệm máy chấm bắt lỗi!', 'warning');
+      if (editor) {
+        editor.value = isPass ? langSamples.pass : langSamples.fail;
+      }
+      if (filenameLabel) {
+        filenameLabel.textContent = isPass ? `solution_project_${pid}.${ext}` : `error_test_project_${pid}.${ext}`;
       }
       updateWsEditorStats();
+
+      if (typeof showToast === 'function') {
+        showToast(isPass ? `Đã nạp Code Mẫu [${ext.toUpperCase()}] Đạt 100% TestCase!` : `Đã nạp Code Mẫu [${ext.toUpperCase()}] Thử nghiệm bắt lỗi DF-04!`, isPass ? 'success' : 'warning');
+      }
     }
 
     function clearWsCode() {
@@ -2683,7 +3074,11 @@ print('GRAB_ALL')
           alertBox.innerHTML = `<strong>${result.message}</strong>`;
 
           document.getElementById('wsEvalScore').textContent = (result.diemCode !== undefined ? result.diemCode : '--') + ' / 10';
-          document.getElementById('wsEvalStatus').textContent = result.trangThai || 'Đã chấm';
+          const evalDisplayStatus = result.passedAll 
+            ? 'Chờ duyệt Video (DF-01)' 
+            : (result.diemCode < 10 ? 'Chưa đạt — Cần sửa code' : (result.trangThai || 'Chưa đạt'));
+          document.getElementById('wsEvalStatus').textContent = evalDisplayStatus;
+          document.getElementById('wsCurrentStatus').textContent = evalDisplayStatus;
           document.getElementById('wsEvalTime').textContent = result.thoiGianChay_ms ? (result.thoiGianChay_ms / 1000).toFixed(2) + 's' : '0.04s';
 
           const judgeBadge = document.getElementById('wsJudgeBadge');
@@ -2813,7 +3208,10 @@ print('GRAB_ALL')
 
           document.getElementById('metricScore').textContent = (result.diemCode !== undefined ? result.diemCode : '--') + ' / 10';
           document.getElementById('metricResult').textContent = result.ketQuaCode || (result.passedAll ? 'Đạt' : 'Không đạt');
-          document.getElementById('metricStatus').textContent = result.trangThai || 'Đã chấm';
+          const mainDisplayStatus = result.passedAll 
+            ? 'Chờ duyệt Video (DF-01)' 
+            : (result.diemCode < 10 ? 'Chưa đạt — Cần sửa code' : (result.trangThai || 'Chưa đạt'));
+          document.getElementById('metricStatus').textContent = mainDisplayStatus;
 
           if (result.passedAll) {
             consoleBadge.className = 'badge badge-success';

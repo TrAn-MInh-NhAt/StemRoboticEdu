@@ -317,6 +317,23 @@
     let allCommunityPosts = [];
     let currentFilter = 'all';
 
+    // Helper chuẩn hóa YouTube URL
+    function extractYoutubeId(url) {
+      if (!url) return '';
+      const match = url.match(/(?:youtu\.be\/|(?:youtube\.com|youtube-nocookie\.com)\/(?:watch\?.*v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/i);
+      return (match && match[1]) ? match[1] : '';
+    }
+
+    function toYoutubeEmbedUrl(url, defaultId = 'fJWR7dBuc18') {
+      const id = extractYoutubeId(url) || defaultId;
+      return `https://www.youtube.com/embed/${id}?rel=0`;
+    }
+
+    function toYoutubeDirectUrl(url, defaultId = 'fJWR7dBuc18') {
+      const id = extractYoutubeId(url) || defaultId;
+      return `https://www.youtube.com/watch?v=${id}`;
+    }
+
     // 1. Tải Bảng Vinh Danh (Wall of Fame)
     async function loadWallOfFame() {
       try {
@@ -337,12 +354,20 @@
           card.className = 'bento-card';
           card.style.cssText = 'border: 2px solid var(--c-text-main); box-shadow: 4px 4px 0 var(--c-primary); display: flex; flex-direction: column; justify-content: space-between;';
 
-          const embedUrl = f.EmbedUrl || 'https://www.youtube-nocookie.com/embed/fJWR73zp1Pc';
+          const videoSrc = f.VideoVanHanh || f.EmbedUrl;
+          const embedUrl = toYoutubeEmbedUrl(videoSrc, 'fJWR7dBuc18');
+          const directUrl = toYoutubeDirectUrl(videoSrc, 'fJWR7dBuc18');
 
-          // Video responsive container
+          // Video responsive container kèm nút mở trực tiếp trên YouTube
           const videoHtml = `
-            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 16px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
+            <div style="background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 6px; position: relative; aspect-ratio: 16/9; border: 1.5px solid rgba(11,15,25,0.15);">
               <iframe width="100%" height="100%" src="${embedUrl}" title="Video vận hành ${f.TenHocSinh}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            </div>
+            <div style="margin-bottom: 12px; text-align: right;">
+              <a href="${directUrl}" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="font-size: 0.74rem; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; color: var(--c-text-dim); text-decoration: none;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <span>Mở trực tiếp trên YouTube ↗</span>
+              </a>
             </div>
           `;
 
@@ -417,10 +442,10 @@
       }
     }
 
-    // 2. Tải danh sách bài viết & Top Trending (DF-03)
+    // 2. Tải danh sách bài viết (Đẩy bài mới lên đầu)
     async function loadCommunityPosts() {
       try {
-        const res = await fetch('/api/community/posts');
+        const res = await fetch('/api/thaoluan');
         const data = await res.json();
         if (!data.success) return;
 
@@ -448,12 +473,14 @@
       }
 
       filtered.forEach(p => {
+        const pid = p.MaThaoLuan || p.MaNoiDung;
         const card = document.createElement('div');
+        card.id = `post-card-${pid}`;
         card.style.cssText = `
           background: #FFFFFF;
           border-radius: var(--radius-card);
           padding: 24px;
-          margin-bottom: 16px;
+          margin-bottom: 20px;
           border: 1.5px solid ${p.isTopTrending ? 'var(--c-primary)' : 'rgba(11, 15, 25, 0.08)'};
           box-shadow: ${p.isTopTrending ? '4px 4px 0 var(--c-primary)' : 'var(--shadow-soft)'};
           transition: all 0.3s ease;
@@ -477,17 +504,44 @@
                 ${p.TieuDe}
               </h3>
             </div>
-            <div>
-              <button class="btn btn-secondary btn-sm" onclick="votePost(${p.MaNoiDung}, this)" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                <span>${p.SoLuotBinhChon || 0}</span> Bình chọn
+            <div style="display:flex; gap:8px; align-items:center;">
+              <!-- Nút Like (Thích) -->
+              <button class="btn btn-secondary btn-sm" id="like-btn-${pid}" onclick="likePost(${pid}, this)" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; transition:all 0.2s;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                <span id="like-count-${pid}">${p.LuotThich || p.SoLuotBinhChon || 0}</span> Thích
+              </button>
+              <!-- Nút Toggle Bình Luận -->
+              <button class="btn btn-secondary btn-sm" onclick="toggleComments(${pid})" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span id="comment-count-${pid}">${p.SoBinhLuan || 0}</span> Bình luận
               </button>
             </div>
           </div>
-          <p style="font-size: 0.92rem; color: var(--c-text-dim); line-height: 1.6; margin-bottom: 16px; white-space: pre-wrap;">${p.NoiDung}</p>
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size: 0.8rem; color: var(--c-text-dim); border-top: 1px solid rgba(11, 15, 25, 0.05); padding-top: 12px;">
+          <p style="font-size: 0.94rem; color: var(--c-text-main); line-height: 1.6; margin-bottom: 16px; white-space: pre-wrap;">${p.NoiDung}</p>
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size: 0.8rem; color: var(--c-text-dim); border-top: 1px solid rgba(11, 15, 25, 0.05); padding-top: 12px; margin-bottom: 12px;">
             <div>Tác giả: <strong>${p.TenTacGia}</strong> (${p.VaiTroTacGia})</div>
-            <div>${new Date(p.NgayDang).toLocaleDateString('vi-VN')}</div>
+            <div>${new Date(p.NgayDang || p.NgayTao).toLocaleString('vi-VN')}</div>
+          </div>
+
+          <!-- Khung Bình Luận Mở Rộng (TTCĐ.02) -->
+          <div id="comments-box-${pid}" style="display:none; background: #F8FAFC; border-radius: 14px; padding: 16px; border: 1px solid rgba(11,15,25,0.06); margin-top: 12px;">
+            <h4 style="font-size: 0.88rem; font-weight: 800; color: var(--c-text-main); margin-bottom: 12px; display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Khu vực Thảo luận &amp; Bình luận
+            </h4>
+
+            <!-- Danh sách các bình luận -->
+            <div id="comments-list-${pid}" style="display:flex; flex-direction:column; gap:10px; margin-bottom: 14px;">
+              <p class="text-muted" style="font-size:0.82rem; margin:0;">Đang nạp phản hồi...</p>
+            </div>
+
+            <!-- Form gửi bình luận mới -->
+            <form onsubmit="submitComment(${pid}, event)" style="display:flex; gap:10px; align-items:flex-start;">
+              <textarea id="comment-input-${pid}" class="form-control" rows="2" placeholder="Nhập ý kiến, phản hồi kỹ thuật hoặc giải pháp của bạn..." style="font-size:0.88rem; resize:none; padding:10px;" required></textarea>
+              <button type="submit" id="btn-comment-${pid}" class="btn-playful btn-playful-primary magnet-btn" style="padding: 10px 18px; font-size:0.85rem; white-space:nowrap; flex-shrink:0;">
+                Gửi bình luận
+              </button>
+            </form>
           </div>
         `;
         container.appendChild(card);
@@ -503,21 +557,133 @@
       renderPosts();
     }
 
-    async function votePost(postId, btn) {
+    // Chức năng Thích (Like) cập nhật tức thì (TTCĐ.02)
+    async function likePost(postId, btn) {
       try {
         btn.disabled = true;
-        const res = await fetch(`/api/community/posts/${postId}/vote`, { method: 'POST' });
+        const res = await fetch(`/api/thaoluan/${postId}/like`, { method: 'POST' });
         const result = await res.json();
         if (result.success) {
-          const span = btn.querySelector('span');
-          if (span) span.textContent = result.votes;
-          btn.style.background = 'var(--c-primary)';
-          btn.style.color = '#FFF';
+          const countSpan = document.getElementById(`like-count-${postId}`);
+          if (countSpan) countSpan.textContent = result.likes;
+          btn.style.background = 'rgba(220, 38, 38, 0.1)';
+          btn.style.color = '#DC2626';
+          btn.style.borderColor = '#DC2626';
+          const svg = btn.querySelector('svg');
+          if (svg) svg.setAttribute('fill', '#DC2626');
+          if (typeof showToast === 'function') showToast('Cảm ơn bạn đã thích bài thảo luận!');
         }
       } catch (err) {
-        console.error('Lỗi vote:', err);
+        console.error('Lỗi like:', err);
       } finally {
         btn.disabled = false;
+      }
+    }
+
+    // Bật/tắt khung bình luận & Tự động nạp bình luận
+    async function toggleComments(postId) {
+      const box = document.getElementById(`comments-box-${postId}`);
+      if (!box) return;
+      if (box.style.display === 'none' || !box.style.display) {
+        box.style.display = 'block';
+        loadComments(postId);
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    async function loadComments(postId) {
+      const listContainer = document.getElementById(`comments-list-${postId}`);
+      if (!listContainer) return;
+      try {
+        const res = await fetch(`/api/thaoluan/${postId}/comments`);
+        const data = await res.json();
+        if (!data.success || !data.comments || data.comments.length === 0) {
+          listContainer.innerHTML = '<p class="text-muted" style="font-size:0.82rem; margin:0; padding:6px 0;">Chưa có bình luận nào. Hãy là người đầu tiên để lại ý kiến!</p>';
+          return;
+        }
+
+        listContainer.innerHTML = '';
+        data.comments.forEach(c => {
+          const item = document.createElement('div');
+          item.style.cssText = 'background:#FFFFFF; border-radius:10px; padding:10px 14px; border:1px solid rgba(11,15,25,0.06); font-size:0.85rem;';
+          item.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <div>
+                <strong style="color:var(--c-text-main); font-size:0.85rem;">${c.TenNguoiBinhLuan}</strong>
+                <span class="badge ${c.VaiTro === 'Giáo viên' ? 'badge-primary' : 'badge-secondary'}" style="font-size:0.68rem; margin-left:6px; padding:2px 6px;">${c.VaiTro}</span>
+                ${c.Lop ? `<span style="font-size:0.75rem; color:var(--c-text-dim); margin-left:4px;">(${c.Lop})</span>` : ''}
+              </div>
+              <span style="font-size:0.75rem; color:#94A3B8;">${new Date(c.NgayTao).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} ${new Date(c.NgayTao).toLocaleDateString('vi-VN')}</span>
+            </div>
+            <div style="color:var(--c-text-main); line-height:1.5; white-space:pre-wrap;">${c.NoiDung}</div>
+          `;
+          listContainer.appendChild(item);
+        });
+      } catch (err) {
+        listContainer.innerHTML = '<p class="text-danger" style="font-size:0.82rem;">Lỗi nạp bình luận.</p>';
+      }
+    }
+
+    // Gửi bình luận và hiển thị tức thì (TTCĐ.02)
+    async function submitComment(postId, e) {
+      e.preventDefault();
+      const input = document.getElementById(`comment-input-${postId}`);
+      const btn = document.getElementById(`btn-comment-${postId}`);
+      const listContainer = document.getElementById(`comments-list-${postId}`);
+      const countSpan = document.getElementById(`comment-count-${postId}`);
+      if (!input || !input.value.trim()) return;
+
+      const noiDung = input.value.trim();
+      btn.disabled = true;
+      btn.textContent = 'Đang gửi...';
+
+      try {
+        const res = await fetch(`/api/thaoluan/${postId}/comment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ noiDung })
+        });
+        const result = await res.json();
+        if (result.success && result.comment) {
+          const c = result.comment;
+          // Nếu trước đó đang hiện text 'Chưa có bình luận nào' thì dọn sạch
+          if (listContainer.querySelector('.text-muted')) {
+            listContainer.innerHTML = '';
+          }
+
+          const item = document.createElement('div');
+          item.style.cssText = 'background:#FFFFFF; border-radius:10px; padding:10px 14px; border:1.5px solid var(--c-primary); font-size:0.85rem; animation: bouncyUp 0.3s ease;';
+          item.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <div>
+                <strong style="color:var(--c-primary); font-size:0.85rem;">${c.TenNguoiBinhLuan}</strong>
+                <span class="badge badge-primary" style="font-size:0.68rem; margin-left:6px; padding:2px 6px;">${c.VaiTro}</span>
+                ${c.Lop ? `<span style="font-size:0.75rem; color:var(--c-text-dim); margin-left:4px;">(${c.Lop})</span>` : ''}
+              </div>
+              <span style="font-size:0.75rem; color:#94A3B8;">Vừa xong</span>
+            </div>
+            <div style="color:var(--c-text-main); line-height:1.5; white-space:pre-wrap;">${c.NoiDung}</div>
+          `;
+          listContainer.appendChild(item);
+          input.value = '';
+
+          // Tăng comment count
+          if (countSpan) {
+            const current = parseInt(countSpan.textContent) || 0;
+            countSpan.textContent = current + 1;
+          }
+
+          if (typeof showToast === 'function') showToast('Đã gửi bình luận thành công!');
+        } else {
+          alert(result.message || 'Lỗi gửi bình luận');
+        }
+      } catch (err) {
+        console.error('Lỗi gửi bình luận:', err);
+        alert('Lỗi kết nối khi gửi bình luận');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Gửi bình luận';
       }
     }
 

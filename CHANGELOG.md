@@ -28,6 +28,74 @@ Hệ thống được phát triển tuần tự và khép kín qua 5 chặng ph�
 
 ---
 
+## 🌟 [v2.3.0] - 15/11/2026 — ĐỒNG BỘ CODE MẪU 10/10Đ, CHUẨN HÓA LỚP 10/1, THẢO LUẬN REALTIME & NÂNG CẤP GIAO DIỆN
+
+Phiên bản hoàn thiện toàn diện chất lượng đào tạo, tối ưu hóa thuật toán chấm điểm tự động, chuẩn hóa dữ liệu học sinh lớp 10/1 và nâng cấp tính năng tương tác cộng đồng theo phản hồi thực tế từ người dùng.
+
+### 1. Đồng Bộ Mã Nguồn Mẫu 100% Điểm, Chuẩn Hóa Judge Engine & Xử Lý Bài Nộp (XLBN.01 – XLBN.03, DF-01, DF-04)
+- **Tích hợp nút "Tải code mẫu 100%" đạt chuẩn 10/10 điểm cho toàn bộ 5 dự án:**
+  - Cung cấp sẵn giải pháp chuẩn sư phạm (`passedAll: true`, đạt tối đa 10.0/10 điểm) cho tất cả các dự án trong hệ thống (`.py`, `.cpp`, `.ino`).
+  - *Dự án 1 (Blink SOS):* Thuật toán xử lý chuỗi và phát xung Morse SOS.
+  - *Dự án 2 (Siêu âm HC-SR04):* Đo khoảng cách theo công thức phản hồi vi giây ($d = t / 58.0$).
+  - *Dự án 3 (Cầu H L298N & Xe né vật cản):* Giải thuật điều hướng chuyển động đa hướng.
+  - *Dự án 4 (Cân bằng con quay MPU6050 PID):* Bộ điều khiển tỉ lệ - tích phân - vi phân cân bằng quán tính.
+  - *Dự án 5 (Xe tự hành 2 bánh & Thị giác AI):* Xử lý hình ảnh OpenCV và phân loại tọa độ vật thể.
+- **Nâng cấp Kernel Máy chấm Judge Engine (`judge_engine/services/runner.py`):**
+  - Chuẩn hóa hàm so sánh chuỗi kết quả: triệt tiêu khoảng trắng thừa, đồng nhất ký tự xuống dòng (`\r\n` và `\n`).
+  - Hỗ trợ so sánh số thực `float` có độ lệch sai số cho phép ($\epsilon \le 0.05$) đối với cảm biến khoảng cách và thuật toán tính toán liên tục.
+- **Hỗ trợ nộp bài trực tiếp từ Trình soạn thảo Web:**
+  - Cho phép học sinh gõ/dán code trực tiếp hoặc tải tệp từ máy tính. Hệ thống tự động chuyển đổi mã nguồn thành Blob tệp `.py`/`.ino` kết hợp với liên kết Video vận hành thực tế (`XLBN.01`).
+- **Minh bạch trạng thái máy chấm và log viễn trắc (`XLBN.03`, `KQBN.01`):**
+  - Bài nộp đạt 100% TestCase tự động chuyển sang `Chờ duyệt Video` và gửi lên Dashboard Giáo viên (`DF-01`).
+  - Bài nộp chưa đạt giữ trạng thái `Chưa đạt`, hiển thị chi tiết log lỗi tiếng Việt kèm bảng trạng thái từng TestCase (PASS/FAIL).
+
+### 2. Chuẩn Hóa Dữ Liệu Cộng Đồng Vinh Danh & Toàn Bộ Lớp Học Về Lớp 10/1 (TTCĐ.01, QTHT.01)
+- **Sửa triệt để lỗi đếm trùng lặp số dự án hoàn thành trên Bảng xếp hạng:**
+  - Tối ưu hóa câu truy vấn xếp hạng: Sử dụng `COUNT(DISTINCT MaDuAn)` đối với các bài nộp đã được duyệt (`Đã chốt điểm` hoặc `Chờ duyệt Video` với điểm code 10/10), không còn tình trạng cộng dồn các lần nộp nháp/nộp thử (ví dụ: học sinh làm 2 dự án nhưng hiển thị 5 bài).
+  - Tính tổng điểm xếp hạng chuẩn mực dựa trên điểm cao nhất của từng dự án (`MAX(DiemTong)` hoặc `MAX(DiemCode)`).
+- **Quy hoạch chuẩn hóa 100% dữ liệu lớp học về Lớp `10/1`:**
+  - Rà soát và loại bỏ toàn bộ mã lớp đại học cũ (`23SPT`, `24CNTT1`, `24CNTT`, `CNTT`...) trong CSDL SQL Server `StemRoboticDB_V2` và mã nguồn.
+  - Thiết lập mặc định tất cả tài khoản Học sinh thuộc biên chế Lớp Chuyên Kỹ thuật Robotics **`10/1`** dưới sự chủ nhiệm của TS. Đặng Hùng Vĩ.
+- **Nâng cấp tài khoản thử nghiệm trên Trang Đăng nhập (`/login`):**
+  - Chuyển đổi các nút điền nhanh chung chung thành thông tin thực tế của nhóm: Admin, TS. Đặng Hùng Vĩ (GVCN), Trần Minh Nhật (10/1), Phạm Kỳ Hải (10/1).
+
+### 3. Khắc Phục Lỗi Giao Diện Trang Chủ & Chuẩn Hóa Phát Video YouTube Trực Tiếp
+- **Sửa lỗi hiển thị nút bấm Trang chủ (`/`):**
+  - Khắc phục nút tàng hình trên Banner tối màu: Bổ sung nhãn *"Khám Phá Lộ Trình →"* với màu chữ tối tương phản nổi bật (`color: #1E293B !important; font-weight: 700;`).
+  - Khôi phục khung viền nền tím `#5A52FF` cho nút Lộ trình 1, ép màu chữ trắng tinh (`#FFFFFF !important`) sắc nét trên cả 3 nút lộ trình Tím, Đỏ và Cam.
+- **Sửa dứt điểm lỗi "Video này không hoạt động" trên Bảng vinh danh và Học liệu:**
+  - Thay thế toàn bộ liên kết video giả định trong CSDL bằng 5 video YouTube STEM/Robotics thực tế đang phát mượt mà:
+    + Blink SOS Arduino: `fJWR7dBuc18`
+    + Cảm biến siêu âm HC-SR04: `ZejQOX69K5M`
+    + Động cơ L298N: `dyjo_9KaUEc`
+    + Động cơ Servo SG90: `kUHmYKWwuWs`
+    + Robot dò line tự hành: `0v7M3b0u0sM`
+  - Tích hợp bộ giải mã URL YouTube vạn năng (nhận diện mọi định dạng `watch?v=`, `youtu.be/`, `shorts/`, `embed/`) và bổ sung nút bấm *"Mở trực tiếp trên YouTube ↗"* dưới tất cả các khung phát video.
+- **Tinh chỉnh giao diện Không gian học tập:**
+  - Loại bỏ hoàn toàn nút đỏ *Báo cáo sự cố kỹ thuật (HTTB.01)* ở đầu trang giúp giao diện tập trung và thẩm mỹ hơn.
+  - Sắp xếp và lọc học liệu gợi ý trúng đích theo từng dự án (`/api/projects/:id`), chỉ hiển thị tài liệu/linh kiện liên quan trực tiếp đến đề bài đang làm.
+  - Tinh chỉnh nhãn khóa điều kiện tiên quyết (`DF-02`), loại bỏ hiện tượng tràn viền, đè icon và vỡ khung thẻ bài tập.
+
+### 4. Hoàn Thiện Phân Hệ Thảo Luận Kỹ Thuật (TTCĐ.02 — Like & Comment Realtime)
+- **Mở rộng lược đồ CSDL:**
+  - Bổ sung cột `LuotThich INT NOT NULL DEFAULT 0` vào bảng `NoiDungCongDong`.
+  - Tạo mới bảng `BinhLuanThaoLuan` (`MaBinhLuan`, `MaThaoLuan`, `MaNguoiDung`, `NoiDung`, `NgayTao`) lưu trữ chuỗi trao đổi kỹ thuật.
+- **Bộ API tương tác thời gian thực mới:**
+  - `POST /api/thaoluan/:id/like` (alias `/api/community/posts/:id/like`): Tăng lượt thích tức thì không cần tải lại trang.
+  - `POST /api/thaoluan/:id/comment`: Tiếp nhận bình luận, lưu CSDL và trả về thông tin người phản hồi kèm vai trò.
+  - `GET /api/thaoluan/:id/comments`: Nạp danh sách bình luận của từng chủ đề thảo luận.
+- **Giao diện trao đổi hiện đại:**
+  - Đồng bộ tính năng Thích và Bình luận thời gian thực trên cả trang Diễn đàn (`/community`) và tab Diễn đàn tại Bàn làm việc Học sinh (`/student`).
+  - Mặc định đưa các chủ đề mới nhất lên đầu trang (`ORDER BY NgayDang DESC, MaNoiDung DESC`).
+
+### 5. Hoàn Thiện Tài Liệu Phân Công 27/27 Mô Đun IPO & Nhật Ký Tiến Độ Nhóm (`docs/BAO_CAO_TIEN_DO_NHOM.md`)
+- Khởi tạo mới tài liệu [docs/BAO_CAO_TIEN_DO_NHOM.md](docs/BAO_CAO_TIEN_DO_NHOM.md) ghi nhận chi tiết:
+  - Phân công trách nhiệm 5 thành viên nhóm A+ phủ kín 100% 27/27 mô đun IPO và 7 luồng tự động (`DF-01` đến `DF-07`).
+  - Ma trận trách nhiệm RACI và liên kết từng nhánh tính năng Pull Request với từng mô đun.
+  - Nhật ký chi tiết 5 chặng phát triển từ 01/11/2026 đến 15/11/2026.
+
+---
+
 ## 🔧 [v2.2.0] - 15/11/2026 — SỬA LỖI ĐIỀU HƯỚNG GIÁO VIÊN & BỔ SUNG ẢNH GIAO DIỆN THỰC TẾ
 
 Phiên bản cập nhật tập trung khắc phục lỗi cú pháp gây tê liệt giao diện Bàn làm việc Giảng viên (`/teacher`), phục hồi đầy đủ luồng hiển thị bài nộp học sinh và bổ sung tài liệu minh họa ảnh chụp thực tế hệ thống vào tài liệu dự án.

@@ -37,10 +37,10 @@ struct SerialClass {
     void println(const char* s) { printf("%s\n", s); }
     void print(float f, int d=2) { printf("%.*f", d, f); }
     void println(float f, int d=2) { printf("%.*f\n", d, f); }
-    bool available() { return 0; }
-    int read() { return -1; }
-    int parseInt() { return 0; }
-    float parseFloat() { return 0.0f; }
+    bool available() { return !feof(stdin); }
+    int read() { return getchar(); }
+    int parseInt() { int v = 0; if (scanf("%d", &v) == 1) return v; return 0; }
+    float parseFloat() { float v = 0.0f; if (scanf("%f", &v) == 1) return v; return 0.0f; }
 };
 extern SerialClass Serial;
 #endif // ARDUINO_MOCK_H
