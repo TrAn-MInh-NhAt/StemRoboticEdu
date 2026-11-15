@@ -12,6 +12,22 @@ Nhóm sinh viên thực hiện: **Nhóm A+ (24SPT)**
 
 ---
 
+## 🗺️ TỔNG QUAN TIẾN ĐỘ 5 CHẶNG PHÁT TRIỂN NỘI BỘ (01/11/2026 – 15/11/2026)
+
+Hệ thống được phát triển tuần tự và khép kín qua 5 chặng phát triển đồng bộ giữa 5 thành viên nhóm A+, phủ kín toàn bộ 27/27 mô đun IPO và 7 luồng tự động DF-01 đến DF-07:
+
+| Chặng | Mốc Thời Gian | Mục Tiêu & Trọng Tâm Kỹ Thuật | Sản Phẩm Hoàn Thành & Kết Quả | Phụ Trách Chính |
+|:---:|:---:|:---|:---|:---|
+| **Chặng 1** | 01/11 – 03/11 | Khảo sát thực tế, đặc tả 27 IPO (`PRODUCT.md`), thiết kế CSDL SQL Server 12 bảng BCNF (`database_schema.sql`), khởi tạo UI Neo-Brutalist (`theme.css`) | Hoàn thiện tài liệu Single Source of Truth, CSDL BCNF, Design System không AI-Slop, kế hoạch kiểm thử QA | Toàn nhóm (Quân, Vy, Thảo, Hải, Nhật) |
+| **Chặng 2** | 04/11 – 06/11 | Xây dựng Web Server Node.js (Port 80), xác thực SSO, phân quyền RBAC 4 vai trò (`authMiddleware.js`), nạp 3 lộ trình học và 8 bài học liệu nền tảng | Đăng nhập/Đăng ký an toàn, 3 lộ trình & 8 học liệu, Bảng vinh danh, 12 Test Cases thuật toán | Nhật, Quân, Vy, Thảo, Hải |
+| **Chặng 3** | 07/11 – 09/11 | Xây dựng Judge Engine FastAPI (Port 5000), Sandbox cô lập 3.0s, mock phần cứng `arduino_mock.h`, nghiệm thu kép mã nguồn + Video, mở khóa tuần tự | Hoàn thiện máy chấm C++/Arduino/.py, thẩm định video DF-01, mở khóa DF-02, tra cứu linh kiện TCPP.02 | Nhật, Quân, Vy |
+| **Chặng 4** | 10/11 – 12/11 | Phòng thi chống gian lận chuyển tab (`DF-06`), quét lỗi bài nộp >30% cảnh báo học liệu (`DF-05`), xuất báo cáo CSV/PDF, hỗ trợ sự cố, diễn đàn kỹ thuật (`DF-03`), khóa mềm (`DF-07`) | 27/27 IPO hoàn thiện, 7/7 luồng tự động kích hoạt, xuất bảng điểm CSV/PDF, phòng thi trực tuyến an toàn | Hải, Thảo, Vy, Quân |
+| **Chặng 5** | 13/11 – 15/11 | Kiểm thử tích hợp E2E (`full_system_test.js` 37/37 PASS), công cụ khởi động 1-Click Watchdog dọn cổng (`STEM_Robotic_App.ps1`), đóng gói Release GitHub | 37/37 Test PASS (100%), 1-Click .bat, fix UI giáo viên (v2.2.0), đồng bộ tài liệu tiến độ nhóm | Nhật, Hải & Cả nhóm |
+
+> 📑 *Chi tiết phân công nhiệm vụ từng thành viên, sản phẩm Pull Request và nhật ký từng chặng xem tại [docs/BAO_CAO_TIEN_DO_NHOM.md](docs/BAO_CAO_TIEN_DO_NHOM.md).*
+
+---
+
 ## 🔧 [v2.2.0] - 15/11/2026 — SỬA LỖI ĐIỀU HƯỚNG GIÁO VIÊN & BỔ SUNG ẢNH GIAO DIỆN THỰC TẾ
 
 Phiên bản cập nhật tập trung khắc phục lỗi cú pháp gây tê liệt giao diện Bàn làm việc Giảng viên (`/teacher`), phục hồi đầy đủ luồng hiển thị bài nộp học sinh và bổ sung tài liệu minh họa ảnh chụp thực tế hệ thống vào tài liệu dự án.

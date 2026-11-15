@@ -20,11 +20,21 @@
 > **Lớp:** 24SPT · **Năm học:** 2026
 
 ---
-![Node.js](https://img.shields.io/badge/Backend-Node.js%2020+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![FastAPI](https://img.shields.io/badge/Judge%20Engine-Python%20FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![SQL Server](https://img.shields.io/badge/Database-SQL%20Server%2012%20Tables-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
-![Modules](https://img.shields.io/badge/Modules%20IPO-27%2F27%20Completed-5A52FF?style=for-the-badge)
-![Release](https://img.shields.io/badge/Release-v2.1.0-FFB800?style=for-the-badge)
+
+### 👥 Phân Công Nhiệm Vụ 5 Thành Viên (Đủ 27/27 Mô Đun IPO & 7 Luồng Tự Động)
+
+| STT | Thành Viên | Tài Khoản GitHub | Vai Trò Chính | Số Lượng & Mã Mô Đun IPO | Luồng Tự Động | Nhánh Tính Năng (PR) & Sản Phẩm Đóng Góp |
+|:---:|:---|:---|:---|:---:|:---:|:---|
+| **1** | **Trần Minh Nhật** | `TrAn-MInh-NhAt` | **Trưởng nhóm & Kiến trúc sư trưởng** | **9 mô đun:**<br>`QLTK.01-03`, `QTHT.01`, `XLBN.01-03`, `KQBN.01-02` | `DF-01`<br>`DF-03`<br>`DF-04` | Quản trị nhánh `main`, Release `v2.0.0`–`v2.2.0`, Watchdog `STEM_Robotic_App.ps1`, CI/CD, Review & Merge toàn bộ PR |
+| **2** | **Trần Thế Quân** | `tranquan6211-dot` | **Thiết kế Hệ thống & CSDL** | **5 mô đun:**<br>`QTHT.02-03`, `QLDA.02`, `HTTB.01-02` | `DF-02`<br>`DF-07` | `feature/quan-csdl-hethong`<br>• `docs/DAC_TA_CSDL.md`<br>• `server/seed_quan_thongbao.js` |
+| **3** | **Phạm Thị Hà Vy** | `phamthihavy032-dev` | **Phân tích Nghiệp vụ & Phát triển Học liệu** | **4 mô đun:**<br>`QTHL.01-02`, `TCPP.01-02` | `DF-05` | `feature/vy-hoclieu-morong`<br>• `docs/NGHIEP_VU_HOC_LIEU.md`<br>• `server/seed_vy_hoclieu_morong.js` |
+| **4** | **Nguyễn Thị Thanh Thảo** | `thanhthao-21` | **Phân tích Chức năng, Báo cáo & UI/UX** | **5 mô đun:**<br>`TKDL.01-02`, `XBC.01-02`, `TTCĐ.01` | `DF-05` | `feature/thao-ui-baocao`<br>• `docs/THIET_KE_UI_UX.md`<br>• `public/css/responsive-mobile.css` |
+| **5** | **Phạm Kỳ Hải** | `kyhaipham95-oss` | **Quản lý Chất lượng & QA Lead** | **4 mô đun:**<br>`QLDA.01`, `KTĐG.01-02`, `TTCĐ.02` | `DF-06` | `feature/hai-qa-kiemthu`<br>• `docs/BAO_CAO_KIEM_THU_QA.md`<br>• `server/tests/qa_edge_cases.js` |
+
+> 🎯 **Tổng cộng: 9 + 5 + 4 + 5 + 4 = 27/27 mô đun IPO & 7/7 luồng tự động (DF-01 – DF-07).**  
+> 📑 *Chi tiết phân công nhiệm vụ và nhật ký 5 chặng phát triển xem tại [docs/BAO_CAO_TIEN_DO_NHOM.md](docs/BAO_CAO_TIEN_DO_NHOM.md).*
+
+---
 
 ## 🖼️ Giao Diện Hệ Thống Thực Tế
 
