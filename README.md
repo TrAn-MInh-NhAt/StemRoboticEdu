@@ -12,6 +12,19 @@
 > **Lớp:** 24SPT · **Năm học:** 2026
 
 ---
+![Node.js](https://img.shields.io/badge/Backend-Node.js%2020+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![FastAPI](https://img.shields.io/badge/Judge%20Engine-Python%20FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![SQL Server](https://img.shields.io/badge/Database-SQL%20Server%2012%20Tables-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
+![Modules](https://img.shields.io/badge/Modules%20IPO-27%2F27%20Completed-5A52FF?style=for-the-badge)
+![Release](https://img.shields.io/badge/Release-v2.1.0-FFB800?style=for-the-badge)
+
+## 🖼️ Giao Diện Hệ Thống Thực Tế
+
+| Trang Chủ & Bảng Xếp Hạng (Neo-Brutalist) | Không Gian Học Sinh & Máy Chấm Tự Động |
+| :---: | :---: |
+| ![Trang chủ](docs/images/01-trang-chu.png) | ![Học sinh và máy chấm](docs/images/02-hoc-sinh-may-cham.png) |
+| **Bảng Điều Khiển Giáo Viên & Cảnh Báo Học Liệu** | **Phòng Thi Trực Tuyến Chống Chuyển Tab (DF-06)** |
+| ![Giáo viên cảnh báo](docs/images/03-giao-vien-canh-bao.png) | ![Phòng thi chống gian lận](docs/images/04-phong-thi-chong-gian-lan.png) |
 
 ## 📌 Lịch Sử Cập Nhật & Tiến Độ Dự Án (Milestones & Changelog)
 
