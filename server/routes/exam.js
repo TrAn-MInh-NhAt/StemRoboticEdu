@@ -249,9 +249,9 @@ router.post('/submit', isLoggedIn, async (req, res) => {
 });
 
 // =========================================================================
-// 5. GET /api/analytics/df05-check - Phân tích tỷ lệ lỗi & Cảnh báo Học liệu (DF-05)
+// 5. GET /api/analytics/df05-check (hoặc /analytics/check-df05) - Phân tích tỷ lệ lỗi & Cảnh báo Học liệu (DF-05)
 // =========================================================================
-router.get('/analytics/df05-check', isTeacherOrAdmin, async (req, res) => {
+router.get(['/analytics/df05-check', '/analytics/check-df05'], isTeacherOrAdmin, async (req, res) => {
   const pool = getPool();
   try {
     // 1. Phân tích kết quả nộp bài của từng dự án từ bảng KetQuaDiem & BaiNop

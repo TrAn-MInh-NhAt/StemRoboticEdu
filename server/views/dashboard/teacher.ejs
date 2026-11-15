@@ -1037,10 +1037,6 @@
         allBody.appendChild(tr);
       });
     }
-      } catch (e) {
-        console.error('Lỗi loadSubmissions:', e);
-      }
-    }
 
     // 2. Khung duyệt & xem video nhúng (KQBN.01, KQBN.02)
     function openGrading(maBaiNop) {
@@ -1573,7 +1569,7 @@
     // 8. Kiểm tra Luồng tự động DF-05 (Cảnh báo cập nhật học liệu)
     async function checkDF05QualityAlert() {
       try {
-        const res = await fetch('/api/exam/analytics/check-df05');
+        const res = await fetch('/api/exam/analytics/df05-check');
         const data = await res.json();
 
         if (data.success && data.hasWarning) {
@@ -1581,13 +1577,15 @@
           const summary = document.getElementById('df05AlertSummary');
           const list = document.getElementById('df05FlaggedList');
 
-          alertBox.style.display = 'block';
-          summary.textContent = `Hệ thống phân tích log lỗi (TKDL.02) phát hiện có ${data.stats.totalFailures} lượt nộp bài không đạt. Bài tập "${data.stats.sampleExercise || 'Dự án STEM'}" có tỷ lệ lỗi lên tới ${data.stats.failureRate}% (> ngưỡng 30%). Hệ thống đã tự động bật cờ CoCanCapNhat = 1 ở bảng HocLieu để nhắc Giảng viên cập nhật.`;
+          if (alertBox) alertBox.style.display = 'block';
+          if (summary) {
+            summary.textContent = `Hệ thống phân tích chất lượng phát hiện có ${data.allFlaggedMaterials ? data.allFlaggedMaterials.length : 0} học liệu cần cập nhật nội dung để hỗ trợ học sinh thực hành tốt hơn.`;
+          }
 
-          if (data.allFlaggedMaterials && data.allFlaggedMaterials.length > 0) {
+          if (list && data.allFlaggedMaterials && data.allFlaggedMaterials.length > 0) {
             let html = '<div style="font-weight:700; margin-bottom:8px; color:#991B1B;">Danh sách học liệu đã tự động gắn cờ CoCanCapNhat = 1:</div><ul style="padding-left: 20px;">';
             data.allFlaggedMaterials.forEach(m => {
-              html += `<li style="margin-bottom:4px;"><strong>[Mã HL #${m.MaHocLieu}] ${m.TieuDe}</strong> (Loại: ${m.LoaiHocLieu}) · Lộ trình: <em>${m.TenLoTrinh}</em></li>`;
+              html += `<li style="margin-bottom:4px;"><strong>[Mã HL #${m.MaHocLieu}] ${m.TenHocLieu || m.TieuDe}</strong> (Loại: ${m.LoaiHocLieu}) · Lộ trình: <em>${m.TenLoTrinh || 'Toàn hệ thống'}</em></li>`;
             });
             html += '</ul>';
             list.innerHTML = html;

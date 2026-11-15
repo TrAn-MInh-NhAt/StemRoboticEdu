@@ -1,5 +1,13 @@
 # 🤖 HỆ THỐNG HỌC TẬP VÀ QUẢN LÝ ĐÀO TẠO STEM ROBOTIC CẤP TRUNG HỌC
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-v20%20%7C%20v22-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/FastAPI-Python%203.11-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/SQL%20Server-2019%20%7C%202022-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white" alt="SQL Server" />
+  <img src="https://img.shields.io/badge/IPO%20Modules-27%2F27%20(100%25)-5A52FF?style=for-the-badge" alt="IPO Modules" />
+  <img src="https://img.shields.io/badge/Release-v2.2.0-047857?style=for-the-badge&logo=git&logoColor=white" alt="Version" />
+</p>
+
 > **ĐẠI HỌC ĐÀ NẴNG — TRƯỜNG ĐẠI HỌC SƯ PHẠM — KHOA TOÁN - TIN**  
 > **Người hướng dẫn khoa học:** TS. Đặng Hùng Vĩ  
 > **Nhóm sinh viên thực hiện:**  
@@ -17,7 +25,8 @@
 
 | Phiên bản | Mốc Thời Gian | Trạng Thái 27/27 IPO | Luồng DF-01..07 | Vận Hành & Khởi Động | Tài Liệu Chi Tiết |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| **v2.1.0 (Milestone 3)** | **15/11/2026** | **27/27 Hoàn Thành (100%)** | **7/7 Kích Hoạt (100%)** | **1-Click (.bat & Watchdog)** | [Xem CHANGELOG.md](CHANGELOG.md) · [Khởi Chạy 1-Click](#-hướng-dẫn-khởi-chạy-nhanh-1-click-khuyên-dùng) |
+| **v2.2.0** | **15/11/2026** | **27/27 Hoàn Thành (100%)** | **7/7 Kích Hoạt (100%)** | **Sửa UI Giáo Viên & Bổ sung Ảnh Docs** | [Xem CHANGELOG.md](CHANGELOG.md) · [Ảnh Giao Diện](#-7-giao-diện-thực-tế-hệ-thống) |
+| **v2.1.0 (Milestone 3)** | 15/11/2026 | 27/27 Hoàn Thành (100%) | 7/7 Kích Hoạt (100%) | 1-Click (.bat & Watchdog) | [Xem CHANGELOG.md](CHANGELOG.md) · [Khởi Chạy 1-Click](#-cách-1-khởi-chạy-nhanh-1-click-khuyên-dùng-cho-thành-viên--giảng-viên) |
 | **v2.0.0 (Milestone 2)** | 14/11/2026 (Chiều) | 27/27 Hoàn Thành (100%) | 7/7 Kích Hoạt (100%) | 37/37 PASS (100%) | [Xem CHANGELOG.md](CHANGELOG.md) · [Judge Engine Guide](judge_engine/README.md) |
 | **v1.0.0 (Milestone 1)** | 14/11/2026 (Sáng) | 19/27 Khởi Tạo | 7/7 Kiến Trúc Cốt Lõi | Sơ bộ | [Xem CHANGELOG.md](CHANGELOG.md) |
 
@@ -199,7 +208,29 @@ node server/tests/full_system_test.js
 
 ---
 
-## 🚀 7. Hướng Dẫn Cài Đặt & Vận Hành Từ A - Z
+## 📸 7. Giao Diện Thực Tế Hệ Thống (Screenshots)
+
+Bốn giao diện cốt lõi của hệ thống được chụp thực tế từ phiên bản đang vận hành:
+
+### 1. Trang Chủ Hệ Thống & Showcase Bento
+Giao diện sáng tạo phong cách Neo-Brutalist & Bento Grid, tích hợp Showroom video YouTube mô hình robot cân bằng và Bảng vinh danh top học sinh xuất sắc:
+![Trang Chủ Hệ Thống](docs/images/01-trang-chu.png)
+
+### 2. Không Gian Học Sinh & Máy Chấm Tự Động Sandbox
+Khu vực nộp bài thực hành đa phương tiện (Mã nguồn + Link video nghiệm thu), trình soạn thảo code tích hợp nạp code mẫu, và khoang máy chấm telemetry hiển thị kết quả phân tích TestCase:
+![Không Gian Học Sinh & Máy Chấm Tự Động](docs/images/02-hoc-sinh-may-cham.png)
+
+### 3. Bàn Làm Việc Giảng Viên & Cảnh Báo Chất Lượng DF-05
+Bảng điều khiển quản lý giảng dạy của giáo viên, thẩm định video vận hành cơ khí, chấm điểm dự án, và hệ thống tự động cảnh báo học liệu cần cập nhật nội dung (Luồng DF-05):
+![Bàn Làm Việc Giảng Viên](docs/images/03-giao-vien-canh-bao.png)
+
+### 4. Phòng Thi Trực Tuyến Chống Gian Lận (JS Tracking DF-06)
+Phòng thi trực tuyến với đồng hồ đếm ngược, bộ đếm số lần chuyển tab (`visibilitychange` & `window blur`), tự động niêm phong và khóa bài thi khi vi phạm quá 3 lần:
+![Phòng Thi Trực Tuyến Chống Gian Lận](docs/images/04-phong-thi-chong-gian-lan.png)
+
+---
+
+## 🚀 8. Hướng Dẫn Cài Đặt & Vận Hành Từ A - Z
 
 ### ⚡ Cách 1: Khởi Chạy Nhanh 1-Click (Khuyên Dùng Cho Thành Viên & Giảng Viên)
 Toàn bộ hệ thống phân tán đa dịch vụ đã được chuẩn hóa thành bộ công cụ tự động hóa 1-Click, người dùng không cần mở nhiều tab terminal hay gõ lệnh phức tạp:
@@ -262,7 +293,7 @@ Truy cập trình duyệt: `http://localhost/`.
 
 ---
 
-## 📁 8. Cấu Trúc Mã Nguồn Dự Án
+## 📁 9. Cấu Trúc Mã Nguồn Dự Án
 
 ```
 LapTrinhWeb/

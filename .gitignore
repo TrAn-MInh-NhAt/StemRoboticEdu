@@ -82,6 +82,15 @@ tmp/
 # 7. Dynamic User Uploads
 public/uploads/*
 !public/uploads/.gitkeep
+server/uploads/*
+!server/uploads/.gitkeep
+
 
 # 8. External Binaries (Auto-downloaded by 1-Click launcher)
 cloudflared.exe
+
+# 9. Documentation Assets
+!docs/
+!docs/images/
+!docs/images/*
+

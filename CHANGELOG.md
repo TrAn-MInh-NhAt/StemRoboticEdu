@@ -12,6 +12,33 @@ Nhóm sinh viên thực hiện: **Nhóm A+ (24SPT)**
 
 ---
 
+## 🔧 [v2.2.0] - 15/11/2026 — SỬA LỖI ĐIỀU HƯỚNG GIÁO VIÊN & BỔ SUNG ẢNH GIAO DIỆN THỰC TẾ
+
+Phiên bản cập nhật tập trung khắc phục lỗi cú pháp gây tê liệt giao diện Bàn làm việc Giảng viên (`/teacher`), phục hồi đầy đủ luồng hiển thị bài nộp học sinh và bổ sung tài liệu minh họa ảnh chụp thực tế hệ thống vào tài liệu dự án.
+
+### 1. Phân Hệ Giáo Viên (Teacher Dashboard & Analytics)
+- **Sửa lỗi cú pháp JavaScript nghiêm trọng (`server/views/dashboard/teacher.ejs`):**
+  - Khắc phục triệt để lỗi cú pháp `Uncaught SyntaxError: Unexpected token 'catch'` do khối `catch` thừa ở dòng 1040, giúp trình duyệt biên dịch toàn bộ script giao diện thành công 100%.
+  - **Khôi phục tính năng chuyển trang menu bên trái (`switchTeacherView`):** Bấm chuyển đổi tức thì giữa các phân hệ chức năng độc lập: *Duyệt Video Thẩm Định*, *Quản lý Lớp 10/1*, *Giao dự án & TestCase*, *Học liệu & Bài giảng*, *Tất cả bài nộp*.
+  - **Khôi phục luồng nạp bài nộp tự động (`loadSubmissions`):** Giải quyết dứt điểm lỗi bị kẹt ở trạng thái *"Đang tải bài nộp chờ duyệt..."*, nạp trọn vẹn danh sách bài nộp của học sinh (đặc biệt là bài nộp chờ duyệt video để thẩm định phần cứng và chốt điểm).
+- **Chuẩn hóa API và xử lý an toàn Luồng Cảnh báo Chất lượng DF-05 (`server/routes/exam.js`):**
+  - Mở rộng định tuyến cho phép gọi cả `/api/exam/analytics/df05-check` và `/api/exam/analytics/check-df05`, tránh lỗi 404 Not Found.
+  - Xử lý kiểm tra an toàn `null-safe` khi cập nhật DOM cảnh báo học liệu cần cải tiến (`#df05Alert`, `#df05AlertSummary`, `#df05FlaggedList`).
+  - Ánh xạ chính xác thuộc tính `TenHocLieu` từ CSDL thay cho `TieuDe` để hiển thị đúng danh sách học liệu bị gắn cờ cần cập nhật.
+
+### 2. Bổ Sung Ảnh Minh Họa Giao Diện Thực Tế (`docs/images/`)
+Tích hợp bộ ảnh chụp màn hình trực quan các phân hệ chức năng vào tài liệu dự án:
+- **Bàn làm việc Giảng viên & Cảnh báo học liệu DF-05:**  
+  ![Bàn làm việc Giảng viên](docs/images/03-giao-vien-canh-bao.png)
+- **Không gian Học sinh & Máy chấm tự động Sandbox:**  
+  ![Không gian Học sinh](docs/images/02-hoc-sinh-may-cham.png)
+- **Trang chủ hệ thống & Showcase Bento:**  
+  ![Trang chủ hệ thống](docs/images/01-trang-chu.png)
+- **Phòng thi trực tuyến chống gian lận DF-06:**  
+  ![Phòng thi trực tuyến](docs/images/04-phong-thi-chong-gian-lan.png)
+
+---
+
 ## ⚡ [v2.1.0 — Milestone 3] (Ngày 15/11/2026) — HỆ THỐNG KHỞI ĐỘNG TẬP TRUNG 1-CLICK & WATCHDOG DỌN SẠCH CỔNG
 
 Phiên bản tối ưu hóa vận hành, giúp bất kỳ thành viên nhóm hoặc giảng viên nào sau khi tải dự án về từ GitHub đều có thể chạy ngay toàn bộ hệ thống trên mọi máy tính Windows mà không cần cấu hình thủ công.
