@@ -12,6 +12,28 @@ Nhóm sinh viên thực hiện: **Nhóm A+ (24SPT)**
 
 ---
 
+## ⚡ [v2.1.0 — Milestone 3] (Ngày 15/11/2026) — HỆ THỐNG KHỞI ĐỘNG TẬP TRUNG 1-CLICK & WATCHDOG DỌN SẠCH CỔNG
+
+Phiên bản tối ưu hóa vận hành, giúp bất kỳ thành viên nhóm hoặc giảng viên nào sau khi tải dự án về từ GitHub đều có thể chạy ngay toàn bộ hệ thống trên mọi máy tính Windows mà không cần cấu hình thủ công.
+
+### 1. Chuẩn Hóa Bộ Khởi Động Động (`STEM_Robotic_App.ps1`)
+- **Khử bỏ hoàn toàn đường dẫn tuyệt đối:** Thay thế toàn bộ đường dẫn cứng bằng biến thư mục tương đối động `$PSScriptRoot`, cho phép clone và khởi chạy từ bất kỳ ổ đĩa (`C:`, `D:`, `E:`...) hoặc thư mục bất kỳ.
+- **Tự động nhận diện môi trường Python:** Tự động tìm kiếm `python.exe` trong môi trường ảo của dự án (`venv/Scripts/python.exe`, `judge_engine/venv/Scripts/python.exe`) hoặc Python hệ thống.
+- **Cơ chế Watchdog giám sát tiến trình thông minh:**
+  - Khởi tạo tiến trình giám sát chạy nền liên tục lắng nghe tiến trình giao diện chính.
+  - Khi người dùng nhấn phím **[ENTER]** hoặc bấm nút **[X]** đóng cửa sổ Control Panel, Watchdog sẽ lập tức can thiệp: giải phóng sạch sẽ Node.js (Cổng 80) và FastAPI Judge Engine (Cổng 5000), loại bỏ triệt để lỗi xung đột cổng "Port already in use (EADDRINUSE)".
+
+### 2. Tự Động Hóa Tạo Public Link Truy Cập Từ Xa (Cloudflare Tunnel)
+- **Cơ chế Auto-Download Binary:** Nếu thư mục gốc chưa có file thực thi `cloudflared.exe` (do được loại trừ khỏi Git để tối ưu dung lượng repo), script sẽ tự động tải phiên bản mới nhất từ Cloudflare GitHub Releases.
+- **Tự động tạo URL Public (`trycloudflare.com`):** Mở đường truyền an toàn cho phép máy tính khác, điện thoại hoặc giảng viên truy cập từ xa mà không cần mở port modem router.
+- **Tự động Copy vào Clipboard:** Ngay khi đường dẫn Public được cấp phát, URL sẽ được tự động copy vào bộ nhớ tạm để người dùng dán (Ctrl+V) gửi đi ngay.
+
+### 3. Tiện Ích Nhấp Đúp 1-Click Cho Người Dùng Phổ Thông
+- **`Start_STEM_Robotic.bat`:** Script batch khởi chạy trực tiếp với tham số `-ExecutionPolicy Bypass`, bỏ qua các rào cản chính sách bảo mật PowerShell của Windows.
+- **`Tao_Icon_Desktop.bat`:** Tự động tạo biểu tượng lối tắt (Desktop Shortcut) mang tên **`STEM Robotic Edu`** ngay trên màn hình chính của người dùng, trỏ chính xác về thư mục dự án và thiết lập icon chuẩn hệ thống.
+
+---
+
 ## 🚀 [v2.0.0 — Milestone 2] (Ngày 14/11/2026 - Chiều) — NÂNG CẤP TOÀN DIỆN & HOÀN THIỆN 100% 27/27 MÔ ĐUN IPO
 
 Phiên bản cột mốc số 2 đánh dấu bước hoàn thiện toàn bộ các yêu cầu nghiệp vụ từ Báo cáo Phân tích Thiết kế Hệ thống, chuẩn hóa máy chấm sandbox phân tán, nạp cơ sở dữ liệu giáo trình thực tế và tích hợp bộ kiểm thử tự động khép kín.

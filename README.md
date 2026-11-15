@@ -15,12 +15,13 @@
 
 ## 📌 Lịch Sử Cập Nhật & Tiến Độ Dự Án (Milestones & Changelog)
 
-| Phiên bản | Mốc Thời Gian | Trạng Thái 27/27 IPO | Luồng DF-01..07 | Kiểm Thử Tự Động | Tài Liệu Chi Tiết |
+| Phiên bản | Mốc Thời Gian | Trạng Thái 27/27 IPO | Luồng DF-01..07 | Vận Hành & Khởi Động | Tài Liệu Chi Tiết |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| **v2.0.0 (Milestone 2)** | **14/11/2026 (Chiều)** | **27/27 Hoàn Thành (100%)** | **7/7 Kích Hoạt (100%)** | **37/37 PASS (100%)** | [Xem CHANGELOG.md](CHANGELOG.md) · [Judge Engine Guide](judge_engine/README.md) |
+| **v2.1.0 (Milestone 3)** | **15/11/2026** | **27/27 Hoàn Thành (100%)** | **7/7 Kích Hoạt (100%)** | **1-Click (.bat & Watchdog)** | [Xem CHANGELOG.md](CHANGELOG.md) · [Khởi Chạy 1-Click](#-hướng-dẫn-khởi-chạy-nhanh-1-click-khuyên-dùng) |
+| **v2.0.0 (Milestone 2)** | 14/11/2026 (Chiều) | 27/27 Hoàn Thành (100%) | 7/7 Kích Hoạt (100%) | 37/37 PASS (100%) | [Xem CHANGELOG.md](CHANGELOG.md) · [Judge Engine Guide](judge_engine/README.md) |
 | **v1.0.0 (Milestone 1)** | 14/11/2026 (Sáng) | 19/27 Khởi Tạo | 7/7 Kiến Trúc Cốt Lõi | Sơ bộ | [Xem CHANGELOG.md](CHANGELOG.md) |
 
-> 🎯 **Đánh giá tổng quan:** Hệ thống đã hoàn thiện 100% tất cả 27 mô đun IPO, 7 luồng tự động DF-01 đến DF-07, đạt chuẩn chất lượng NFR-01 (< 10s máy chấm), bảo mật phân quyền RBAC 4 vai trò, và vượt qua toàn bộ 37/37 kịch bản kiểm thử tích hợp E2E (`npm test`). Chi tiết toàn bộ tiến trình lịch sử phát triển xem tại [CHANGELOG.md](CHANGELOG.md).
+> 🎯 **Đánh giá tổng quan:** Hệ thống đã hoàn thiện 100% tất cả 27 mô đun IPO, 7 luồng tự động DF-01 đến DF-07, đạt chuẩn chất lượng NFR-01 (< 10s máy chấm), bảo mật phân quyền RBAC 4 vai trò, vượt qua toàn bộ 37/37 kịch bản kiểm thử tích hợp E2E (`npm test`), và trang bị bộ công cụ khởi động tập trung 1-Click (`Start_STEM_Robotic.bat`). Chi tiết toàn bộ tiến trình lịch sử phát triển xem tại [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -200,12 +201,28 @@ node server/tests/full_system_test.js
 
 ## 🚀 7. Hướng Dẫn Cài Đặt & Vận Hành Từ A - Z
 
-### Bước 1: Yêu cầu môi trường
+### ⚡ Cách 1: Khởi Chạy Nhanh 1-Click (Khuyên Dùng Cho Thành Viên & Giảng Viên)
+Toàn bộ hệ thống phân tán đa dịch vụ đã được chuẩn hóa thành bộ công cụ tự động hóa 1-Click, người dùng không cần mở nhiều tab terminal hay gõ lệnh phức tạp:
+
+1. **Khởi động toàn bộ hệ thống:** Nhấp đúp chuột vào file [Start_STEM_Robotic.bat](Start_STEM_Robotic.bat) tại thư mục gốc dự án.
+   - Tự động khởi động đồng thời cả 2 máy chủ: **Judge Engine (Cổng 5000)** và **Web Server Node.js (Cổng 80)**.
+   - Tự động tải `cloudflared.exe` từ Cloudflare GitHub nếu thư mục gốc chưa có.
+   - Tự động cấp phát đường dẫn truy cập công khai an toàn (`https://...trycloudflare.com`) để truy cập từ xa qua điện thoại hoặc máy tính khác mà không cần cấu hình NAT/Port Forwarding trên router.
+   - Tự động sao chép đường link vào Clipboard (người dùng chỉ cần `Ctrl+V` để dán gửi đi).
+   - **Cơ chế Watchdog giám sát tự động:** Khi nhấn phím **[ENTER]** hoặc bấm dấu **[X]** đóng cửa sổ Control Panel, Watchdog sẽ lập tức dọn sạch toàn bộ tiến trình và giải phóng Port 80 + 5000, không bao giờ bị kẹt cổng ngầm.
+
+2. **Tạo biểu tượng lối tắt ngoài Desktop:** Nhấp đúp chuột vào file [Tao_Icon_Desktop.bat](Tao_Icon_Desktop.bat) (chỉ cần chạy 1 lần duy nhất). Hệ thống sẽ tự động tạo lối tắt **`STEM Robotic Edu`** ngay ngoài màn hình máy tính để khởi động nhanh.
+
+---
+
+### 🛠️ Cách 2: Cài Đặt & Khởi Chạy Thủ Công (Dành Cho Lập Trình Viên)
+
+#### Bước 1: Yêu cầu môi trường
 - **Node.js**: v20.x hoặc v22.x LTS.
 - **Python**: v3.10+ hoặc v3.11+.
 - **Microsoft SQL Server**: 2019 hoặc 2022 (Developer / Express).
 
-### Bước 2: Thiết lập Cơ sở dữ liệu SQL Server
+#### Bước 2: Thiết lập Cơ sở dữ liệu SQL Server
 1. Mở **SQL Server Management Studio (SSMS)**.
 2. Mở file [database_schema.sql](database_schema.sql) và nhấn **Execute (F5)** để tạo CSDL `StemRoboticDB_V2`.
 3. Chạy script seed dữ liệu chuẩn hóa:
@@ -213,7 +230,7 @@ node server/tests/full_system_test.js
    node server/seed_full_curriculum.js
    ```
 
-### Bước 3: Cấu hình tệp `.env`
+#### Bước 3: Cấu hình tệp `.env`
 Tạo file `.env` tại thư mục gốc của dự án:
 ```ini
 PORT=80
@@ -228,14 +245,14 @@ JUDGE_URL=http://localhost:5000
 SESSION_SECRET=stem_robotic_secure_session_2026
 ```
 
-### Bước 4: Khởi chạy Máy chấm tự động (Judge Engine — Cổng 5000)
+#### Bước 4: Khởi chạy Máy chấm tự động (Judge Engine — Cổng 5000)
 ```powershell
 cd judge_engine
 pip install fastapi uvicorn pydantic python-multipart
 python -m uvicorn main:app --host 0.0.0.0 --port 5000 --reload
 ```
 
-### Bước 5: Khởi chạy Máy chủ Web (Node.js Express — Cổng 80)
+#### Bước 5: Khởi chạy Máy chủ Web (Node.js Express — Cổng 80)
 ```powershell
 cd server
 npm install
@@ -249,6 +266,10 @@ Truy cập trình duyệt: `http://localhost/`.
 
 ```
 LapTrinhWeb/
+├── Start_STEM_Robotic.bat       # [1-Click] Khởi chạy toàn bộ hệ thống (Web + Judge + Cloudflare)
+├── Tao_Icon_Desktop.bat         # [Tiện ích] Tự động tạo lối tắt Desktop cho người dùng
+├── STEM_Robotic_App.ps1         # Script điều khiển tập trung & Watchdog giải phóng Port 80/5000
+├── CHANGELOG.md                 # Nhật ký phát triển & lịch sử nâng cấp hệ thống qua các mốc
 ├── .env                         # Biến môi trường kết nối CSDL và Judge
 ├── database_schema.sql          # Kịch bản DDL 12 bảng CSDL StemRoboticDB_V2
 ├── GEMINI.md                    # Quy chuẩn thiết kế Neo-Brutalist & Single Source of Truth

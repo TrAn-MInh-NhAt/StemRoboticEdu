@@ -83,3 +83,5 @@ tmp/
 public/uploads/*
 !public/uploads/.gitkeep
 
+# 8. External Binaries (Auto-downloaded by 1-Click launcher)
+cloudflared.exe
