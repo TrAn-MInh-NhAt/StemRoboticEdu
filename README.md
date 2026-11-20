@@ -11,8 +11,8 @@
 > **ĐẠI HỌC ĐÀ NẴNG — TRƯỜNG ĐẠI HỌC SƯ PHẠM — KHOA TOÁN - TIN**  
 > **Người hướng dẫn khoa học:** TS. Đặng Hùng Vĩ  
 > **Nhóm sinh viên thực hiện:**  
-> - Phạm Kỳ Hải (23SPT)  
-> - Trần Minh Nhật (23SPT)  
+> - Trần Minh Nhật (23SPT) 
+> - Phạm Kỳ Hải (23SPT)   
 > - Phạm Thị Hà Vy (24SPT)  
 > - Trần Thế Quân (24CNTT1)  
 > - Nguyễn Thị Thanh Thảo (24CNTT1)  
