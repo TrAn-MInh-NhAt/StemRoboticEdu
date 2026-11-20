@@ -39,6 +39,8 @@ const getPostsHandler = async (req, res) => {
       const isTopTrending = (likes >= 20);
       return {
         ...p,
+        VaiTro: p.VaiTroTacGia || 'Học sinh',
+        NgayTao: p.NgayDang || p.NgayTao,
         LuotThich: likes,
         SoLuotBinhChon: likes,
         isTopTrending

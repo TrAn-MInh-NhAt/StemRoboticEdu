@@ -561,11 +561,18 @@
     async function likePost(postId, btn) {
       try {
         btn.disabled = true;
-        const res = await fetch(`/api/thaoluan/${postId}/like`, { method: 'POST' });
+        let res = await fetch(`/api/thaoluan/${postId}/like`, { method: 'POST' });
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/like`, { method: 'POST' });
+        }
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/vote`, { method: 'POST' });
+        }
+        if (!res.ok) return;
         const result = await res.json();
         if (result.success) {
           const countSpan = document.getElementById(`like-count-${postId}`);
-          if (countSpan) countSpan.textContent = result.likes;
+          if (countSpan) countSpan.textContent = result.likes || result.votes || 0;
           btn.style.background = 'rgba(220, 38, 38, 0.1)';
           btn.style.color = '#DC2626';
           btn.style.borderColor = '#DC2626';
@@ -596,7 +603,14 @@
       const listContainer = document.getElementById(`comments-list-${postId}`);
       if (!listContainer) return;
       try {
-        const res = await fetch(`/api/thaoluan/${postId}/comments`);
+        let res = await fetch(`/api/thaoluan/${postId}/comments`);
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/comments`);
+        }
+        if (!res.ok) {
+          listContainer.innerHTML = '<p class="text-muted" style="font-size:0.82rem; margin:0; padding:6px 0;">Chưa có bình luận nào.</p>';
+          return;
+        }
         const data = await res.json();
         if (!data.success || !data.comments || data.comments.length === 0) {
           listContainer.innerHTML = '<p class="text-muted" style="font-size:0.82rem; margin:0; padding:6px 0;">Chưa có bình luận nào. Hãy là người đầu tiên để lại ý kiến!</p>';
@@ -614,7 +628,7 @@
                 <span class="badge ${c.VaiTro === 'Giáo viên' ? 'badge-primary' : 'badge-secondary'}" style="font-size:0.68rem; margin-left:6px; padding:2px 6px;">${c.VaiTro}</span>
                 ${c.Lop ? `<span style="font-size:0.75rem; color:var(--c-text-dim); margin-left:4px;">(${c.Lop})</span>` : ''}
               </div>
-              <span style="font-size:0.75rem; color:#94A3B8;">${new Date(c.NgayTao).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} ${new Date(c.NgayTao).toLocaleDateString('vi-VN')}</span>
+              <span style="font-size:0.75rem; color:#94A3B8;">${new Date(c.NgayTao || Date.now()).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} ${new Date(c.NgayTao || Date.now()).toLocaleDateString('vi-VN')}</span>
             </div>
             <div style="color:var(--c-text-main); line-height:1.5; white-space:pre-wrap;">${c.NoiDung}</div>
           `;
@@ -639,11 +653,24 @@
       btn.textContent = 'Đang gửi...';
 
       try {
-        const res = await fetch(`/api/thaoluan/${postId}/comment`, {
+        let res = await fetch(`/api/thaoluan/${postId}/comment`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ noiDung })
         });
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/comment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ noiDung })
+          });
+        }
+        if (!res.ok) {
+          const txt = await res.text();
+          let errJson = null;
+          try { errJson = JSON.parse(txt); } catch(e) {}
+          throw new Error(errJson && errJson.message ? errJson.message : `Máy chủ chưa cập nhật endpoint bình luận (HTTP ${res.status}). Vui lòng khởi động lại server qua Start_STEM_Robotic.bat.`);
+        }
         const result = await res.json();
         if (result.success && result.comment) {
           const c = result.comment;
