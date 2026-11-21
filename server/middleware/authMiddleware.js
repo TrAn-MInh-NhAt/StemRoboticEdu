@@ -12,8 +12,12 @@ function getReqUser(req) {
       return { MaNguoiDung: 1, HoTen: 'Quản trị viên Hệ thống', VaiTro: 'Admin' };
     }
     if (req.headers['x-role']) {
-      const uid = parseInt(req.headers['x-user-id']) || (req.headers['x-role'] === 'Giáo viên' ? 2 : (req.headers['x-role'] === 'Admin' ? 1 : 3));
-      return { MaNguoiDung: uid, HoTen: 'User ' + req.headers['x-role'], VaiTro: req.headers['x-role'] };
+      let r = req.headers['x-role'];
+      try { r = decodeURIComponent(r); } catch(e) {}
+      if (r === 'Teacher' || r === 'GiaoVien') r = 'Giáo viên';
+      if (r === 'Student' || r === 'HocSinh') r = 'Học sinh';
+      const uid = parseInt(req.headers['x-user-id']) || (r === 'Giáo viên' ? 2 : (r === 'Admin' ? 1 : 3));
+      return { MaNguoiDung: uid, HoTen: 'User ' + r, VaiTro: r };
     }
     if (req.headers['x-user-id']) {
       const uid = parseInt(req.headers['x-user-id']);
@@ -33,7 +37,7 @@ function isLoggedIn(req, res, next) {
     if (!req.session.user) req.session.user = user;
     return next();
   }
-  if (req.path && req.path.startsWith('/api/')) {
+  if ((req.originalUrl && req.originalUrl.includes('/api/')) || (req.path && req.path.startsWith('/api/'))) {
     return res.status(401).json({ success: false, message: 'Chưa đăng nhập. Vui lòng đăng nhập để tiếp tục.' });
   }
   return res.redirect('/login');
@@ -55,11 +59,23 @@ function requireRole(...roles) {
     if (!req.session) req.session = {};
     if (!req.session.user) req.session.user = user;
 
-    if (!roles.includes(user.VaiTro)) {
+    const userRole = user.VaiTro;
+    const isAllowed = roles.some(r => {
+      if (r === userRole) return true;
+      if (r === 'Học sinh' && (userRole === 'Student' || userRole === 'HocSinh' || (typeof userRole === 'string' && userRole.includes('sinh')))) return true;
+      if (r === 'Giáo viên' && (userRole === 'Teacher' || userRole === 'GiaoVien' || (typeof userRole === 'string' && userRole.includes('viên')))) return true;
+      if (r === 'Admin' && (typeof userRole === 'string' && userRole.toLowerCase() === 'admin')) return true;
+      return false;
+    });
+
+    if (!isAllowed) {
       if (req.originalUrl && req.originalUrl.includes('/api/')) {
         return res.status(403).json({ success: false, message: 'Không có quyền truy cập chức năng này.' });
       }
-      return res.redirect('/login');
+      if (userRole === 'Admin') return res.redirect('/admin');
+      if (userRole === 'Giáo viên' || userRole === 'Teacher') return res.redirect('/teacher');
+      if (userRole === 'Học sinh' || userRole === 'Student') return res.redirect('/student');
+      return res.redirect('/');
     }
     next();
   };

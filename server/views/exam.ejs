@@ -72,6 +72,42 @@
       </a>
     </div>
 
+    <!-- Modal Kết quả & Giải thích đáp án (KTĐG.02) -->
+    <div id="scorecardModal" style="display: none; position: fixed; inset: 0; background: rgba(11, 15, 25, 0.85); z-index: 1001; align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: #FFFFFF; border-radius: var(--radius-card); border: 2.5px solid var(--c-text-main); box-shadow: 6px 6px 0 var(--c-primary); max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 28px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(11,15,25,0.08); padding-bottom: 16px; margin-bottom: 20px;">
+          <h2 style="font-size: 1.3rem; font-weight: 800; color: var(--c-text-main); display: flex; align-items: center; gap: 8px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c-primary)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Kết Quả Chấm Điểm &amp; Phản Hồi (KTĐG.02)
+          </h2>
+          <span id="scorecardBadge" class="badge badge-success" style="font-size: 1rem; padding: 6px 14px; font-weight: 800;">10.0 / 10.0</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
+          <div style="background: #F8FAFC; border: 1.5px solid rgba(11,15,25,0.06); border-radius: 12px; padding: 14px;">
+            <span style="font-size: 0.8rem; color: var(--c-text-dim); font-weight: 600;">Điểm Trắc nghiệm</span>
+            <div id="scorecardQuiz" style="font-size: 1.3rem; font-weight: 800; color: var(--c-primary); margin-top: 4px;">4.0 / 4.0</div>
+          </div>
+          <div style="background: #F8FAFC; border: 1.5px solid rgba(11,15,25,0.06); border-radius: 12px; padding: 14px;">
+            <span style="font-size: 0.8rem; color: var(--c-text-dim); font-weight: 600;">Điểm Lập trình Code</span>
+            <div id="scorecardCode" style="font-size: 1.3rem; font-weight: 800; color: #047857; margin-top: 4px;">6.0 / 6.0</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1rem; font-weight: 800; color: var(--c-text-main); margin-bottom: 12px;">Giải Thích Đáp Án Trắc Nghiệm:</h3>
+        <div id="scorecardExplanation" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; font-size: 0.88rem;"></div>
+
+        <h3 style="font-size: 1rem; font-weight: 800; color: var(--c-text-main); margin-bottom: 12px;">Log Máy Chấm Code:</h3>
+        <pre id="scorecardLog" style="background: #0B0F19; color: #38BDF8; font-family: var(--f-mono); font-size: 0.82rem; padding: 14px; border-radius: 10px; overflow-x: auto; white-space: pre-wrap; margin-bottom: 24px; max-height: 160px;"></pre>
+
+        <div style="text-align: right;">
+          <a href="/student" class="btn-playful btn-playful-primary" style="padding: 12px 28px; text-decoration: none; display: inline-block;">
+            Trở về Trang Học sinh →
+          </a>
+        </div>
+      </div>
+    </div>
+
     <!-- Khu vực làm bài dạng Bento Grid -->
     <div class="exam-grid">
       <!-- Khung đề bài bên trái -->
@@ -82,6 +118,17 @@
         </div>
         <div id="examContent" style="white-space: pre-wrap; font-size: 0.95rem; line-height: 1.7; color: var(--c-text-main);">
           Đang nạp dữ liệu đề thi từ CSDL...
+        </div>
+
+        <!-- Phần I: Trắc nghiệm Robotics (KTĐG.02) -->
+        <div id="quizSection" style="margin-top: 24px; border-top: 1.5px dashed rgba(11, 15, 25, 0.12); padding-top: 20px;">
+          <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--c-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Phần I: Trắc Nghiệm Robotics &amp; Vi Điều Khiển (4.0 điểm)
+          </h3>
+          <div id="quizList" style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="text-muted" style="font-size: 0.88rem;">Đang tải bộ câu hỏi trắc nghiệm...</p>
+          </div>
         </div>
       </section>
 
@@ -175,6 +222,9 @@ def doc_cam_bien_khoang_cach():
           }
         }
 
+        // Tải bộ câu hỏi trắc nghiệm (KTĐG.02)
+        await loadQuizQuestions();
+
         // Bắt đầu đồng hồ đếm ngược
         startCountdown(exam.ThoiLuong);
 
@@ -183,6 +233,47 @@ def doc_cam_bien_khoang_cach():
 
       } catch (err) {
         console.error('Lỗi khởi tạo bài thi:', err);
+      }
+    }
+
+    // Tải và hiển thị câu hỏi trắc nghiệm
+    async function loadQuizQuestions() {
+      const container = document.getElementById('quizList');
+      try {
+        const res = await fetch('/api/exam/quiz-questions');
+        const data = await res.json();
+        if (!data.success || !data.questions) {
+          container.innerHTML = '<p class="text-muted" style="font-size:0.88rem;">Không có câu hỏi trắc nghiệm.</p>';
+          return;
+        }
+
+        container.innerHTML = '';
+        data.questions.forEach((q, idx) => {
+          const item = document.createElement('div');
+          item.style.cssText = 'background: #F8FAFC; border: 1.5px solid rgba(11,15,25,0.06); border-radius: 12px; padding: 14px;';
+          
+          let optionsHtml = '';
+          for (const [key, val] of Object.entries(q.options)) {
+            optionsHtml += `
+              <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; cursor:pointer; padding:4px 0; color:var(--c-text-main);">
+                <input type="radio" name="question_${q.id}" value="${key}" style="accent-color:var(--c-primary); cursor:pointer;">
+                <strong>${key}.</strong> ${val}
+              </label>
+            `;
+          }
+
+          item.innerHTML = `
+            <div style="font-weight:700; font-size:0.9rem; margin-bottom:8px; color:var(--c-text-main);">
+              Câu ${idx + 1}: ${q.question}
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; margin-left:4px;">
+              ${optionsHtml}
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      } catch (err) {
+        container.innerHTML = '<p class="text-muted">Lỗi khi tải câu hỏi trắc nghiệm.</p>';
       }
     }
 
@@ -292,50 +383,111 @@ def doc_cam_bien_khoang_cach():
     }
 
     function triggerLockScreen() {
+      if (isExamFinished) return;
       isExamFinished = true;
       clearInterval(countdownInterval);
       document.getElementById('codeEditor').disabled = true;
       document.getElementById('btnSubmitExam').disabled = true;
       document.getElementById('lockedOverlay').style.display = 'flex';
       document.getElementById('violationBanner').style.display = 'block';
-      document.getElementById('violationMessage').textContent = 'BÀI THI ĐÃ BỊ KHÓA VĨNH VIỄN DO VI PHẠM QUY CHẾ CHUYỂN TAB.';
+      document.getElementById('violationMessage').textContent = 'BÀI THI ĐÃ BỊ KHÓA VĨNH VIỄN DO VI PHẠM QUY CHẾ CHUYỂN TAB (DF-06).';
+
+      // Tự động lưu và niêm phong bài làm hiện tại
+      const codeContent = document.getElementById('codeEditor').value;
+      const quizAnswers = {};
+      document.querySelectorAll('#quizList input[type="radio"]:checked').forEach(r => {
+        quizAnswers[r.name.replace('question_', '')] = r.value;
+      });
+
+      fetch('/api/exam/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ maBaiNop, codeContent, quizAnswers, isAutoLock: true })
+      }).catch(err => console.error('Lỗi tự động thu bài khi khóa:', err));
     }
 
-    // 4. Nộp bài thi
+    // 4. Nộp bài thi & Phản hồi tự động (KTĐG.02)
     document.getElementById('examForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!confirm('Bạn có chắc chắn muốn nộp bài thi? Sau khi nộp bạn sẽ không thể chỉnh sửa lại.')) {
+      if (!confirm('Bạn có chắc chắn muốn nộp bài thi? Hệ thống Máy chấm tự động sẽ chấm điểm và công bố kết quả ngay.')) {
         return;
       }
       submitExam(false);
     });
 
     async function submitExam(isAuto) {
-      if (isExamFinished) return;
+      if (isExamFinished && !isAuto) return;
       isExamFinished = true;
       clearInterval(countdownInterval);
 
       const codeContent = document.getElementById('codeEditor').value;
       const btn = document.getElementById('btnSubmitExam');
-      btn.disabled = true;
-      btn.textContent = 'Đang nộp bài...';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Đang chấm điểm...';
+      }
+
+      // Thu thập đáp án trắc nghiệm
+      const quizAnswers = {};
+      document.querySelectorAll('#quizList input[type="radio"]:checked').forEach(r => {
+        quizAnswers[r.name.replace('question_', '')] = r.value;
+      });
 
       try {
         const res = await fetch('/api/exam/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ maBaiNop, codeContent })
+          body: JSON.stringify({ maBaiNop, codeContent, quizAnswers, isAutoLock: isAuto })
         });
         const result = await res.json();
 
         if (result.success) {
-          alert(result.message);
-          window.location.href = '/student';
+          if (isAuto) {
+            alert(result.message);
+            window.location.href = '/student';
+            return;
+          }
+
+          // Hiển thị Scorecard Modal chi tiết
+          document.getElementById('scorecardBadge').textContent = `${result.tongDiem.toFixed(1)} / 10.0`;
+          document.getElementById('scorecardQuiz').textContent = `${result.diemTracNghiem.toFixed(1)} / 4.0 điểm`;
+          document.getElementById('scorecardCode').textContent = `${result.diemCode.toFixed(1)} / 6.0 điểm (${result.ketQuaCode})`;
+
+          const expContainer = document.getElementById('scorecardExplanation');
+          expContainer.innerHTML = '';
+          if (result.quizFeedback && result.quizFeedback.length > 0) {
+            result.quizFeedback.forEach((q, idx) => {
+              const box = document.createElement('div');
+              const isOk = q.isCorrect;
+              box.style.cssText = `background: ${isOk ? 'rgba(4,120,87,0.06)' : 'rgba(220,38,38,0.06)'}; border: 1.5px solid ${isOk ? '#047857' : '#DC2626'}; border-radius: 10px; padding: 10px 14px;`;
+              box.innerHTML = `
+                <div style="font-weight:700; color: ${isOk ? '#047857' : '#DC2626'}; margin-bottom: 4px;">
+                  Câu ${idx + 1}: ${isOk ? 'ĐÚNG (+1.0đ)' : 'SAI (0đ)'} — Thí sinh chọn: [${q.selected}] · Đáp án đúng: [${q.correct}]
+                </div>
+                <div style="color: var(--c-text-main); line-height: 1.5; font-size: 0.85rem;">
+                  ${q.explanation}
+                </div>
+              `;
+              expContainer.appendChild(box);
+            });
+          }
+
+          document.getElementById('scorecardLog').textContent = result.logLoi || 'Máy chấm tự động hoàn tất.';
+          document.getElementById('scorecardModal').style.display = 'flex';
+
         } else {
           alert('Lỗi: ' + result.message);
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Nộp bài thi kết thúc';
+          }
         }
       } catch (err) {
         alert('Lỗi kết nối khi nộp bài: ' + err.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Nộp bài thi kết thúc';
+        }
       }
     }
 
