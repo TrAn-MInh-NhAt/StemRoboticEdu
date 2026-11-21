@@ -2,12 +2,25 @@ const express = require('express');
 const router = express.Router();
 const { getPool, sql } = require('../config/db');
 
+// Danh sách từ khóa cấm / vi phạm quy chuẩn cộng đồng STEM Robotic Edu (TTCĐ.02)
+const PROHIBITED_KEYWORDS = [
+  'cheat', 'hack điểm', 'lộ đề', 'mua điểm', 'bán điểm', 
+  'đm', 'đcm', 'vcl', 'clgt', 'đụ', 'đéo', 'địt', 'chó chết',
+  'lừa đảo', 'đồi trụy', 'phản động'
+];
+
+function containsProhibitedKeywords(text) {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  return PROHIBITED_KEYWORDS.some(kw => lower.includes(kw));
+}
+
 // Helper lấy MaNguoiDung từ session hoặc header
 function getUserId(req) {
   if (req.session && req.session.user) {
-    return req.session.user.MaNguoiDung;
+    return parseInt(req.session.user.MaNguoiDung, 10);
   }
-  return req.headers['x-user-id'] || 3; // Fallback
+  return parseInt(req.headers['x-user-id'] || 3, 10);
 }
 
 // 1. GET /api/community/posts hoặc /api/thaoluan - Danh sách bài viết & Thảo luận (Đẩy bài mới lên đầu)
@@ -29,7 +42,7 @@ const getPostsHandler = async (req, res) => {
       JOIN NguoiDung nd ON ndc.MaNguoiDung = nd.MaNguoiDung
       LEFT JOIN DuAnBaiTap da ON ndc.MaDuAn = da.MaDuAn
       LEFT JOIN BaiNop bn ON ndc.MaBaiNop = bn.MaBaiNop
-      WHERE ndc.TrangThai = N'Đã duyệt'
+      WHERE ndc.TrangThai IN (N'Đã duyệt', N'Đã giải quyết')
       ORDER BY ndc.NgayDang DESC, ndc.MaNoiDung DESC
     `);
 
@@ -66,6 +79,14 @@ const createPostHandler = async (req, res) => {
 
   if (!tieuDe || !noiDung) {
     return res.status(400).json({ success: false, message: 'Vui lòng nhập đầy đủ tiêu đề và nội dung' });
+  }
+
+  // Lọc từ khóa vi phạm quy chuẩn cộng đồng (TTCĐ.02)
+  if (containsProhibitedKeywords(tieuDe) || containsProhibitedKeywords(noiDung)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Nội dung chứa từ khóa vi phạm quy chuẩn cộng đồng STEM Robotic Edu (TTCĐ.02). Vui lòng điều chỉnh lại.'
+    });
   }
 
   const loai = loaiNoiDung || 'Thảo luận';
@@ -155,6 +176,14 @@ const commentPostHandler = async (req, res) => {
     return res.status(400).json({ success: false, message: 'Vui lòng nhập nội dung bình luận' });
   }
 
+  // Lọc từ khóa vi phạm quy chuẩn cộng đồng (TTCĐ.02)
+  if (containsProhibitedKeywords(noiDung)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Nội dung bình luận chứa từ khóa vi phạm quy chuẩn cộng đồng STEM Robotic Edu (TTCĐ.02). Vui lòng điều chỉnh lại.'
+    });
+  }
+
   try {
     const pool = getPool();
     const result = await pool.request()
@@ -195,6 +224,56 @@ const commentPostHandler = async (req, res) => {
 };
 router.post('/posts/:id/comment', commentPostHandler);
 router.post('/:id/comment', commentPostHandler);
+
+// 3.3. POST /api/thaoluan/:id/resolve hoặc /api/community/posts/:id/resolve - Gắn nhãn "Đã giải quyết" (TTCĐ.02)
+const resolvePostHandler = async (req, res) => {
+  const postId = parseInt(req.params.id);
+  const userId = getUserId(req);
+
+  if (isNaN(postId)) {
+    return res.status(400).json({ success: false, message: 'Mã bài viết không hợp lệ' });
+  }
+
+  try {
+    const pool = getPool();
+    const postRes = await pool.request()
+      .input('id', sql.Int, postId)
+      .query(`SELECT MaNoiDung, MaNguoiDung, TrangThai FROM NoiDungCongDong WHERE MaNoiDung = @id`);
+
+    if (postRes.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy bài viết' });
+    }
+
+    const post = postRes.recordset[0];
+    const userRes = await pool.request()
+      .input('uid', sql.Int, userId)
+      .query(`SELECT VaiTro FROM NguoiDung WHERE MaNguoiDung = @uid`);
+
+    const user = userRes.recordset[0];
+    const isOwner = (parseInt(post.MaNguoiDung, 10) === parseInt(userId, 10));
+    const isStaff = user && (user.VaiTro === 'Giáo viên' || user.VaiTro === 'Admin');
+
+    if (!isOwner && !isStaff) {
+      return res.status(403).json({ success: false, message: 'Chỉ tác giả hoặc giáo viên/admin mới có quyền gắn nhãn Đã giải quyết.' });
+    }
+
+    await pool.request()
+      .input('id', sql.Int, postId)
+      .query(`UPDATE NoiDungCongDong SET TrangThai = N'Đã giải quyết' WHERE MaNoiDung = @id`);
+
+    return res.json({
+      success: true,
+      message: '✅ Đã gắn nhãn Đã giải quyết cho chủ đề thảo luận (TTCĐ.02)!',
+      postId,
+      trangThai: 'Đã giải quyết'
+    });
+  } catch (err) {
+    console.error('Lỗi resolve bài viết:', err.message);
+    return res.status(500).json({ success: false, message: 'Lỗi server khi gắn nhãn giải quyết' });
+  }
+};
+router.post('/posts/:id/resolve', resolvePostHandler);
+router.post('/:id/resolve', resolvePostHandler);
 
 // 3.2. GET /api/thaoluan/:id/comments hoặc /api/community/posts/:id/comments - Lấy danh sách bình luận
 const getCommentsHandler = async (req, res) => {
