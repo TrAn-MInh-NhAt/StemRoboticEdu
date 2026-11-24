@@ -7,8 +7,8 @@ function requireAdmin(req, res, next) {
   if (req.session && req.session.user && req.session.user.VaiTro === 'Admin') {
     return next();
   }
-  // Cho phép header test nếu có x-admin-role
-  if (req.headers['x-admin-role'] === 'Admin') {
+  // Cho phép header test nếu có x-admin-role trong môi trường dev / automation test
+  if (process.env.NODE_ENV !== 'production' && req.headers['x-admin-role'] === 'Admin') {
     return next();
   }
   return res.status(403).json({ success: false, message: 'Quyền truy cập bị từ chối: Yêu cầu vai trò Admin.' });

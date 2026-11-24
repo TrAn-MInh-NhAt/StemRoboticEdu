@@ -77,11 +77,11 @@ router.get('/projects', isLoggedIn, async (req, res) => {
             ORDER BY bn.MaBaiNop DESC
           ) AS TrangThaiBaiNopHienTai,
           (
-            SELECT TOP 1 kq.TongDiem 
+            SELECT TOP 1 ISNULL(kq.TongDiem, kq.DiemCode) 
             FROM BaiNop bn 
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop 
             WHERE bn.MaDuAn = da.MaDuAn AND bn.MaNguoiDung = @studentId 
-            ORDER BY bn.MaBaiNop DESC
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           ) AS DiemHienTai
         FROM DuAnBaiTap da
         LEFT JOIN DuAnBaiTap tq ON da.MaDuAnTienQuyet = tq.MaDuAn
@@ -96,23 +96,27 @@ router.get('/projects', isLoggedIn, async (req, res) => {
       let unlockReason = 'Dự án cơ bản';
 
       if (project.MaDuAnTienQuyet) {
-        // Kiểm tra xem học sinh đã có bài nộp đạt cho dự án tiên quyết chưa
+        // Kiểm tra xem học sinh đã có bài nộp đạt cho dự án tiên quyết chưa (DF-02)
         const checkPrereq = await pool.request()
           .input('prereqId', sql.Int, project.MaDuAnTienQuyet)
           .input('studentId', sql.Int, studentId)
           .query(`
-            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem
+            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem, kq.DiemCode
             FROM BaiNop bn
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
             WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-              AND bn.TrangThai = N'Đã chốt điểm'
-              AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
-            ORDER BY bn.MaBaiNop DESC
+              AND (
+                -- 1. Đã chốt điểm: Điểm tổng >= 5 hoặc Video đạt
+                (bn.TrangThai = N'Đã chốt điểm' AND (kq.TongDiem >= 5.0 OR kq.KetQuaVideo = N'Đạt'))
+                -- 2. Đang chờ duyệt video nhưng máy chấm tự động chấm Code đã Đạt (DF-01, DF-02)
+                OR (bn.TrangThai = N'Chờ duyệt Video' AND (kq.KetQuaCode = N'Đạt' OR kq.DiemCode >= 5.0))
+              )
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           `);
 
         if (checkPrereq.recordset.length === 0) {
           isUnlocked = false;
-          unlockReason = `Yêu cầu hoàn thành và được chốt điểm Đạt ở '${project.TenDuAnTienQuyet}' (DF-02)`;
+          unlockReason = `Yêu cầu hoàn thành đạt bài '${project.TenDuAnTienQuyet}' (DF-02)`;
         } else {
           isUnlocked = true;
           unlockReason = `Đã mở khóa tự động nhờ hoàn thành '${project.TenDuAnTienQuyet}' (DF-02)`;
@@ -175,21 +179,25 @@ router.get('/projects/:id', isLoggedIn, async (req, res) => {
         .input('prereqId', sql.Int, project.MaDuAnTienQuyet)
         .input('studentId', sql.Int, studentId)
         .query(`
-          SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.TongDiem
+          SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem, kq.DiemCode
           FROM BaiNop bn
           JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
           WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-            AND bn.TrangThai = N'Đã chốt điểm'
-            AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
-          ORDER BY bn.MaBaiNop DESC
+            AND (
+              -- 1. Đã chốt điểm: Điểm tổng >= 5 hoặc Video đạt
+              (bn.TrangThai = N'Đã chốt điểm' AND (kq.TongDiem >= 5.0 OR kq.KetQuaVideo = N'Đạt'))
+              -- 2. Hoặc đang chờ duyệt video nhưng máy chấm tự động chấm Code đã Đạt (DF-01, DF-02)
+              OR (bn.TrangThai = N'Chờ duyệt Video' AND (kq.KetQuaCode = N'Đạt' OR kq.DiemCode >= 5.0))
+            )
+          ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
         `);
 
       if (checkPrereq.recordset.length === 0) {
         isUnlocked = false;
-        unlockReason = `Yêu cầu đạt '${project.TenDuAnTienQuyet}' (DF-02)`;
+        unlockReason = `Yêu cầu hoàn thành đạt bài '${project.TenDuAnTienQuyet}' (DF-02)`;
       } else {
         isUnlocked = true;
-        unlockReason = `Đã mở khóa qua '${project.TenDuAnTienQuyet}' (DF-02)`;
+        unlockReason = `Đã mở khóa tự động nhờ hoàn thành '${project.TenDuAnTienQuyet}' (DF-02)`;
       }
     }
 
@@ -322,14 +330,18 @@ router.post('/submissions', requireRole('Học sinh'), upload.single('codeFile')
           FROM BaiNop bn
           JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
           WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-            AND bn.TrangThai = N'Đã chốt điểm'
-            AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
+            AND (
+              -- 1. Đã chốt điểm: Điểm tổng >= 5 hoặc Video đạt
+              (bn.TrangThai = N'Đã chốt điểm' AND (kq.TongDiem >= 5.0 OR kq.KetQuaVideo = N'Đạt'))
+              -- 2. Hoặc đang chờ duyệt video nhưng máy chấm tự động chấm Code đã Đạt (DF-01, DF-02)
+              OR (bn.TrangThai = N'Chờ duyệt Video' AND (kq.KetQuaCode = N'Đạt' OR kq.DiemCode >= 5.0))
+            )
         `);
 
       if (prereqCheck.recordset.length === 0) {
         return res.status(403).json({
           success: false,
-          message: 'Dự án này đang bị khóa. Bạn phải hoàn thành và được chốt điểm Đạt ở dự án tiên quyết trước (DF-02)!'
+          message: `Dự án này đang bị khóa. Bạn phải hoàn thành đạt bài '${project.TenDuAn}' ở dự án tiên quyết trước (DF-02)!`
         });
       }
     }
@@ -629,11 +641,11 @@ router.get('/lotrinh', isLoggedIn, async (req, res) => {
             ORDER BY bn.MaBaiNop DESC
           ) AS TrangThaiBaiNopHienTai,
           (
-            SELECT TOP 1 kq.TongDiem 
+            SELECT TOP 1 ISNULL(kq.TongDiem, kq.DiemCode) 
             FROM BaiNop bn 
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop 
             WHERE bn.MaDuAn = da.MaDuAn AND bn.MaNguoiDung = @studentId 
-            ORDER BY bn.MaBaiNop DESC
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           ) AS DiemHienTai
         FROM DuAnBaiTap da
         LEFT JOIN DuAnBaiTap tq ON da.MaDuAnTienQuyet = tq.MaDuAn
@@ -651,21 +663,25 @@ router.get('/lotrinh', isLoggedIn, async (req, res) => {
           .input('prereqId', sql.Int, project.MaDuAnTienQuyet)
           .input('studentId', sql.Int, studentId)
           .query(`
-            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem
+            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem, kq.DiemCode
             FROM BaiNop bn
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
             WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-              AND bn.TrangThai = N'Đã chốt điểm'
-              AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
-            ORDER BY bn.MaBaiNop DESC
+              AND (
+                -- 1. Đã chốt điểm: Điểm tổng >= 5 hoặc Video đạt
+                (bn.TrangThai = N'Đã chốt điểm' AND (kq.TongDiem >= 5.0 OR kq.KetQuaVideo = N'Đạt'))
+                -- 2. Hoặc đang chờ duyệt video nhưng máy chấm tự động chấm Code đã Đạt (DF-01, DF-02)
+                OR (bn.TrangThai = N'Chờ duyệt Video' AND (kq.KetQuaCode = N'Đạt' OR kq.DiemCode >= 5.0))
+              )
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           `);
 
         if (checkPrereq.recordset.length === 0) {
           isUnlocked = false;
-          unlockReason = `Yêu cầu đạt '${project.TenDuAnTienQuyet}' (DF-02)`;
+          unlockReason = `Yêu cầu hoàn thành đạt bài '${project.TenDuAnTienQuyet}' (DF-02)`;
         } else {
           isUnlocked = true;
-          unlockReason = `Đã mở khóa qua '${project.TenDuAnTienQuyet}' (DF-02)`;
+          unlockReason = `Đã mở khóa tự động nhờ hoàn thành '${project.TenDuAnTienQuyet}' (DF-02)`;
         }
       }
 

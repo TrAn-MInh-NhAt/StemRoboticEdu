@@ -4,6 +4,7 @@
   "description": "STEM Robotic Edu - Hệ Thống Học Tập & Quản Lý Đào Tạo Robotics Cấp Trung Học",
   "scripts": {
     "test": "node server/tests/full_system_test.js",
+    "test:unit": "node --test tests/codeSubmissionEvaluator.test.js",
     "start": "node server/server.js",
     "seed": "node server/seed_full_curriculum.js"
   }

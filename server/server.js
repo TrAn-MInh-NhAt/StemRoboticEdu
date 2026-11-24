@@ -32,7 +32,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'stemrobotic_secret_2026',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 86400000 }
+  cookie: {
+    maxAge: 86400000,
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production'
+  }
 }));
 
 // Static files

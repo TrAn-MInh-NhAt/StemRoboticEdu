@@ -7,7 +7,8 @@
 
 function getReqUser(req) {
   if (req.session && req.session.user) return req.session.user;
-  if (req.headers) {
+  // Chỉ cho phép giả lập vai trò qua HTTP Headers trong môi trường dev / automation test
+  if (process.env.NODE_ENV !== 'production' && req.headers) {
     if (req.headers['x-admin-role'] === 'Admin') {
       return { MaNguoiDung: 1, HoTen: 'Quản trị viên Hệ thống', VaiTro: 'Admin' };
     }

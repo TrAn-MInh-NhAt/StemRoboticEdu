@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const { getPool, sql } = require('../config/db');
 
 // POST /api/auth/register - Đăng ký & Kích hoạt tài khoản Học sinh kèm xác thực Thẻ học sinh
@@ -32,10 +33,13 @@ router.post('/register', async (req, res) => {
     const userStatus = isAutoApproved ? 'Đang hoạt động' : 'Chờ duyệt';
     const cardStatus = isAutoApproved ? 'Đã xác thực' : 'Chờ duyệt thẻ';
 
+    // Mã hóa mật khẩu bảo mật theo chuẩn bcrypt (SEC-01)
+    const hashedPassword = await bcrypt.hash(matKhau, 10);
+
     const ins = await pool.request()
       .input('hoTen', sql.NVarChar, hoTen.trim())
       .input('email', sql.NVarChar, email.trim())
-      .input('matKhau', sql.NVarChar, matKhau)
+      .input('matKhau', sql.VarChar(255), hashedPassword)
       .input('vaiTro', sql.NVarChar, role)
       .input('lop', sql.NVarChar, studentClass)
       .input('truongHoc', sql.NVarChar, schoolName)
@@ -100,8 +104,29 @@ router.post('/login', async (req, res) => {
 
     const user = result.recordset[0];
 
-    // So sánh mật khẩu plaintext (seed data)
-    if (password !== user.MatKhau) {
+    // Xác thực mật khẩu: Hỗ trợ bcrypt hash và tự động nâng cấp mật khẩu legacy plaintext
+    const isBcrypt = typeof user.MatKhau === 'string' && (user.MatKhau.startsWith('$2a$') || user.MatKhau.startsWith('$2b$'));
+    let isPasswordValid = false;
+
+    if (isBcrypt) {
+      isPasswordValid = await bcrypt.compare(password, user.MatKhau);
+    } else {
+      isPasswordValid = (password === user.MatKhau);
+      // Tự động nâng cấp hash mật khẩu plaintext sang bcrypt trong CSDL
+      if (isPasswordValid) {
+        try {
+          const upgradedHash = await bcrypt.hash(password, 10);
+          await pool.request()
+            .input('id', sql.Int, user.MaNguoiDung)
+            .input('newHash', sql.VarChar(255), upgradedHash)
+            .query('UPDATE NguoiDung SET MatKhau = @newHash WHERE MaNguoiDung = @id');
+        } catch (upgradeErr) {
+          console.warn('[Auth] Không thể tự động nâng cấp hash mật khẩu:', upgradeErr.message);
+        }
+      }
+    }
+
+    if (!isPasswordValid) {
       return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không đúng' });
     }
 
@@ -224,9 +249,10 @@ router.post('/reset-password', async (req, res) => {
 
   try {
     const pool = getPool();
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     await pool.request()
       .input('email', sql.NVarChar, email.trim())
-      .input('newPassword', sql.VarChar, newPassword)
+      .input('newPassword', sql.VarChar(255), hashedNewPassword)
       .query(`
         UPDATE NguoiDung
         SET MatKhau = @newPassword
@@ -284,16 +310,28 @@ router.post('/profile', async (req, res) => {
         .input('id', sql.Int, userId)
         .query('SELECT MatKhau FROM NguoiDung WHERE MaNguoiDung = @id');
 
-      if (checkPass.recordset.length === 0 || checkPass.recordset[0].MatKhau !== matKhauHienTai) {
+      if (checkPass.recordset.length === 0) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+      }
+
+      const currentStoredPass = checkPass.recordset[0].MatKhau;
+      const isCurrentBcrypt = typeof currentStoredPass === 'string' && (currentStoredPass.startsWith('$2a$') || currentStoredPass.startsWith('$2b$'));
+      const isCurrentValid = isCurrentBcrypt
+        ? await bcrypt.compare(matKhauHienTai, currentStoredPass)
+        : (matKhauHienTai === currentStoredPass);
+
+      if (!isCurrentValid) {
         return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác' });
       }
+
+      const hashedNewPassword = await bcrypt.hash(matKhauMoi, 10);
 
       await pool.request()
         .input('id', sql.Int, userId)
         .input('hoTen', sql.NVarChar, hoTen.trim())
         .input('soDienThoai', sql.VarChar, soDienThoai ? soDienThoai.trim() : null)
         .input('anhDaiDien', sql.VarChar, anhDaiDien ? anhDaiDien.trim() : null)
-        .input('matKhauMoi', sql.VarChar, matKhauMoi)
+        .input('matKhauMoi', sql.VarChar(255), hashedNewPassword)
         .query(`
           UPDATE NguoiDung
           SET HoTen = @hoTen,
