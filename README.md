@@ -62,6 +62,20 @@ Hệ thống **STEM Robotic Edu** được thiết kế và triển khai nhằm 
    - Công cụ khởi động [Start_STEM_Robotic.bat](Start_STEM_Robotic.bat) phối hợp cùng [STEM_Robotic_App.ps1](STEM_Robotic_App.ps1) tự động kích hoạt đồng thời cả Web Server (Port 80) và Judge Engine (Port 5000), tự động phát link công khai Cloudflare Tunnel và tự động dọn sạch tiến trình chiếm cổng khi đóng ứng dụng.
    - Hỗ trợ cả 2 phương thức kết nối CSDL: Windows Authentication (không mật khẩu) và SQL Server Authentication (`sa`).
 
+### 2.3. Minh Chứng Giao Diện Thực Tế Hệ Thống (Live Demo Showcase)
+
+Hệ thống được thiết kế và hoàn thiện theo phong cách **Creative Studio & Neo-Brutalist EdTech**, kết hợp khoang lập trình tối màu chuyên nghiệp (`#0B0F19`) và nền Canvas sáng sủa (`#F4F6F8`), 100% đồ họa Vector SVG sắc nét và loại bỏ hoàn toàn AI Slop:
+
+| 1. Trang Chủ & Cổng Thông Tin STEM Robotic | 2. Không Gian Lập Trình & Máy Chấm Tự Động |
+|:---:|:---:|
+| [![Trang Chủ](docs/images/01-trang-chu.png)](docs/images/01-trang-chu.png) | [![Không Gian Lập Trình & Máy Chấm](docs/images/02-hoc-sinh-may-cham.png)](docs/images/02-hoc-sinh-may-cham.png) |
+| *Giao diện Bento Grid, giới thiệu lộ trình đào tạo khối 10/1, Bảng vinh danh Wall of Fame và trạm tra cứu linh kiện.* | *Trình soạn thảo mã nguồn đa ngôn ngữ (.py, .cpp, .ino), bộ testcase và cơ chế thẩm định video vận hành kép (DF-01, DF-02).* |
+
+| 3. Bàn Làm Việc Giáo Viên & Giám Sát Học Liệu | 4. Phòng Thi Trực Tuyến Chống Gian Lận Tab |
+|:---:|:---:|
+| [![Dashboard Giáo Viên](docs/images/03-giao-vien-canh-bao.png)](docs/images/03-giao-vien-canh-bao.png) | [![Phòng Thi Chống Gian Lận](docs/images/04-phong-thi-chong-gian-lan.png)](docs/images/04-phong-thi-chong-gian-lan.png) |
+| *Bàn làm việc duyệt video thực tế, phân tích log lỗi cú pháp AST (DF-04) và cờ tự động cảnh báo học liệu khi tỷ lệ lỗi vượt 30% (DF-05).* | *Phòng thi kiểm tra đánh giá, JS tracking bắt sự kiện rời màn hình và tự động khóa bài khi vi phạm quá 3 lần (DF-06).* |
+
 ---
 
 ## 3. SƠ ĐỒ KIẾN TRÚC HỆ THỐNG VÀ CƠ SỞ DỮ LIỆU
