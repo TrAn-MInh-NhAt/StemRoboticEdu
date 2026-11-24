@@ -4,19 +4,7 @@
  * Dùng MERGE / IF NOT EXISTS – an toàn khi chạy nhiều lần
  */
 
-const path = require('path');
-const sql = require(path.join(__dirname, 'node_modules', 'mssql'));
-
-const config = {
-  server: 'ADMIN-PC\\SQLEXPRESS',
-  database: 'StemRoboticDB_V2',
-  user: 'sa',
-  password: '1',
-  options: {
-    trustServerCertificate: true,
-    enableArithAbort: true,
-  },
-};
+const { connectDB, sql } = require('./config/db');
 
 // ID người tạo mặc định (Admin = 1, từ seed data gốc)
 const DEFAULT_NGUOI_DUNG = 1;
@@ -25,7 +13,7 @@ async function main() {
   let pool;
   try {
     console.log('⏳ Đang kết nối SQL Server...');
-    pool = await sql.connect(config);
+    pool = await connectDB();
     console.log('✓ Kết nối thành công!\n');
 
     // ============================================================

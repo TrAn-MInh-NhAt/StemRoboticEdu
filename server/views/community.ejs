@@ -251,10 +251,11 @@
           </button>
         </div>
 
-        <!-- Bộ lọc tab & DF-03 -->
+        <!-- Bộ lọc tab & DF-03 & TTCĐ.02 -->
         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
           <button class="btn btn-secondary btn-sm active" data-filter="all" onclick="filterPosts('all', this)">Tất cả chủ đề</button>
           <button class="btn btn-secondary btn-sm" data-filter="trending" onclick="filterPosts('trending', this)">Top Trending</button>
+          <button class="btn btn-secondary btn-sm" data-filter="resolved" onclick="filterPosts('resolved', this)">Đã giải quyết</button>
           <button class="btn btn-secondary btn-sm" data-filter="Thảo luận" onclick="filterPosts('Thảo luận', this)">Thảo luận chung</button>
           <button class="btn btn-secondary btn-sm" data-filter="Chia sẻ lỗi" onclick="filterPosts('Chia sẻ lỗi', this)">Kinh nghiệm gỡ lỗi</button>
         </div>
@@ -463,6 +464,8 @@
       let filtered = allCommunityPosts;
       if (currentFilter === 'trending') {
         filtered = allCommunityPosts.filter(p => p.isTopTrending);
+      } else if (currentFilter === 'resolved') {
+        filtered = allCommunityPosts.filter(p => p.TrangThai === 'Đã giải quyết');
       } else if (currentFilter !== 'all') {
         filtered = allCommunityPosts.filter(p => p.LoaiNoiDung === currentFilter);
       }
@@ -490,21 +493,34 @@
           ? '<span class="badge badge-warning" style="margin-left:8px; font-weight:700;">Top Nổi Bật</span>'
           : '';
 
+        let resolvedBadge = (p.TrangThai === 'Đã giải quyết')
+          ? '<span class="badge badge-success" style="margin-left:6px; font-weight:700;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="display:inline-block; vertical-align:middle; margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg>Đã giải quyết</span>'
+          : '';
+
         let badgeTypeClass = 'badge-primary';
         if (p.LoaiNoiDung === 'Chia sẻ lỗi') badgeTypeClass = 'badge-danger';
         if (p.LoaiNoiDung === 'Vinh danh') badgeTypeClass = 'badge-success';
+
+        let resolveBtnHtml = (p.TrangThai !== 'Đã giải quyết')
+          ? `<button class="btn btn-secondary btn-sm" id="resolve-btn-${pid}" onclick="resolvePost(${pid}, this)" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; color:#047857; border-color:#047857; background:rgba(4,120,87,0.06);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Giải quyết
+            </button>`
+          : '';
 
         card.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 12px; flex-wrap:wrap; gap:10px;">
             <div>
               <span class="badge ${badgeTypeClass}">${p.LoaiNoiDung}</span>
               ${trendingBadge}
+              ${resolvedBadge}
               ${p.TenDuAn ? `<span class="badge badge-locked" style="margin-left:6px;">Dự án: ${p.TenDuAn}</span>` : ''}
               <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--c-text-main); margin-top: 8px;">
                 ${p.TieuDe}
               </h3>
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              ${resolveBtnHtml}
               <!-- Nút Like (Thích) -->
               <button class="btn btn-secondary btn-sm" id="like-btn-${pid}" onclick="likePost(${pid}, this)" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; transition:all 0.2s;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
@@ -561,11 +577,18 @@
     async function likePost(postId, btn) {
       try {
         btn.disabled = true;
-        const res = await fetch(`/api/thaoluan/${postId}/like`, { method: 'POST' });
+        let res = await fetch(`/api/thaoluan/${postId}/like`, { method: 'POST' });
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/like`, { method: 'POST' });
+        }
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/vote`, { method: 'POST' });
+        }
+        if (!res.ok) return;
         const result = await res.json();
         if (result.success) {
           const countSpan = document.getElementById(`like-count-${postId}`);
-          if (countSpan) countSpan.textContent = result.likes;
+          if (countSpan) countSpan.textContent = result.likes || result.votes || 0;
           btn.style.background = 'rgba(220, 38, 38, 0.1)';
           btn.style.color = '#DC2626';
           btn.style.borderColor = '#DC2626';
@@ -575,6 +598,29 @@
         }
       } catch (err) {
         console.error('Lỗi like:', err);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Gắn nhãn "Đã giải quyết" cho chủ đề thảo luận (TTCĐ.02)
+    async function resolvePost(postId, btn) {
+      if (!confirm('Bạn có chắc muốn gắn nhãn Đã giải quyết cho chủ đề thảo luận này?')) return;
+      btn.disabled = true;
+      try {
+        let res = await fetch(`/api/community/posts/${postId}/resolve`, { method: 'POST' });
+        if (!res.ok) {
+          res = await fetch(`/api/thaoluan/${postId}/resolve`, { method: 'POST' });
+        }
+        const data = await res.json();
+        if (data.success) {
+          if (typeof showToast === 'function') showToast(data.message);
+          loadCommunityPosts();
+        } else {
+          alert('Lỗi: ' + data.message);
+        }
+      } catch (err) {
+        alert('Lỗi kết nối khi gắn nhãn giải quyết: ' + err.message);
       } finally {
         btn.disabled = false;
       }
@@ -596,7 +642,14 @@
       const listContainer = document.getElementById(`comments-list-${postId}`);
       if (!listContainer) return;
       try {
-        const res = await fetch(`/api/thaoluan/${postId}/comments`);
+        let res = await fetch(`/api/thaoluan/${postId}/comments`);
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/comments`);
+        }
+        if (!res.ok) {
+          listContainer.innerHTML = '<p class="text-muted" style="font-size:0.82rem; margin:0; padding:6px 0;">Chưa có bình luận nào.</p>';
+          return;
+        }
         const data = await res.json();
         if (!data.success || !data.comments || data.comments.length === 0) {
           listContainer.innerHTML = '<p class="text-muted" style="font-size:0.82rem; margin:0; padding:6px 0;">Chưa có bình luận nào. Hãy là người đầu tiên để lại ý kiến!</p>';
@@ -614,7 +667,7 @@
                 <span class="badge ${c.VaiTro === 'Giáo viên' ? 'badge-primary' : 'badge-secondary'}" style="font-size:0.68rem; margin-left:6px; padding:2px 6px;">${c.VaiTro}</span>
                 ${c.Lop ? `<span style="font-size:0.75rem; color:var(--c-text-dim); margin-left:4px;">(${c.Lop})</span>` : ''}
               </div>
-              <span style="font-size:0.75rem; color:#94A3B8;">${new Date(c.NgayTao).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} ${new Date(c.NgayTao).toLocaleDateString('vi-VN')}</span>
+              <span style="font-size:0.75rem; color:#94A3B8;">${new Date(c.NgayTao || Date.now()).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} ${new Date(c.NgayTao || Date.now()).toLocaleDateString('vi-VN')}</span>
             </div>
             <div style="color:var(--c-text-main); line-height:1.5; white-space:pre-wrap;">${c.NoiDung}</div>
           `;
@@ -639,11 +692,24 @@
       btn.textContent = 'Đang gửi...';
 
       try {
-        const res = await fetch(`/api/thaoluan/${postId}/comment`, {
+        let res = await fetch(`/api/thaoluan/${postId}/comment`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ noiDung })
         });
+        if (!res.ok) {
+          res = await fetch(`/api/community/posts/${postId}/comment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ noiDung })
+          });
+        }
+        if (!res.ok) {
+          const txt = await res.text();
+          let errJson = null;
+          try { errJson = JSON.parse(txt); } catch(e) {}
+          throw new Error(errJson && errJson.message ? errJson.message : `Máy chủ chưa cập nhật endpoint bình luận (HTTP ${res.status}). Vui lòng khởi động lại server qua Start_STEM_Robotic.bat.`);
+        }
         const result = await res.json();
         if (result.success && result.comment) {
           const c = result.comment;

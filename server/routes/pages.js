@@ -4,10 +4,12 @@ const { getPool, sql } = require('../config/db');
 const { isLoggedIn, requireRole, isTeacherOrAdmin } = require('../middleware/authMiddleware');
 
 function redirectByRole(res, role) {
-  if (role === 'Admin') return res.redirect('/admin');
-  if (role === 'Giáo viên') return res.redirect('/teacher');
-  if (role === 'Học sinh') return res.redirect('/student');
-  return res.redirect('/login');
+  if (!role) return res.redirect('/');
+  const r = role.toString().trim();
+  if (r === 'Admin' || r.toLowerCase() === 'admin') return res.redirect('/admin');
+  if (r === 'Giáo viên' || r === 'Teacher' || r.toLowerCase().includes('giáo') || r.toLowerCase().includes('teacher')) return res.redirect('/teacher');
+  if (r === 'Học sinh' || r === 'Student' || r.toLowerCase().includes('sinh') || r.toLowerCase().includes('student')) return res.redirect('/student');
+  return res.redirect('/');
 }
 
 // GET / → Trang Chủ chính thức từ giaodien8.html
@@ -132,7 +134,12 @@ router.get('/api/leaderboard', async (req, res) => {
 // GET /login
 router.get('/login', (req, res) => {
   if (req.session && req.session.user) {
-    return redirectByRole(res, req.session.user.VaiTro);
+    const role = req.session.user.VaiTro;
+    if (role === 'Admin' || (typeof role === 'string' && role.toLowerCase() === 'admin')) return res.redirect('/admin');
+    if (role === 'Giáo viên' || role === 'Teacher' || (typeof role === 'string' && role.includes('viên'))) return res.redirect('/teacher');
+    if (role === 'Học sinh' || role === 'Student' || (typeof role === 'string' && role.includes('sinh'))) return res.redirect('/student');
+    // Nếu role không hợp lệ, xóa sạch session user cũ để không bao giờ bị vòng lặp chuyển hướng
+    delete req.session.user;
   }
   res.render('login', { error: null });
 });
@@ -360,6 +367,7 @@ router.get('/print-report', isLoggedIn, async (req, res) => {
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) console.error('Lỗi hủy session:', err.message);
+    res.clearCookie('connect.sid');
     res.redirect('/login');
   });
 });
