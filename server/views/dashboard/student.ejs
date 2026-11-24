@@ -1929,7 +1929,8 @@ else:
           } else {
             lt.duAnList.forEach(da => {
               totalProjects++;
-              if (da.TrangThaiBaiNopHienTai === 'Đã chốt điểm' && da.DiemHienTai >= 5) {
+              const isPassed = (da.TrangThaiBaiNopHienTai === 'Đã chốt điểm' || da.TrangThaiBaiNopHienTai === 'Chờ duyệt Video' || (da.DiemHienTai !== null && da.DiemHienTai >= 5));
+              if (isPassed) {
                 completedProjects++;
               }
 
@@ -1937,8 +1938,8 @@ else:
               item.className = 'mission-card ' + (da.isUnlocked ? 'unlocked' : 'locked');
 
               let badgeHtml = '';
-              if (da.TrangThaiBaiNopHienTai === 'Đã chốt điểm') {
-                badgeHtml = `<span class="badge badge-success">✓ Hoàn thành (${da.DiemHienTai}/10)</span>`;
+              if (da.TrangThaiBaiNopHienTai === 'Đã chốt điểm' || da.TrangThaiBaiNopHienTai === 'Chờ duyệt Video' || (da.DiemHienTai !== null && da.DiemHienTai >= 10)) {
+                badgeHtml = `<span class="badge badge-success">✓ Hoàn thành (${da.DiemHienTai !== null ? da.DiemHienTai : 10}/10)</span>`;
               } else if (da.isUnlocked) {
                 badgeHtml = `<span class="badge badge-primary">Sẵn sàng nộp</span>`;
               } else {
@@ -1967,7 +1968,7 @@ else:
                   <div style="border-top: 1.5px dashed rgba(11, 15, 25, 0.1); padding-top: 14px; margin-top: auto;">
                     ${da.isUnlocked
                       ? `<button type="button" class="btn btn-primary" onclick="openProjectWorkspace(${da.MaDuAn})" style="width: 100%; justify-content: center; font-weight: 800; font-size: 0.92rem; padding: 10px 16px;">
-                          ${da.TrangThaiBaiNopHienTai === 'Đã chốt điểm' ? 'Xem Bài Nộp &amp; Nộp Lại →' : 'Vào Không Gian Làm Bài →'}
+                          ${(da.TrangThaiBaiNopHienTai === 'Đã chốt điểm' || da.TrangThaiBaiNopHienTai === 'Chờ duyệt Video' || (da.DiemHienTai !== null && da.DiemHienTai >= 10)) ? 'Xem Bài Nộp &amp; Nộp Lại →' : 'Vào Không Gian Làm Bài →'}
                          </button>`
                       : `<button type="button" class="btn btn-secondary" disabled style="width: 100%; justify-content: center; opacity: 0.75; font-size: 0.8rem; padding: 10px 12px; white-space: normal; line-height: 1.35; height: auto; text-align: center; border-style: dashed; display: flex; align-items: center; gap: 6px;">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink: 0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>

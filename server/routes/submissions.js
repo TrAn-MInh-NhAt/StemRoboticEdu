@@ -77,11 +77,11 @@ router.get('/projects', isLoggedIn, async (req, res) => {
             ORDER BY bn.MaBaiNop DESC
           ) AS TrangThaiBaiNopHienTai,
           (
-            SELECT TOP 1 kq.TongDiem 
+            SELECT TOP 1 ISNULL(kq.TongDiem, kq.DiemCode) 
             FROM BaiNop bn 
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop 
             WHERE bn.MaDuAn = da.MaDuAn AND bn.MaNguoiDung = @studentId 
-            ORDER BY bn.MaBaiNop DESC
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           ) AS DiemHienTai
         FROM DuAnBaiTap da
         LEFT JOIN DuAnBaiTap tq ON da.MaDuAnTienQuyet = tq.MaDuAn
@@ -96,23 +96,28 @@ router.get('/projects', isLoggedIn, async (req, res) => {
       let unlockReason = 'Dự án cơ bản';
 
       if (project.MaDuAnTienQuyet) {
-        // Kiểm tra xem học sinh đã có bài nộp đạt cho dự án tiên quyết chưa
+        // Kiểm tra xem học sinh đã có bài nộp đạt cho dự án tiên quyết chưa (DF-02)
         const checkPrereq = await pool.request()
           .input('prereqId', sql.Int, project.MaDuAnTienQuyet)
           .input('studentId', sql.Int, studentId)
           .query(`
-            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem
+            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem, kq.DiemCode
             FROM BaiNop bn
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
             WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-              AND bn.TrangThai = N'Đã chốt điểm'
-              AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
-            ORDER BY bn.MaBaiNop DESC
+              AND (
+                kq.KetQuaCode = N'Đạt'
+                OR kq.DiemCode >= 5.0
+                OR kq.TongDiem >= 5.0
+                OR kq.KetQuaVideo = N'Đạt'
+                OR bn.TrangThai IN (N'Đã chốt điểm', N'Đã duyệt', N'Chờ duyệt Video')
+              )
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           `);
 
         if (checkPrereq.recordset.length === 0) {
           isUnlocked = false;
-          unlockReason = `Yêu cầu hoàn thành và được chốt điểm Đạt ở '${project.TenDuAnTienQuyet}' (DF-02)`;
+          unlockReason = `Yêu cầu hoàn thành đạt bài '${project.TenDuAnTienQuyet}' (DF-02)`;
         } else {
           isUnlocked = true;
           unlockReason = `Đã mở khóa tự động nhờ hoàn thành '${project.TenDuAnTienQuyet}' (DF-02)`;
@@ -175,13 +180,18 @@ router.get('/projects/:id', isLoggedIn, async (req, res) => {
         .input('prereqId', sql.Int, project.MaDuAnTienQuyet)
         .input('studentId', sql.Int, studentId)
         .query(`
-          SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.TongDiem
+          SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem, kq.DiemCode
           FROM BaiNop bn
           JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
           WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-            AND bn.TrangThai = N'Đã chốt điểm'
-            AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
-          ORDER BY bn.MaBaiNop DESC
+            AND (
+              kq.KetQuaCode = N'Đạt'
+              OR kq.DiemCode >= 5.0
+              OR kq.TongDiem >= 5.0
+              OR kq.KetQuaVideo = N'Đạt'
+              OR bn.TrangThai IN (N'Đã chốt điểm', N'Đã duyệt', N'Chờ duyệt Video')
+            )
+          ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
         `);
 
       if (checkPrereq.recordset.length === 0) {
@@ -322,8 +332,13 @@ router.post('/submissions', requireRole('Học sinh'), upload.single('codeFile')
           FROM BaiNop bn
           JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
           WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-            AND bn.TrangThai = N'Đã chốt điểm'
-            AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
+            AND (
+              kq.KetQuaCode = N'Đạt'
+              OR kq.DiemCode >= 5.0
+              OR kq.TongDiem >= 5.0
+              OR kq.KetQuaVideo = N'Đạt'
+              OR bn.TrangThai IN (N'Đã chốt điểm', N'Đã duyệt', N'Chờ duyệt Video')
+            )
         `);
 
       if (prereqCheck.recordset.length === 0) {
@@ -629,11 +644,11 @@ router.get('/lotrinh', isLoggedIn, async (req, res) => {
             ORDER BY bn.MaBaiNop DESC
           ) AS TrangThaiBaiNopHienTai,
           (
-            SELECT TOP 1 kq.TongDiem 
+            SELECT TOP 1 ISNULL(kq.TongDiem, kq.DiemCode) 
             FROM BaiNop bn 
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop 
             WHERE bn.MaDuAn = da.MaDuAn AND bn.MaNguoiDung = @studentId 
-            ORDER BY bn.MaBaiNop DESC
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           ) AS DiemHienTai
         FROM DuAnBaiTap da
         LEFT JOIN DuAnBaiTap tq ON da.MaDuAnTienQuyet = tq.MaDuAn
@@ -651,13 +666,18 @@ router.get('/lotrinh', isLoggedIn, async (req, res) => {
           .input('prereqId', sql.Int, project.MaDuAnTienQuyet)
           .input('studentId', sql.Int, studentId)
           .query(`
-            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem
+            SELECT TOP 1 bn.MaBaiNop, bn.TrangThai, kq.KetQuaVideo, kq.KetQuaCode, kq.TongDiem, kq.DiemCode
             FROM BaiNop bn
             JOIN KetQuaDiem kq ON bn.MaBaiNop = kq.MaBaiNop
             WHERE bn.MaDuAn = @prereqId AND bn.MaNguoiDung = @studentId
-              AND bn.TrangThai = N'Đã chốt điểm'
-              AND (kq.KetQuaVideo = N'Đạt' OR kq.TongDiem >= 5.0)
-            ORDER BY bn.MaBaiNop DESC
+              AND (
+                kq.KetQuaCode = N'Đạt'
+                OR kq.DiemCode >= 5.0
+                OR kq.TongDiem >= 5.0
+                OR kq.KetQuaVideo = N'Đạt'
+                OR bn.TrangThai IN (N'Đã chốt điểm', N'Đã duyệt', N'Chờ duyệt Video')
+              )
+            ORDER BY ISNULL(kq.TongDiem, kq.DiemCode) DESC, bn.MaBaiNop DESC
           `);
 
         if (checkPrereq.recordset.length === 0) {
