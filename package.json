@@ -1,6 +1,6 @@
 {
   "name": "stem-robotic-edu",
-  "version": "1.0.0",
+  "version": "2.4.0",
   "description": "STEM Robotic Edu - Hệ Thống Học Tập & Quản Lý Đào Tạo Robotics Cấp Trung Học",
   "scripts": {
     "test": "node server/tests/full_system_test.js",

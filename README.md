@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/FastAPI-Python%203.11-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/SQL%20Server-2019%20%7C%202022-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white" alt="SQL Server" />
   <img src="https://img.shields.io/badge/IPO%20Modules-27%2F27%20(100%25)-5A52FF?style=for-the-badge" alt="IPO Modules" />
-  <img src="https://img.shields.io/badge/Release-v2.3.0-047857?style=for-the-badge&logo=git&logoColor=white" alt="Version" />
+  <img src="https://img.shields.io/badge/Release-v2.4.0-047857?style=for-the-badge&logo=git&logoColor=white" alt="Version" />
 </p>
 
 ---
@@ -23,7 +23,7 @@
   4. **Nguyễn Thị Thanh Thảo** (Phân tích Chức năng, Báo cáo & UI/UX — GitHub: `thanhthao-21`)
   5. **Phạm Kỳ Hải** (Quản lý Chất lượng & QA Lead — GitHub: `kyhaipham95-oss`)
 * **Kho lưu trữ chính thức (GitHub):** [https://github.com/TrAn-MInh-NhAt/StemRoboticEdu](https://github.com/TrAn-MInh-NhAt/StemRoboticEdu)
-* **Phiên bản phát hành hiện hành:** `v2.3.0` (Mốc bảo vệ đồ án: Tháng 11/2026)
+* **Phiên bản phát hành hiện hành:** `v2.4.0` (Mốc bảo vệ đồ án: Tháng 11/2026)
 
 ---
 
@@ -211,7 +211,7 @@ LapTrinhWeb/
 ├── package.json                   # Cấu hình phụ thuộc Node.js và các lệnh thực thi (npm test, start)
 ├── .env.example                   # Tệp cấu hình biến môi trường mẫu
 ├── .env                           # Tệp biến môi trường thực tế (chứa chuỗi kết nối DB)
-├── CHANGELOG.md                   # Nhật ký phát hành và nâng cấp phiên bản (v1.0.0 -> v2.3.0)
+├── CHANGELOG.md                   # Nhật ký phát hành và nâng cấp phiên bản (v1.0.0 -> v2.4.0)
 ├── PRODUCT.md                     # Tài liệu đặc tả nguồn (Single Source of Truth: 6 phân hệ, 27 IPO)
 ├── README.md                      # Tài liệu tổng quan dự án và hướng dẫn vận hành
 │
@@ -424,7 +424,7 @@ Giảng viên và người đánh giá có thể tra cứu chi tiết từng ph�
 3. [docs/NGHIEP_VU_HOC_LIEU.md](docs/NGHIEP_VU_HOC_LIEU.md): Tài liệu đặc tả quy trình nghiệp vụ Phân hệ 2, sơ đồ chân Pinout linh kiện vi điều khiển thực tế và cơ chế tự động cảnh báo học liệu `DF-05` (Tác giả: Phạm Thị Hà Vy).
 4. [docs/THIET_KE_UI_UX.md](docs/THIET_KE_UI_UX.md): Đặc tả hệ thống thiết kế Creative Studio & Neo-Brutalist, cấu trúc Bento Grid, quy chuẩn chống AI Slop (100% SVG, không dùng emoji) và nguyên lý tối ưu Responsive đa thiết bị (Tác giả: Nguyễn Thị Thanh Thảo).
 5. [PRODUCT.md](PRODUCT.md): Tài liệu đặc tả gốc của dự án (Single Source of Truth), quy định 6 phân hệ, 27 mô đun IPO và 7 luồng tự động hóa.
-6. [CHANGELOG.md](CHANGELOG.md): Biên niên sử toàn bộ quá trình phát triển, nâng cấp và hoàn thiện tính năng qua các mốc phát hành từ `v1.0.0` đến `v2.3.0`.
+6. [CHANGELOG.md](CHANGELOG.md): Biên niên sử toàn bộ quá trình phát triển, nâng cấp và hoàn thiện tính năng qua các mốc phát hành từ `v1.0.0` đến `v2.4.0`.
 
 ---
 

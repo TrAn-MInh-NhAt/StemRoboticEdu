@@ -28,6 +28,39 @@ Hệ thống được phát triển tuần tự và khép kín qua 5 chặng ph�
 
 ---
 
+## 🌟 [v2.4.0] - 24/11/2026 — CHUẨN HÓA MỞ KHÓA DF-02, BẢO MẬT BCRYPT & BỘ KIỂM THỬ UNIT TEST 23SPT
+
+Phiên bản tập trung vá lỗ hổng bảo mật toàn hệ thống, chuẩn hóa điều kiện mở khóa lộ trình tự động DF-02 & QLDA.02, nâng cấp giao diện Anti-AI-Slop và bổ sung bộ kiểm thử đơn vị Unit Test đạt chuẩn 100% PASS.
+
+### 1. Chuẩn Hóa Nghiệp Vụ Mở Khóa Thử Thách & Lộ Trình (DF-02, QLDA.02)
+- **Tích hợp cải tiến hiển thị điểm số linh hoạt:** Trích xuất `ISNULL(kq.TongDiem, kq.DiemCode)` trên `GET /projects` và `GET /lotrinh`, giúp học sinh theo dõi kết quả máy chấm ngay khi vừa vượt qua bài thi Code mà không cần chờ giáo viên chốt điểm thủ công.
+- **Vá triệt để lỗ hổng điều kiện SQL mở khóa bài:**
+  - Loại bỏ hoàn toàn điều kiện lỏng lẻo khiến bài 0 điểm bị chốt điểm vẫn được mở khóa bài tiếp theo.
+  - Phân định rõ 2 trường hợp hợp lệ: (1) Bài đã chốt điểm đạt $\ge 5.0$ hoặc Video đạt; (2) Bài đang ở trạng thái `Chờ duyệt Video` nhưng máy chấm tự động xác nhận mã nguồn đã đạt 100% Test Case (`KetQuaCode = 'Đạt'` hoặc `DiemCode >= 5.0`).
+- **Đồng bộ toàn diện 4 điểm chạm API:** Chuẩn hóa logic kiểm tra tiên quyết đồng thời trên `GET /projects`, `GET /projects/:id`, `GET /lotrinh` và `POST /submissions` (ngăn ngừa chặn nhầm HTTP 403 khi nộp bài).
+
+### 2. Tăng Cường Bảo Mật Toàn Diện (Security Hardening)
+- **Mã hóa mật khẩu chuẩn Bcrypt (`bcryptjs`):**
+  - Chuyển đổi toàn bộ cơ chế lưu trữ mật khẩu plaintext sang mã hóa salt-hash Bcrypt độ phức tạp 10 rounds cho Đăng ký (`POST /api/auth/register`), Đặt lại mật khẩu OTP (`POST /api/auth/reset-password`) và Đổi mật khẩu cá nhân (`POST /api/auth/profile`).
+  - **Cơ chế Tự Động Nâng Cấp (Auto-upgrade on Login):** Người dùng có mật khẩu plaintext từ seed data ban đầu tự động được nâng cấp lên Bcrypt hash trong CSDL ngay sau lần đăng nhập đầu tiên thành công.
+- **Khóa cơ chế Giả lập Header trên Môi trường Thực tế (RBAC Hardening):**
+  - Giới hạn chế độ Header Emulation (`x-admin-role`, `x-role`, `x-user-id`) chỉ được phép hoạt động trong môi trường phát triển & kiểm thử tự động (`NODE_ENV !== 'production'`).
+  - Luôn ưu tiên Session máy chủ thực tế trước tiên, triệt tiêu nguy cơ chiếm đoạt quyền Admin qua cURL/Postman.
+- **Thiết lập Cookie Phiên an toàn (Session Security):** Kích hoạt đầy đủ các thuộc tính `httpOnly: true`, `sameSite: 'lax'` và cờ `secure` trên môi trường Production HTTPS.
+
+### 3. Chuẩn Hóa Giao Diện & Quy Chuẩn Anti-AI-Slop (UI/UX)
+- **Tách bạch trạng thái tiến độ:** Phân định rõ ràng huy hiệu thẻ nhiệm vụ (Mission Card):
+  - `Hoàn thành (X/10)` (Xanh ngọc bích `--c-success`) cho bài đã được giáo viên duyệt.
+  - `Chờ duyệt Video (X/10)` (Vàng hổ phách `--c-accent`) cho bài đã vượt qua máy chấm tự động.
+- **Tuân thủ quy chuẩn Anti-AI-Slop:** Loại bỏ toàn bộ emoji (`✓`, `⏳`) trong nhãn trạng thái và nút bấm, đảm bảo 100% giao diện thuần SVG vector sắc nét theo chuẩn Creative Studio & Neo-Brutalist.
+
+### 4. Bổ Sung Bộ Kiểm Thử Đơn Vị (Unit Test) & Tài Liệu Nghiệm Thu
+- **Module đánh giá mã nguồn `codeSubmissionEvaluator.js`:** Thực hiện tính toán điểm tổng, xác định ngưỡng đạt 8.0/10, xử lý làm tròn 2 chữ số thập phân, kiểm soát vi phạm thời gian Timeout (3000ms) và ném ngoại lệ dữ liệu đầu vào.
+- **Bộ 10 Unit Tests (`tests/codeSubmissionEvaluator.test.js`):** Đạt tỷ lệ thành công 10/10 PASS (100%).
+- **Tài liệu báo cáo:** Bổ sung báo cáo nghiệm thu kiểm thử `Bao_Cao_Unit_Test_STEM_Robotic_Nhom_23SPT.docx`.
+
+---
+
 ## 🌟 [v2.3.0] - 15/11/2026 — ĐỒNG BỘ CODE MẪU 10/10Đ, CHUẨN HÓA LỚP 10/1, THẢO LUẬN REALTIME & NÂNG CẤP GIAO DIỆN
 
 Phiên bản hoàn thiện toàn diện chất lượng đào tạo, tối ưu hóa thuật toán chấm điểm tự động, chuẩn hóa dữ liệu học sinh lớp 10/1 và nâng cấp tính năng tương tác cộng đồng theo phản hồi thực tế từ người dùng.
